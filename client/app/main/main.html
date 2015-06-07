@@ -1,0 +1,31 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="bgimage">
+    <div class="row">
+      <div class="col-md-6">
+        <h1>Track your devices online</h1>
+        <p>The interaction network of things</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Create an account</h2>
+        Provider: <input type="checkbox" ng-model="checked" ng-init="checked=false"/><br/>
+        <span ng-if="checked">
+            This is reserved to device provider professional, please contact orange partner for more information
+       </span>
+
+      </div>
+    </div>
+    <div ng-if="!checked" ng-include="'app/account/signup/signup.html'"></div>
+    <div ng-if="checked" ng-include="'app/account/signup/signup-pro.html'"></div>
+  </div>
+</div>
+
+<footer class="footer">
+
+  <div class="container">
+  </div>
+</footer>
+</div>

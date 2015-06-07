@@ -1,0 +1,41 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container" ng-controller="SideBarCtrl">
+  <div ng-include="'components/sidebar/sidebar.html'"></div>
+  <div class="pullframe col-md-8">
+    Status Server : {{status}}
+    <div ng-show="!profile.watchs.length">Vous n'avez pas de notifications</div>
+
+    <div ng-hide="!profile.watchs.length" ng-repeat="device in profile.watchs" >
+      <div  ng-repeat="stream in device.device.streams" ng-hide="stream.lastValue == null || stream.name=='Latitude'" >
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <a href="#">
+              <img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt">
+              <h2 class="panel-title">Device :{{device.device.name}}</h2>
+            </a>
+          </div>
+          <div ng-if="device.device.group=='GPS'">
+            <div ng-hide="true" >
+              <div ng-if="stream.name=='Latitude'">{{point.latitude=stream.lastValue}}</div>
+              <div ng-if="stream.name=='Longitude'">{{point.longitude=stream.lastValue}}</div>
+            </div>
+            <div>
+              <ui-gmap-google-map center="point" zoom="map.zoom">
+                <ui-gmap-marker coords="staticMarker.coords" options="staticMarker.options" events="staticMarker.events" idKey="staticMarker.id">
+                </ui-gmap-marker>
+                <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
+                                  geodesic='p.geodesic' fit="false" editable="p.editable" draggable="p.draggable" icons='p.icons'>
+                </ui-gmap-polyline>
+              </ui-gmap-google-map>
+            </div>
+
+          </div>
+          <div ng-if="device.device.group!='GPS'" ng-repeat="value in stream.values">
+            {{stream.name}} valeur : {{value.value}} le {{value.time | date:'dd.MM.yyyy à HH:mm:ss'}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

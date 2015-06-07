@@ -1,0 +1,35 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<notifications-bar class="notifications"></notifications-bar>
+<div class="container" ng-controller="SideBarCtrl">
+
+  <div ng-include="'components/sidebar/sidebar.html'"></div>
+  <div class="col-md-8">
+    <div>
+      <h4>Followers</h4>
+      <div ng-show="!profile.accepted.length">Vous n'avez pas de followers</div>
+      <div ng-hide="!profile.accepted.length" class="panel panel-default" ng-repeat="device in profile.accepted">
+        <div class="panel-body">
+          <div>
+            <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
+            <h3 class="panel-title">{{device.user.name}}</h3>
+          </div>
+          {{device.device.name}} / {{device.device.serial}} / {{device.device.description}}
+          <button type="button" ng-click="discard(device)" class="btn-default pull-right">Discard</button>
+        </div>
+      </div>
+      <h4>Requests</h4>
+      <div ng-show="!profile.waitlist.length">Vous n'avez pas de demandes en cours</div>
+      <div ng-hide="!profile.waitlist.length" class="panel panel-default" ng-repeat="device in profile.waitlist">
+        <div class="panel-body">
+          <div>
+            <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
+            <h3 class="panel-title">Ajouter un follower :{{device.user.name}}</h3>
+          </div>
+          {{device.device.name}} / {{device.device.serial}} / {{device.device.description}}
+          <button type="button" ng-click="cancelR(device)" class="btn-default pull-right">Delete request</button>
+          <button type="button" ng-click="confirm(device)" class="btn-primary pull-right">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container" ng-controller="ConstructorCtrl">
+<div class="col-md-12">
+  <div class="col-md-3">
+    <ul id="link" class="nav nav-pills nav-stacked">
+      <li id="link1" role="presentation" class="active" ng-model="toggle" ng-click="toggle = true">
+        <a href="#" onclick="$('#link li').removeClass('active');$('#link1').addClass('active');">Dashboard</a>
+      </li>
+      <li id="link2" role="presentation" class="" ng-model="toggle" ng-click="toggle = false">
+        <a href="#" onclick="$('#link li').removeClass('active');$('#link2').addClass('active');" >Liste des devices</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col-md-9">
+
+      <div class="row info">
+        <!-- champ de sauvergarde et de mise à jour de l'apikey-->
+        <div class="col-md-6">
+          <div class="input-group">
+            <label>CLIENT ID : {{constructor().idclient}}</label>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">X</button>
+          </span>
+          </div>
+
+        <!-- champ de sauvergarde et de mise à jour de l'isskey-->
+          <div class="input-group">
+            <label>ISSKEY : {{constructor().isskey}}</label>
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">X</button>
+          </span>
+          </div>
+        </div>
+        <!-- boutons de sauvergarde et de mise à jour des datasources-->
+        <div class="col-md-6">
+
+          <div class="row">
+            <div class="col-md-6">
+            <form class="form" ng-submit="getDevices()" novalidate>
+              <button class="btn btn-success" type="submit">Import devices</button>
+            </form>
+            </div>
+            <div class="col-md-6">
+              <form class="form" ng-submit="updateDevices()" novalidate>
+                <button class="btn btn-success" type="submit"> Update device list</button>
+              </form>
+            </div>
+          </div>
+          <div class="row">
+            <form class="form" ng-submit="createDevice(fileContent)" novalidate>
+              <div class="col-md-6">
+                <input type="file" file-reader="fileContent" accept=".csv"/>
+              </div>
+              <div class="col-md-6">
+              <button class="btn btn-success" type="submit">Create devices</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <div id="dashboard" class="row" ng-if="toggle">
+      <h2>Graphe d'utilisation des devices</h2>
+      <div ng-show="!devices.length">  Aucun device declaré </div>
+      <chart ng-hide="!devices.length" chart-data="devices"></chart>
+    </div>
+    <div id="list" ng-if="!toggle">
+      <h2>Liste des devices</h2>
+      <div ng-show="!devices.length">  Aucun device declaré </div>
+      <div ng-hide="!devices.length">
+        <table class="table table-striped table-bordered" data-cache="false" data-height="299">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Serial</th>
+            <th>Datasource ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>State</th>
+            <th>Group</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tr ng-repeat="device in devices">
+            <td>{{$index+1}}</td>
+            <td>{{device.serial}}</td>
+            <td>{{device.ds_id}}</td>
+            <td>{{device.name}}</td>
+            <td>{{device.description}}</td>
+            <td>
+              <div ng-if="!device.hasOwnProperty('_owner')" class="circle">red</div>
+              <div ng-if="device.hasOwnProperty('_owner')" class="circle">green</div>
+            </td>
+            <td>{{device.group[0]}}</td>
+            <td><a ng-click="delete(device)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
