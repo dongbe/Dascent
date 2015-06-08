@@ -50,7 +50,7 @@ exports.confirm = function(req,res){
     if(!foll) { return res.send(404); }
 
     _.forEach(foll.waiting,function(u,i){
-      if(u!=undefined && u==req.body.device){
+      if(u!==undefined && u===req.body.device){
         foll.waiting.splice(i,1);
         foll.watchs.push({device:u,type:false});
       }
@@ -66,7 +66,7 @@ exports.confirm = function(req,res){
     if(!follower) { return res.send(404); }
 
     _.forEach(follower.waitlist,function(u,i){
-      if(u!=undefined && u.user==req.body.user && u.device==req.body.device){
+      if(u!==undefined && u.user===req.body.user && u.device===req.body.device){
         console.log('after if: '+i);
         follower.waitlist.splice(i,1);
         follower.accepted.push(u);
@@ -86,7 +86,7 @@ exports.discard = function(req,res){
     if(!follower) { return res.send(404); }
 
     _.forEach(follower.accepted,function(u,i){
-      if(u!=undefined && u.user==req.body.user && u.device==req.body.device){
+      if(u!==undefined && u.user===req.body.user && u.device===req.body.device){
         console.log('after if: '+i);
         follower.accepted.splice(i,1);
       }
@@ -101,7 +101,7 @@ exports.discard = function(req,res){
     if(!foll) { return res.send(404); }
 
     _.forEach(foll.watchs,function(u,i){
-      if(u!=undefined && u.device==req.body.device){
+      if(u!==undefined && u.device===req.body.device){
         console.log('after if: '+i);
         foll.watchs.splice(i,1);
       }
@@ -122,7 +122,7 @@ exports.cancel = function(req,res){
     if(req.body.options){
 
       _.forEach(follower.waitlist,function(u,i){
-        if(u!=undefined && u.device==req.body.device && u.user==req.body.user){
+        if(u!==undefined && u.device===req.body.device && u.user===req.body.user){
           follower.waitlist.splice(i,1);
         }
       });
@@ -136,7 +136,7 @@ exports.cancel = function(req,res){
         if(!foll) { return res.send(404); }
 
         _.forEach(foll.waiting,function(u,i){
-          if(u!=undefined && u==req.body.device){
+          if(u!==undefined && u===req.body.device){
             foll.waiting.splice(i,1);
           }
         });
@@ -147,7 +147,7 @@ exports.cancel = function(req,res){
       return res.json(200);
     }else{
       _.forEach(follower.waiting,function(u,i){
-        if(u!=undefined && u==req.body.device){
+        if(u!==undefined && u===req.body.device){
           follower.waiting.splice(i,1);
         }
       });
@@ -162,7 +162,7 @@ exports.cancel = function(req,res){
         if(!foll) { return res.send(404); }
 
         _.forEach(foll.waitlist,function(u,i){
-          if(u!=undefined && u.device==req.body.device && _.isEqual(u.user,follower.user)){
+          if(u!==undefined && u.device===req.body.device && _.isEqual(u.user,follower.user)){
             foll.waitlist.splice(i,1);
           }
         });

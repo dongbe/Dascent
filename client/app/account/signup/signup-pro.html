@@ -20,11 +20,11 @@
           <label>ISS KEY</label>
           <input type="text" name="isskey" class="form-control" ng-model="user.isskey" placeholder="ISS-Key" required/>
           <p class="help-block" ng-show="form.isskey.$error.required && submitted">
-            A name is required
+            A key is required
           </p>
         </div>
         <div class="form-group col-md-3" ng-class="{ 'has-success': form.idclient.$valid && submitted,
-                                            'has-error': form.idClient.$invalid && submitted }">
+                                            'has-error': form.idclient.$invalid && submitted }">
           <label>CLIENT ID</label>
           <input type="text" name="idclient" class="form-control" ng-model="user.idclient" placeholder="CLIENT ID" required/>
           <p class="help-block" ng-show="form.idclient.$error.required && submitted">
@@ -59,7 +59,7 @@
                  required
                  mongoose-error/>
           <p class="help-block"
-             ng-show="(form.password.$error.minlength || form.password.$error.required) && submitted">
+             ng-show="(form.password1.$error.minlength || form.password1.$error.required) && submitted">
             Password must be at least 3 characters.
           </p>
           <p class="help-block" ng-show="form.password1.$error.mongoose">
@@ -85,6 +85,7 @@
       </div>
       <div class="row">
         <div class="col-md-2">
+          <div vc-recaptcha key="key"></div>
           <button class="btn btn-login btn-success btn-block" type="submit">
             Sign up
           </button>

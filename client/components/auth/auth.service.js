@@ -61,7 +61,7 @@ angular.module('dascentApp')
         var cb = callback || angular.noop;
 
         return User.save(user,
-          function(data) {
+          function() {
             //this.logout();
             return cb(user);
           },

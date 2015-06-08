@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('MainCtrl', function ($scope, $http, socket, Auth, $location, $state) {
+  .controller('MainCtrl', function () {
+
+
 
 
     /*

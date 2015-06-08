@@ -15,10 +15,11 @@ exports.getJSON = function(options, onResult)
 {
   console.log("rest::getJSON");
 
-  var prot = options.port == 443 ? https : http;
+  var prot = options.port === 443 ? https : http;
   var req = prot.request(options, function(res)
   {
     var output = '';
+    var obj=null;
     console.log(options.host + ':' + res.statusCode);
     res.setEncoding('utf8');
 
@@ -28,9 +29,7 @@ exports.getJSON = function(options, onResult)
 
     res.on('end', function() {
       if (output){
-        var obj = JSON.parse(output);
-      }else{
-        obj=null;
+        obj = JSON.parse(output);
       }
       onResult(res.statusCode, obj);
 

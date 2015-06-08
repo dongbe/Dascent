@@ -13,7 +13,7 @@ angular.module('dascentApp')
           email: $scope.user.email,
           password: $scope.user.password
         })
-        .then( function(data) {
+        .then( function() {
           // Logged in, redirect to home
          $location.path('/moncompte');
         })

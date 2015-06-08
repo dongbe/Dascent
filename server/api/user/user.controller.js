@@ -7,6 +7,7 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var auth = require('../../auth/auth.service');
+var https= require('https');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -27,22 +28,43 @@ exports.index = function(req, res) {
  * Creates a new user
  */
 exports.create = function (req, res, next) {
-  var newUser = new User(req.body);
-  newUser.provider = 'local';
-  if(newUser.isskey) newUser.role = 'constructor';
-  else
-    newUser.role = 'user';
+  https.get("https://www.google.com/recaptcha/api/siteverify?secret=6LfJBggTAAAAAL1BdFIvIb_EIPkeJLArFk8xaZ2A&response=" + req.body.key, function(rest) {
+    var data = "";
+    rest.on('data', function (chunk) {
+      data += chunk.toString();
+    });
+    rest.on('end', function() {
+      try {
+        var parsedData = JSON.parse(data);
+        console.log(parsedData);
 
-  //create empty follower list
-  Follower.create({user:newUser._id, accepted:[], waitlist:[], watchs:[],waiting:[]}, function(err, follower) {
-    if(err) { return handleError(res, err); }
-    newUser._profile=follower._id;
-    newUser.save(function(err, user) {
-      if (err) return validationError(res, err);
-      var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
-      res.json({ token: token });
+        if(parsedData.success){
+          var newUser = new User(req.body);
+          newUser.provider = 'local';
+          if(newUser.isskey) newUser.role = 'constructor';
+          else
+            newUser.role = 'user';
+
+          //create empty follower list
+          Follower.create({user:newUser._id, accepted:[], waitlist:[], watchs:[],waiting:[]}, function(err, follower) {
+            if(err) { return  next(err);}
+            newUser._profile=follower._id;
+            newUser.save(function(err, user) {
+              if (err) return validationError(res, err);
+              var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
+              res.json({ token: token });
+            });
+          });
+        }else{
+          return res.json(422);
+        }
+      } catch (e) {
+        return res.json(422);
+      }
     });
   });
+
+
 
 };
 

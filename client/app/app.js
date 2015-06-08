@@ -8,7 +8,8 @@ angular.module('dascentApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'uiGmapgoogle-maps'
+  'uiGmapgoogle-maps',
+  'vcRecaptcha'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,uiGmapGoogleMapApiProvider) {
     $urlRouterProvider

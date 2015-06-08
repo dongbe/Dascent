@@ -2,7 +2,6 @@
 
 var _ = require('lodash');
 var Device = require('./device.model');
-var moment = require('moment');
 var User = require('../user/user.model');
 var Follower = require('../follower/follower.model');
 var rest = require('../../components/polling');
@@ -74,27 +73,27 @@ exports.destroy = function(req, res) {
 
         for (var i in follower.watchs){
           console.log(device._id);
-          if(follower.watchs[i].device==device._id){
+          if(follower.watchs[i].device===device._id){
             follower.watchs.splice(i,1);
             modif=true;
             console.log(follower.watchs);
           }
         }
-        for (var i in follower.accepted){
-          if(follower.accepted[i].device==device._id){
-            follower.accepted.splice(i,1);
+        for (var y in follower.accepted){
+          if(follower.accepted[y].device===device._id){
+            follower.accepted.splice(y,1);
             modif=true;
           }
         }
-        for (var i in follower.waitlist){
-          if(follower.waitlist[i].device==device._id){
-            follower.waitlist.splice(i,1);
+        for (var x in follower.waitlist){
+          if(follower.waitlist[x].device===device._id){
+            follower.waitlist.splice(x,1);
             modif=true;
           }
         }
-        for (var i in follower.waiting){
-          if(follower.waiting[i]==device._id){
-            follower.waiting.splice(i,1);
+        for (var z in follower.waiting){
+          if(follower.waiting[z]===device._id){
+            follower.waiting.splice(z,1);
             modif=true;
           }
         }
@@ -137,7 +136,7 @@ exports.getData= function(){
             if (result){
               _.forEach(result, function(res){
                 var date = new Date(res.at);
-                if (stream.lastPost==null || date>stream.lastPost){
+                if (stream.lastPost===null || date>stream.lastPost){
                   stream.lastValue= res.value;
                   stream.location=res.location;
                   stream.lastPost=date;
@@ -152,10 +151,10 @@ exports.getData= function(){
         });
         if(_.contains(device.group,'GPS')){
           _.forEach (device.streams, function(stream){
-            if(stream.name=='Latitude'){
+            if(stream.name==='Latitude'){
 
             }
-            if(stream.name=='Longitude'){
+            if(stream.name==='Longitude'){
 
             }
           });

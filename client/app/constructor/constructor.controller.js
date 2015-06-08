@@ -76,7 +76,7 @@ angular.module('dascentApp')
 .directive('fileReader', function () {
   return {
     scope: {
-      fileReader: "="
+      fileReader: '='
     },
     link: function (scope, element) {
       $(element).on('change', function (changeEvent) {

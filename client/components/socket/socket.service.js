@@ -70,12 +70,12 @@ angular.module('dascentApp')
        */
       socket.on(modelName + ':save', function (item) {
         var event = 'created';
-        if(array.user==item.user){
+        if(array.user===item.user){
           for (var i in array){
-            if(array[i].length!=item[i].length){
+            if(array[i].length!==item[i].length){
               array[i].splice(0,array[i].length);
 
-              if(item[i].length!=0){
+              if(item[i].length!==0){
                 for (var y in item[i]){
                   array[i].push(item[i][y]);
                 }
@@ -105,7 +105,7 @@ angular.module('dascentApp')
           var event = 'created';
 
           for (var i in array){
-            if(array[i].device.ds_id==item.ds_id){
+            if(array[i].device.ds_id===item.ds_id){
               array[i].device=item;
             }
           }

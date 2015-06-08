@@ -4,16 +4,16 @@ angular.module('dascentApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth, ManDev) {
     $scope.menu = [
       {
-        title:"My profile",
-        link:"/moncompte"
+        title:'My profile',
+        link:'/moncompte'
       },
       {
-        title:"My devices",
-        link:"/device"
+        title:'My devices',
+        link:'/device'
       },
       {
-        title:"My followers",
-        link:"/follower"
+        title:'My followers',
+        link:'/follower'
       }
     ];
 

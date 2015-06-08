@@ -4,7 +4,7 @@
 /**
  * Created by donatien-gbe on 31/03/15.
  */
-'use strict'
+'use strict';
 
 angular.module('dascentApp')
   .factory('ManDev', function ($q, $cookieStore, $http, User, Auth) {
@@ -140,20 +140,20 @@ angular.module('dascentApp')
           }.bind(this)).$promise;
 
       },
-      getData: function(id)
+      getData: function()
       {
 
-        return
+        return;
 
       },
 
       //get a device from datavenue API and save information in local database
       importDevice: function (callback) {
         this.config();
-        var cb = callback || angular.noop;
+        //var cb = callback || angular.noop;
         var def=$q.defer();
 
-        var devices=[];
+        //var devices=[];
         $http.get('https://api.orange.com/datavenue/v1/datasources', config)
           .success(function (data) {
             console.log(data);
@@ -180,7 +180,7 @@ angular.module('dascentApp')
 
                   for (var y in ret[1].data) {
                     for(var x in ret[1].data[y].rights) {
-                      if (ret[1].data[y].rights[x]=='GET') {
+                      if (ret[1].data[y].rights[x]==='GET') {
                         apikeys.push(ret[1].data[y].value);
                       }
                     }
@@ -211,12 +211,12 @@ angular.module('dascentApp')
           });
         return def.promise;
       },
-      removeDevice: function (callback, device) {
-        var cb = callback || angular.noop;
+      removeDevice: function (callback) {
+        //var cb = callback || angular.noop;
 
       },
-      deleteDevice: function (callback, device) {
-        var cb = callback || angular.noop;
+      deleteDevice: function (callback) {
+        //var cb = callback || angular.noop;
 
       },
       getCurrentDevices: function () {
@@ -227,5 +227,5 @@ angular.module('dascentApp')
         currentDevices = [];
         config = {};
       }
-    }
+    };
   });

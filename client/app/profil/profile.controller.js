@@ -4,16 +4,16 @@ angular.module('dascentApp')
   .controller('SideBarCtrl', function ($scope, $location, Auth, $http, ManDev,socket,notifications,uiGmapGoogleMapApi) {
     $scope.menu = [
       {
-        title:"My profile",
-        link:"/moncompte"
+        title:'My profile',
+        link:'/moncompte'
       },
       {
-        title:"My devices",
-        link:"/device"
+        title:'My devices',
+        link:'/device'
       },
       {
-        title:"My followers",
-        link:"/follower"
+        title:'My followers',
+        link:'/follower'
       }
     ];
 
@@ -36,9 +36,9 @@ angular.module('dascentApp')
 
       //get followings profile information
       for(var i in $scope.profile.watchs){
-        if($scope.profile.watchs[i].type==false){
+        if($scope.profile.watchs[i].type===false){
           for (var y in $scope.followings){
-            if($scope.followings[y]==$scope.profile.watchs[i].device._owner){
+            if($scope.followings[y]===$scope.profile.watchs[i].device._owner){
               nope=true;
             }
           }
@@ -50,24 +50,24 @@ angular.module('dascentApp')
       }
       for (var g in $scope.profile.watchs[i].group){
 
-        if($scope.profile.watchs[i].group[g]=='GPS'){
+        if($scope.profile.watchs[i].group[g]==='GPS'){
           var latitude=[];
           var longitude=[];
           for(var s in $scope.profile.watchs[i].group[g].streams){
-            if($scope.profile.watchs[i].group[g].streams[s].name=='Latitude'){
+            if($scope.profile.watchs[i].group[g].streams[s].name==='Latitude'){
               latitude=$scope.profile.watchs[i].group[g].streams[s].values;
             }
-            if($scope.profile.watchs[i].group[g].streams[s].name=='Longitude'){
+            if($scope.profile.watchs[i].group[g].streams[s].name==='Longitude'){
               longitude=$scope.profile.watchs[i].group[g].streams[s].values;
             }
           }
           if(latitude.length>longitude.length) {
             $scope.polylines.path.push({latitude:latitude[0],longitude:longitude[0]});
-            for (var i in latitude){
-              if(latitude[i].time>longitude[i].time){
-                $scope.polylines.path.push({latitude:latitude[i],longitude:longitude[i]});
+            for (var y in latitude){
+              if(latitude[y].time>longitude[y].time){
+                $scope.polylines.path.push({latitude:latitude[y],longitude:longitude[y]});
               }else {
-                $scope.polylines.path.push({latitude:latitude[i],longitude:longitude[i-1]});
+                $scope.polylines.path.push({latitude:latitude[y],longitude:longitude[y-1]});
               }
             }
           }
@@ -88,7 +88,7 @@ angular.module('dascentApp')
 
     $scope.register = function(form){
       angular.forEach($scope.profile.watchs,function(u,i){
-        if(u.device.serial==$scope.device.serial){
+        if(u.device.serial===$scope.device.serial){
           presence=true;
         }
       });
@@ -114,8 +114,8 @@ angular.module('dascentApp')
 
     //enregistrement proprietaire des capteurs
     $scope.registerO = function(form){
-      angular.forEach($scope.profile.watchs,function(u,i){
-        if(u.device.serial==$scope.device.serial && u._owner===$scope.currentUser._id){
+      angular.forEach($scope.profile.watchs,function(u){
+        if(u.device.serial===$scope.device.serial && u._owner===$scope.currentUser._id){
           presence=true;
         }
       });
@@ -140,7 +140,7 @@ angular.module('dascentApp')
 
     $scope.confirm=function(dev){
       ManDev.confirm({id:$scope.profile._id, demand:dev})
-        .then(function(data){
+        .then(function(){
             //$scope.profile.accepted.push(data);
             notifications.showSuccess('Félicitations, vous avez un nouveau suiveur!');
 
@@ -150,7 +150,7 @@ angular.module('dascentApp')
     };
     $scope.discard=function(dev){
       ManDev.discard({id:$scope.profile._id, demand:dev})
-        .then(function(data){
+        .then(function(){
             angular.forEach($scope.profile.accepted, function(u, i) {
               if (u === dev) {
                 $scope.profile.accepted.splice(i, 1);
@@ -166,7 +166,7 @@ angular.module('dascentApp')
       ManDev.cancel({id:$scope.profile._id, demand:dev})
         .then(function(){
               angular.forEach($scope.profile.waiting, function(u, i) {
-                if (u === dev) {
+                if (u ===dev) {
                   $scope.profile.waiting.splice(i, 1);
                 }
               });
@@ -217,23 +217,23 @@ angular.module('dascentApp')
         geodesic: true,
         visible: true
       }];
-      for (var i in $scope.polylines.path){
+      /*for (var i in $scope.polylines.path){
 
-      }
+      }*/
     });
     $scope.staticMarker = {
       id: 0,
       coords: $scope.point,
-      options: { draggable: false },
-      events: {
+      options: { draggable: false }
+      /*events: {
         dragend: function (marker, eventName, args) {
-          /*
+
           $log.log('marker dragend');
           $log.log(marker.getPosition().lat());
           $log.log(marker.getPosition().lng());
-          */
+
         }
-      }
+      } */
     };
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('follower');
