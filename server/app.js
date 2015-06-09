@@ -40,7 +40,7 @@ server.listen(config.port, config.ip, function () {
 
 setInterval(function(){
   console.log('polling mode ....');
-  data();
+  //data();
 }, 1 * 5000 * 1000);
 
 // Expose app

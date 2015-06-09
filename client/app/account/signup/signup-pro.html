@@ -84,8 +84,15 @@
         </div>
       </div>
       <div class="row">
+        <div vc-recaptcha name="captcha" class="form-group col-md-4" ng-class="has-success" on-create="setWidgetId(widgetId)" on-success="setResponse(response)" theme="light" key="key" required ></div>
+        <div class="form-group col-md-2" ng-class="{ 'has-error': !response && submitted }">
+          <p class="help-block" ng-hide="response">
+            Captcha required
+          </p>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-md-2">
-          <div vc-recaptcha key="key"></div>
           <button class="btn btn-login btn-success btn-block" type="submit">
             Sign up
           </button>

@@ -28,7 +28,6 @@ angular.module('dascentApp')
 
 
     $http.get('/api/users/me/followers').success(function(data){
-      console.log(data);
       $scope.profile=data;
       socket.syncProfileUpdates('follower',$scope.profile);
       socket.syncDevUpdates('device',$scope.profile.watchs);

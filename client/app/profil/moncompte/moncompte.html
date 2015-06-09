@@ -2,7 +2,6 @@
 <div class="container" ng-controller="SideBarCtrl">
   <div ng-include="'components/sidebar/sidebar.html'"></div>
   <div class="pullframe col-md-8">
-    Status Server : {{status}}
     <div ng-show="!profile.watchs.length">Vous n'avez pas de notifications</div>
 
     <div ng-hide="!profile.watchs.length" ng-repeat="device in profile.watchs" >

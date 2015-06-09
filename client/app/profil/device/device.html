@@ -10,7 +10,7 @@
     <div ng-if="!checked">
       <form class="navbar-form" name="addDevice" class="form" ng-submit="register()">
         <label>Serial Number :</label>
-        <input name="serial" type="number" ng-model="device.serial" required>
+        <input name="serial" type="text" ng-model="device.serial" required>
         <button type="submit" class="btn btn-success">
           Subscribe
         </button>
@@ -19,7 +19,7 @@
     <div ng-if="checked">
     <form class="navbar-form" name="addDevice" class="form" ng-submit="registerO()">
       <label>Serial Number :</label>
-      <input name="serial" type="number" ng-model="device.serial" required>
+      <input name="serial" type="text" ng-model="device.serial" required>
       <label>PIN Code:</label>
       <input name="serial" type="password" ng-model="device.pass" required>
       <button type="submit" class="btn btn-success">
@@ -43,7 +43,7 @@
       </div>
 
       <h4>Pending requests</h4>
-      <div ng-show="!profile.waiting.length">Vous n'avez pas de requetes en cours</div>
+      <div ng-show="!profile.waiting.length">Vous n'avez pas de demandes</div>
       <div ng-hide="!profile.waiting.length" class="panel panel-default" ng-repeat="device in profile.waiting" >
         <div class="panel-body">
           <div>
