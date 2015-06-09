@@ -3,7 +3,9 @@
 angular.module('dascentApp')
   .controller('SettingsCtrl', function ($scope, User, Auth) {
     $scope.errors = {};
+    $scope.user=Auth.getCurrentUser();
 
+    console.log($scope.user);
     $scope.changePassword = function(form) {
       $scope.submitted = true;
       if(form.$valid) {

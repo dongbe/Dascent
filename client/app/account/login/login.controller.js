@@ -18,10 +18,10 @@ angular.module('dascentApp')
          $location.path('/moncompte');
         })
         .catch( function(err) {
-          $scope.errors.other = err.message;
+            console.log(err.message);
+            $scope.errors.other = err.message;
         });
       }else{
-
         $location.path('/login');
       }
     };

@@ -10,7 +10,6 @@ angular.module('dascentApp')
       $scope.response = true;
     };
     $scope.setWidgetId = function (widgetId) {
-      console.info('Created widget ID: %s', widgetId);
       $scope.widgetId = widgetId;
     };
 
@@ -35,6 +34,7 @@ angular.module('dascentApp')
           })
             .then( function() {
               // Account created, redirect to home
+              notifications.showSuccess('Account successfully created!!');
               $location.path('/login');
             })
             .catch( function(err) {
@@ -76,6 +76,7 @@ angular.module('dascentApp')
           })
             .then( function() {
               // Account created, redirect to home
+              notifications.showSuccess('Account successfully created!!');
               $location.path('/login');
             })
             .catch( function(err) {
