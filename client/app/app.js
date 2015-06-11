@@ -9,7 +9,8 @@ angular.module('dascentApp', [
   'ui.router',
   'ui.bootstrap',
   'uiGmapgoogle-maps',
-  'vcRecaptcha'
+  'vcRecaptcha',
+  'ngFileUpload'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,uiGmapGoogleMapApiProvider) {
     $urlRouterProvider
@@ -58,7 +59,10 @@ angular.module('dascentApp', [
     $rootScope.$on('$stateChangeStart', function (event, next) {
       Auth.isLoggedInAsync(function(loggedIn) {
 
-        if (next.authenticate && !loggedIn){
+        if ($location.path()==='/' && loggedIn){
+          $location.path('/moncompte');
+        }
+        else if (next.authenticate && !loggedIn){
           $location.path('/');
         }
         else if (!next.access && loggedIn){

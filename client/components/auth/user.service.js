@@ -18,6 +18,9 @@ angular.module('dascentApp')
           id:'me'
         }
       },
+      patch: {
+        method: 'PATCH'
+      },
       getDevices:{
         method: 'GET',
         params: {

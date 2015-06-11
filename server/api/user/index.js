@@ -17,5 +17,8 @@ router.get('/me/followers', auth.hasRole('user'), controller.followers);
 router.post('/:id/devices', auth.hasRole('user'), controller.addDevice);
 router.get('/:id', auth.isAuthenticated(), controller.show);
 router.post('/', controller.create);
+router.patch('/:id', controller.update);
+router.get('/avatar/:id', controller.serveFile);
+router.post('/:id/avatar', controller.postImage);
 
 module.exports = router;

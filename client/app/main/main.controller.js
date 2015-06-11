@@ -1,10 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('MainCtrl', function () {
-
-
-
+  .controller('MainCtrl', function ($scope) {
 
     /*
      $scope.isConstructor= Auth.isConstructor();

@@ -1,116 +1,121 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
 <div class="container">
-  <div></div>
-  <div class="row col-md-8 col-md-offset-1">
+
+  <div class="row col-md-8 col-md-offset-1" ng-controller="SettingsCtrl">
     <div class="row">
-      <div class="col-lg-2">
+      <div class="col-lg-3">
+        Avatar:
+      </div>
+      <div class="col-lg-5">
+        <div class="col-lg-3"><img width="50" ng-src="/api/users/avatar/{{user.avatar}}"/></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3">
+        Choisir un avatar:
+      </div>
+      <div class="col-lg-5">
+        <input id="file" type="file" ng-file-select accept="image/png, image/jpeg">
+      <span ng-if="uploadInProgress">Upload progress: {{ uploadProgress }}
+      </span>
+      </div>
+    </div>
+    <div class="row" ng-if="imageSrc">
+      <div class="col-lg-3">
+        Preview:
+      </div>
+      <div class="col-lg-5">
+        <div class="col-lg-3"><img width="50" ng-src="{{imageSrc}}"/></div>
+        <button type="submit" ng-click="onFileSelect(files)">Ajouter</button>
+      </div>
+    </div>
+    <br>
+    <form name="form1" class="form">
+    <div class="row">
+      <div class="col-lg-3">
         Firstname:
       </div>
-      <div class="col-lg-6">
-        <div class="input-group">
-
-          <input ng-if="editname" type="text" class="form-control" ng-model="user.name" placeholder="user.name">
-          <input ng-if="!editname" type="text" class="form-control" ng-model="user.name" placeholder="{{user.name}}"
-                 readonly>
-          <span class="input-group-btn">
-        <button ng-hide="editname" class="btn btn-default" type="button" ng-model="editname" ng-init="editname=false"
-                ng-click="editname=true">
-          <text class="glyphicon glyphicon-edit"> Edit</text>
-        </button>
-        <button ng-show="editname" class="btn btn-default" type="button" ng-click="editname=false">
-          <text class="glyphicon glyphicon-save"> Save</text>
-        </button>
-      </span>
-        </div>
-        <!-- /input-group -->
+      <div class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
+                                            'has-error': form1.name.$invalid && submitted }">
+        <input name="name" type="text" class="form-control" ng-model="user.name" required>
+        <p class="help-block" ng-show="form1.name.$error.required">
+          A name is required
+        </p>
       </div>
     </div>
     </br>
     <div class="row">
-      <div class="col-lg-2">
+      <div class="col-lg-3">
         Lastname:
       </div>
-      <div class="col-lg-6">
-        <div class="input-group">
-          <input ng-if="editlast" type="text" class="form-control" ng-model="user.lastname" placeholder="user.lastname">
-          <input ng-if="!editlast" type="text" class="form-control" ng-model="user.lastname"
-                 placeholder="{{user.lastname}}" readonly>
-          <span class="input-group-btn">
-        <button ng-hide="editlast" class="btn btn-default" type="button" ng-model="editlast" ng-init="editlast=false"
-                ng-click="editlast=true">
-          <text class="glyphicon glyphicon-edit"> Edit</text>
-        </button>
-        <button ng-show="editlast" class="btn btn-default" type="button" ng-click="editlast=false">
-          <text class="glyphicon glyphicon-save"> Save</text>
-        </button>
-      </span>
-        </div>
-        <!-- /input-group -->
+      <div class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
+                                            'has-error': form1.lastname.$invalid && submitted }">
+        <input name="lastname" type="text" class="form-control" ng-model="user.lastname" required>
+        <p class="help-block" ng-show="form1.lastname.$error.required">
+          A lastname is required
+        </p>
       </div>
     </div>
     </br>
     <div class="row">
-      <div class="col-lg-2">
+      <div class="col-lg-3">
         Email:
       </div>
-      <div class="col-lg-6">
-        <div class="input-group">
-          <input ng-if="editable" type="text" class="form-control" ng-model="user.email" placeholder="user.email">
-          <input ng-if="!editable" type="text" class="form-control" ng-model="user.email"
-                 placeholder="{{user.email}}" readonly>
-          <span class="input-group-btn">
-        <button ng-hide="editable" class="btn btn-default" type="button" ng-model="editable" ng-init="editable=false"
-                ng-click="editable=true">
-          <text class="glyphicon glyphicon-edit"> Edit</text>
-        </button>
-        <button ng-show="editable" class="btn btn-default" type="button" ng-click="editable=false">
-          <text class="glyphicon glyphicon-save"> Save</text>
-        </button>
-      </span>
+      <div class="col-lg-5" ng-class="{ 'has-success': form1.mail.$valid && submitted,
+                                            'has-error': form1.mail.$invalid && submitted }">
+        <input name="mail" type="email" class="form-control" ng-model="user.email" required>
+        <p class="help-block" ng-show="form1.mail.$error.required">
+          An email is required
+        </p>
+      </div>
+      </br>
+    </div>
+    </form>
+
+    <div class="row">
+      <div class="col-lg-3">
+        Password:
+      </div>
+      <div class="col-lg-5">
+        <a ng-hide="pwd" role="button" ng-click="pwd=true" ng-init="pwd=false">change password</a>
+        <div ng-show="pwd">
+          <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
+                     mongoose-error/>
+              <p class="help-block" ng-show="form.password.$error.mongoose">
+                {{ errors.other }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
+                     ng-minlength="3"
+                     required/>
+              <p class="help-block"
+                 ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
+                Password must be at least 3 characters.
+              </p>
+            </div>
+
+            <p class="help-block"> {{ message }} </p>
+
+            <button class="btn btn-primary" type="submit">Save password</button>
+            <button class="btn btn-primary" type="button" ng-click="pwd=false">Cancel</button>
+          </form>
         </div>
+
       </div>
     </div>
     </br>
     <div class="row">
-      <div class="col-lg-2">
-        Password:
-      </div>
-      <div class="col-sm-6">
-        <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
-
-          <div class="form-group">
-            <label>Current Password</label>
-
-            <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
-                   mongoose-error/>
-
-            <p class="help-block" ng-show="form.password.$error.mongoose">
-              {{ errors.other }}
-            </p>
-          </div>
-
-          <div class="form-group">
-            <label>New Password</label>
-
-            <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
-                   ng-minlength="3"
-                   required/>
-
-            <p class="help-block"
-               ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
-              Password must be at least 3 characters.
-            </p>
-          </div>
-
-          <p class="help-block"> {{ message }} </p>
-
-          <button class="btn btn-primary" type="submit">Save changes</button>
-          <button class="btn btn-primary" type="submit">Cancel</button>
-        </form>
+      <div class="col-lg-5 col-lg-offset-2">
+        <button class="btn btn-success" type="button" ng-click="update(form1)">Save changes</button>
       </div>
     </div>
-    </div>
 
+  </div>
 </div>
 </div>

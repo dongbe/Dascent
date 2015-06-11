@@ -7,6 +7,11 @@ var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
 var auth = require('../../auth/auth.service');
+var _ = require('lodash');
+var multiparty = require('multiparty');
+var uuid = require('node-uuid');
+var path = require('path');
+var fs = require('fs');
 var https= require('https');
 
 var validationError = function(res, err) {
@@ -49,6 +54,7 @@ exports.create = function (req, res, next) {
           Follower.create({user:newUser._id, accepted:[], waitlist:[], watchs:[],waiting:[]}, function(err, follower) {
             if(err) { return  next(err);}
             newUser._profile=follower._id;
+            newUser.avatar='90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg';
             newUser.save(function(err, user) {
               if (err) return validationError(res, err);
               var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
@@ -63,9 +69,6 @@ exports.create = function (req, res, next) {
       }
     });
   });
-
-
-
 };
 
 /**
@@ -89,6 +92,19 @@ exports.destroy = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.send(500, err);
     return res.send(204);
+  });
+};
+
+exports.update = function(req, res) {
+  if(req.body._id) { delete req.body._id; }
+  User.findById(req.params.id, function (err, user) {
+    if (err) { return handleError(res, err); }
+    if(!user) { return res.send(404); }
+    var updated = _.merge(user, req.body);
+    updated.save(function (err) {
+      if (err) { return handleError(res, err); }
+      return res.json(200, user);
+    });
   });
 };
 
@@ -248,6 +264,48 @@ exports.addDevice = function(req, res) {
       }
     });
     return res.json(201, device);
+  });
+};
+
+exports.serveFile=function (req, res) {
+  res.sendfile(path.resolve('server/images') +'/'+ req.params.id);
+};
+
+exports.postImage = function(req, res) {
+
+  var form = new multiparty.Form();
+  form.parse(req, function(err, fields, files) {
+    console.log(files.file[0]);
+    var file = files.file[0];
+    var contentType = file.headers['content-type'];
+    var tmpPath = file.path;
+    var extIndex = tmpPath.lastIndexOf('.');
+    var extension = (extIndex < 0) ? '' : tmpPath.substr(extIndex);
+    // uuid is for generating unique filenames.
+
+    var fileName = uuid.v4() + extension;
+    var destPath = path.resolve('server/images') +'/'+ fileName;
+    console.log(destPath);
+    // Server side file type checker.
+    if (contentType !== 'image/png' && contentType !== 'image/jpeg') {
+      fs.unlink(tmpPath);
+      return res.status(400).send('Unsupported file type.');
+    }
+
+    fs.rename(tmpPath, destPath, function(err) {
+      if (err) {
+        return res.status(400).send('Image is not saved:');
+      }
+      User.findById(req.params.id,function(err,user){
+        if (err) return res.send(500, err);
+        if (!user) return res.json(401);
+        user.avatar=fileName;
+        user.save(function (err) {
+          if (err) return validationError(res, err);
+        });
+      });
+      return res.json(200,fileName);
+    });
   });
 };
 /**

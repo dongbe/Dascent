@@ -50,7 +50,8 @@ angular.module('dascentApp')
               modal: {
                 dismissable: true,
                 title: 'Confirm Delete',
-                html: '<p>Are you sure you want to delete <strong>' + name + '</strong> ?</p>',
+                html: '<img ng-src="'+ name[0].path +'">' +
+                '<p>Are you sure you want to delete <strong>' + name[0] + '</strong> ?</p>',
                 buttons: [{
                   classes: 'btn-danger',
                   text: 'Delete',
@@ -103,6 +104,39 @@ angular.module('dascentApp')
             }, 'modal-primary');
 
             browseModal.result.then(function(event) {
+              del.apply(event, args);
+            });
+          };
+        },
+        upload: function(del) {
+          del = del || angular.noop;
+
+          return function() {
+            var args = Array.prototype.slice.call(arguments),
+                name = args.shift(),
+              uploadModal;
+            uploadModal = openModal({
+              modal: {
+                dismissable: true,
+                title: 'Confirm upload',
+                html: '<p>Are you sure you want to Upload the file?</p>',
+                buttons: [{
+                  classes: 'btn-primary',
+                  text: 'Create device',
+                  click: function(e) {
+                    uploadModal.close(e);
+                  }
+                }, {
+                  classes: 'btn-default',
+                  text: 'Cancel',
+                  click: function(e) {
+                    uploadModal.dismiss(e);
+                  }
+                }]
+              }
+            }, 'modal-primary');
+
+            uploadModal.result.then(function(event) {
               del.apply(event, args);
             });
           };

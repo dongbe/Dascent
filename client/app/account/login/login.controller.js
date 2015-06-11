@@ -10,15 +10,14 @@ angular.module('dascentApp')
 
       if(form.$valid) {
         Auth.login({
-          email: $scope.user.email,
-          password: $scope.user.password
+          email: $scope.user.mail,
+          password: $scope.user.pword
         })
         .then( function() {
           // Logged in, redirect to home
          $location.path('/moncompte');
         })
         .catch( function(err) {
-            console.log(err.message);
             $scope.errors.other = err.message;
         });
       }else{
