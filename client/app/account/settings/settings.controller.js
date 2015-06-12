@@ -71,6 +71,7 @@ angular.module('dascentApp')
         $scope.uploadInProgress = false;
         // If you need uploaded file immediately
         $scope.user.avatar = data;
+        $scope.imageSrc=null;
 
       }).error(function(err) {
         $scope.uploadInProgress = false;

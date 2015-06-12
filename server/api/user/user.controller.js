@@ -275,7 +275,6 @@ exports.postImage = function(req, res) {
 
   var form = new multiparty.Form();
   form.parse(req, function(err, fields, files) {
-    console.log(files);
     var file = files.file[0];
     var contentType = file.headers['content-type'];
     var tmpPath = file.path;
@@ -289,7 +288,6 @@ exports.postImage = function(req, res) {
     // Server side file type checker.
     if (contentType !== 'image/png' && contentType !== 'image/jpeg') {
       fs.unlink(tmpPath);
-      console.log('Unsupported file type');
       return res.status(400).send('Unsupported file type.');
     }
 

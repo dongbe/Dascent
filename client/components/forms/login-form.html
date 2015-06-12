@@ -1,17 +1,21 @@
-<div class="form-group">
+<div class="form-group" ng-class="{ 'has-success': form.mail.$valid && submitted,
+                                            'has-error': form.mail.$invalid && submitted }">
   <label class="sr-only">Email</label>
   <input type="email" name="mail" class="form-control" ng-model="user.mail" placeholder="email" required>
+  <p class="help-block" ng-show="form.mail.$error.required && submitted">
+    An email is required
+  </p>
 </div>
-<div class="form-group">
+<div class="form-group" ng-class="{ 'has-success': form.pword.$valid && submitted,
+                                            'has-error': form.pword.$invalid && submitted }">
   <label class="sr-only">Password</label>
   <input type="password" name="pword" class="form-control" ng-model="user.pword" placeholder="password" required>
-</div>
-<div class="checkbox">
-  <label>
-    <input type="checkbox"> Remember me
-  </label>
+  <p class="help-block" ng-show="form.pword.$error.required && submitted">
+    A password is required
+  </p>
 </div>
 <button type="submit" class="btn btn-login btn-default">Login</button>
+<p ng-hide="isActive('/')">or <a href="/"><Strong>Sign up for Dascent</Strong></a></p>
 <div class="form-group has-error">
   <p class="help-block">{{ errors.other }}</p>
 </div>
