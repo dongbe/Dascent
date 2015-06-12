@@ -6,12 +6,15 @@
 
 // Set default node environment to development
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 var express = require('express');
 var data=require('./api/device/device.controller').getData;
 var fs = require('fs');
 var mongoose = require('mongoose');
 var config = require('./config/environment');
 require('ssl-root-cas/latest').inject();
+var path = require('path');
+process.env.TMPDIR = path.resolve('server/tmp') || '/tmp';
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
