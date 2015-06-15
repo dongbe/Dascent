@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'dascentApp.services' is found in services.js
 // 'dascentApp.controllers' is found in controllers.js
-angular.module('dascentApp', ['ionic','ngResource'])
+angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -23,10 +23,18 @@ angular.module('dascentApp', ['ionic','ngResource'])
   .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider) {
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/tab/dash');
     $httpProvider.interceptors.push('authInterceptor');
     $ionicConfigProvider.tabs.position('bottom');
     $ionicConfigProvider.navBar.alignTitle('center');
+    $stateProvider
+      // setup an abstract state for the tabs directive
+      .state('tab', {
+        url: "/tab",
+        abstract: true,
+        templateUrl: "templates/tabs.html",
+        authenticate: true
+      });
   })
 
   .factory('authInterceptor', function ($localstorage, $q) {

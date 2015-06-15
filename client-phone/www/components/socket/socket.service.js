@@ -5,7 +5,7 @@ angular.module('dascentApp')
   .factory('socket', function(socketFactory) {
 
     // socket.io now auto-configures its connection when we ommit a connection url
-    var ioSocket = io('', {
+    var ioSocket = io('http://localhost:9000', {
       // Send auth token on connection, you will need to DI the Auth service above
       // 'query': 'token=' + Auth.getToken()
       path: '/socket.io-client'
@@ -45,6 +45,7 @@ angular.module('dascentApp')
             array.splice(index, 1, item);
             event = 'updated';
           } else {
+            console.log(item);
             array.push(item);
           }
 
@@ -61,6 +62,65 @@ angular.module('dascentApp')
         });
       },
 
+      syncProfileUpdates: function (modelName, array, cb) {
+        cb = cb || angular.noop;
+
+        /**
+         * Syncs item creation/updates on 'model:save'
+         */
+        socket.on(modelName + ':save', function (item) {
+          var event = 'created';
+          if(array.user===item.user){
+            for (var i in array){
+              if(array[i].length!==item[i].length){
+                array[i].splice(0,array[i].length);
+
+                if(item[i].length!==0){
+                  for (var y in item[i]){
+                    array[i].push(item[i][y]);
+                  }
+                }
+              }
+            }
+          }
+          event='updated';
+
+          cb(event, item, array);
+        });
+
+        //TO-DO
+        socket.on(modelName + ':remove', function (item) {
+          var event = 'deleted';
+          _.remove(array, {_id: item._id});
+          cb(event, item, array);
+        });
+      },
+      syncDevUpdates: function (modelName, array, cb) {
+        cb = cb || angular.noop;
+
+        /**
+         * Syncs item creation/updates on 'model:save'
+         */
+        socket.on(modelName + ':save', function (item) {
+          var event = 'created';
+
+          for (var i in array){
+            if(array[i].device.ds_id===item.ds_id){
+              array[i].device=item;
+            }
+          }
+          event='updated';
+
+          cb(event, item, array);
+        });
+
+        //TO-DO
+        socket.on(modelName + ':remove', function (item) {
+          var event = 'deleted';
+          _.remove(array, {_id: item._id});
+          cb(event, item, array);
+        });
+      },
       /**
        * Removes listeners for a models updates on the socket
        *

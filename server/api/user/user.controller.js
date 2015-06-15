@@ -268,7 +268,7 @@ exports.addDevice = function(req, res) {
 };
 
 exports.serveFile=function (req, res) {
-  res.sendfile(path.resolve('server/images') +'/'+ req.params.id);
+  res.sendfile(path.resolve('images') +'/'+ req.params.id);
 };
 
 exports.postImage = function(req, res) {

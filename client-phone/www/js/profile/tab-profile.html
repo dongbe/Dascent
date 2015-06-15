@@ -1,0 +1,29 @@
+<ion-view view-title="Profil">
+  <ion-nav-buttons side="primary">
+    <button class="button ion-android-exit" ng-click="logout()">
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <a class="item item-icon-right" href="#">
+        <i class="icon ion-gear-a"></i>Settings
+      <a class="item">
+      <div class="col">
+        <img ng-src="http://localhost:9000/api/users/avatar/90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg" width="50" height="50">
+      </div>
+
+      <a class="item" href="/#/tab/devices">
+        <span class="badge badge-positive">{{profile.watchs.length}}</span>
+        <span ng-if="profile.waiting.length" class="badge">{{profile.waiting.length}}</span>Devices</a>
+      <a class="item">
+        <i class="icon ion-person-stalker"></i>
+        <span class="badge badge-balanced">{{profile.accepted.length}}</span>
+        <span ng-if="profile.waitlist.length" class="badge badge-assertive">{{profile.waitlist.length}}</span>Followers</a>
+      <a class="item">
+        <i class="icon ion-person-stalker"></i>
+        <span class="badge badge-balanced">{{followings.length}}</span>Following
+      </a>
+    </ion-list>
+
+  </ion-content>
+</ion-view>

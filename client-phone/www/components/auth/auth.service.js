@@ -27,7 +27,6 @@ angular.module('dascentApp')
         success(function(data) {
           $localstorage.set('token', data.token);
           currentUser = User.get();
-            console.log(currentUser.name);
           deferred.resolve(data);
           return cb();
         }).

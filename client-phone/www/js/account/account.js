@@ -8,15 +8,23 @@ angular.module('dascentApp')
         templateUrl: 'js/account/login/login.html',
         controller: 'LoginCtrl'
       })
-      .state('signup', {
+      .state('tab.signup', {
         url: '/signup',
-        templateUrl: 'js/account/signup/signup.html',
-        controller: 'SignupCtrl'
+        views: {
+          'tab-signup': {
+            templateUrl: 'js/account/signup/signup.html',
+            controller: 'SignupCtrl'
+          }
+        }
       })
-      .state('settings', {
+      .state('tab.settings', {
         url: '/settings',
-        templateUrl: 'js/account/settings/settings.html',
-        controller: 'SettingsCtrl',
-        authenticate: true
-      });
+        views: {
+          'tab-settings': {
+            templateUrl: 'js/account/settings/settings.html',
+            controller: 'SettingsCtrl',
+            authenticate: true
+          }
+        }
+      })
   });
