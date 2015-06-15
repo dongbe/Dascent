@@ -1,0 +1,13 @@
+node_modules
+public
+.tmp
+.idea
+client/bower_components
+server/client/bower_components
+dist
+data
+server/config/local.env.js
+server/config/environment
+server/images
+*.iml
+client-phone/www/lib
