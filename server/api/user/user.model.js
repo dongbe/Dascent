@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var Device = require('../device/device.model');
+var Profile = require('../profile/profile.model');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
 
@@ -16,7 +17,7 @@ var UserSchema = new Schema({
   },
   isskey: String,
   idclient: String,
-  _profile: { type: Schema.Types.ObjectId, ref: 'Follower' },
+  _profile: { type: Schema.Types.ObjectId, ref: 'Profile' },
   hashedPassword: String,
   provider: String,
   salt: String

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .factory('Auth', function Auth($localstorage, $http, User, $q) {
+  .factory('Auth', function Auth($localstorage,$rootScope, $http, User, $q) {
     var currentUser = {};
     if($localstorage.get('token')) {
       currentUser = User.get();
@@ -20,7 +20,7 @@ angular.module('dascentApp')
         var cb = callback || angular.noop;
         var deferred = $q.defer();
 
-        $http.post('http://localhost:9000/auth/local', {
+        $http.post('http://dascent-dascent.rhcloud.com/auth/local', {
           email: user.email,
           password: user.password
         }).
@@ -45,7 +45,6 @@ angular.module('dascentApp')
        * @param  {Function}
        */
       logout: function() {
-        console.log('logout');
         $localstorage.remove('token');
         currentUser = {};
       },
@@ -119,7 +118,7 @@ angular.module('dascentApp')
           currentUser.$promise.then(function() {
             cb(true);
           }).catch(function() {
-            cb(false);
+              cb(false);
           });
         } else if(currentUser.hasOwnProperty('role')) {
           cb(true);
@@ -142,6 +141,11 @@ angular.module('dascentApp')
        */
       getToken: function() {
         return $localstorage.get('token');
+      },
+
+      identifyPhone:function(){
+
+
       }
     };
   });

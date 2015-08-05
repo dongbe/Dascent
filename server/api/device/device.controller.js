@@ -1,9 +1,10 @@
+
 'use strict';
 
 var _ = require('lodash');
 var Device = require('./device.model');
 var User = require('../user/user.model');
-var Follower = require('../follower/follower.model');
+var Profile = require('../profile/profile.model');
 var rest = require('../../components/polling');
 var passport = require('passport');
 var config = require('../../config/environment');
@@ -19,7 +20,7 @@ exports.index = function(req, res) {
 
 // Get a single device
 exports.show = function(req, res) {
-  Device.findById(req.params.id, function (err, device) {
+  Device.find({name:req.params.id}, function (err, device) {
     if(err) { return handleError(res, err); }
     if(!device) { return res.send(404); }
     return res.json(device);
@@ -30,17 +31,50 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
 
   //create if serial is unique
-  Device.findOne({serial:req.body.serial}, function(err, device){
+  Device.findOne({ds_id:req.body.ds_id, serial:req.body.serial}, function(err, device){
     if(err) { return handleError(res, err); }
     //if not found create new device
+    if(!device) {
+      if(!req.body.group){
+        var dev={};
+        dev=req.body;
+        dev.group=[];
+        dev.group[0]="LORA";
+        Device.create(dev, function(err, devic) {
+          if(err) { return handleError(res, err); }
+          if(!devic) { return res.send(404); }
+          return res.json(201, devic);
+        });
+      }else{
+        Device.create(req.body, function(err, devic) {
+          if(err) { return handleError(res, err); }
+          if(!devic) { return res.send(404); }
+          return res.json(201, devic);
+        });
+      }
+
+    }
+    return res.send(200);
+  });
+
+};
+
+// Creates a new phone device in the DB.
+exports.createPhone = function(req, res) {
+
+  //create if serial is unique
+  Device.findOne({serial:req.body.serial}, function(err, device){
+    if(err) { return handleError(res, err); }
+    //if not found create new phone device
     if(!device) {
       Device.create(req.body, function(err, devic) {
         if(err) { return handleError(res, err); }
         if(!devic) { return res.send(404); }
         return res.json(201, devic);
       });
+    } else {
+      return res.json(304,device);
     }
-    return res.send(200);
   });
 
 };
@@ -65,14 +99,13 @@ exports.destroy = function(req, res) {
     if(err) { return handleError(res, err); }
     if(!device) { return res.send(404); }
 
-    Follower.find({}, function(err,followers){
+    Profile.find({}, function(err,followers){
       if(err) { return handleError(res, err); }
       if(!followers) { console.log('no profile'); }
       var modif=false;
       _.forEach(followers,function(follower){
 
         for (var i in follower.watchs){
-          console.log(device._id);
           if(follower.watchs[i].device===device._id){
             follower.watchs.splice(i,1);
             modif=true;
@@ -113,14 +146,13 @@ exports.destroy = function(req, res) {
   });
 };
 
+// Polling mode - get data from datavenue
 exports.getData= function(){
   Device.find({}).populate('_constructor').exec(function (err, devices) {
     if(err) { console.log('error: '+err)}
     if(!devices){console.log('no devices found');}
     _.forEach(devices,function(device){
-
       if(device._owner && device._constructor){
-
         _.forEach (device.streams, function(stream){
           var config = {
             host: 'api.orange.com',
@@ -137,10 +169,22 @@ exports.getData= function(){
               _.forEach(result, function(res){
                 var date = new Date(res.at);
                 if (stream.lastPost===null || date>stream.lastPost){
-                  stream.lastValue= res.value;
-                  stream.location=res.location;
-                  stream.lastPost=date;
-                  stream.values.push({value:res.value,time:date});
+                  if(stream.name!=='message'){
+                    stream.lastValue= res.value;
+                    stream.location=res.location;
+                    stream.lastPost=date;
+                    stream.values.push({value:res.value,time:date});
+                  }else{
+                    var extracted=[];
+                    for (var y=0;y<=res.value.length-2;y=y+2){
+                      extracted.push(parseInt(res.value.slice(y,y+2),16));
+                    }
+                    stream.lastValue= res.value;
+                    stream.location=extracted[8]+extracted[9]+extracted[10]+'/'+extracted[11]+extracted[12]+extracted[13];
+                    stream.lastPost=date;
+                    stream.values.push({value:res.value,time:date});
+                  }
+
                   device.save(function(err) {
                     if (err) console.log(err);
                   });
@@ -149,16 +193,6 @@ exports.getData= function(){
             }
           });
         });
-        if(_.contains(device.group,'GPS')){
-          _.forEach (device.streams, function(stream){
-            if(stream.name==='Latitude'){
-
-            }
-            if(stream.name==='Longitude'){
-
-            }
-          });
-        }
       }
 
     });

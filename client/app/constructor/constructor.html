@@ -37,13 +37,11 @@
           <div class="row">
             <div class="col-md-6">
             <form class="form" ng-submit="getDevices()" novalidate>
-              <button class="btn btn-success" type="submit">Import devices</button>
+              <button ng-hide="devices.length" class="btn btn-success" type="submit">Import devices</button>
+              <button ng-show="devices.length" class="btn btn-success" type="submit">Update devices</button>
             </form>
             </div>
             <div class="col-md-6">
-              <form class="form" ng-submit="updateDevices()" novalidate>
-                <button class="btn btn-success" type="submit"> Update device list</button>
-              </form>
             </div>
           </div>
           <div class="row">

@@ -2,12 +2,16 @@
 
 angular.module('dascentApp')
   .controller('ConstructorCtrl', function ($scope, Auth, $timeout, ManDev, $state, $http, socket, Modal) {
-    $scope.constructor = Auth.getCurrentUser;
+
+    $scope.constructor = Auth.getCurrentUser; // information provider
+    $scope.loading = false;
     $scope.toggle = true;
     $scope.disable = false;
     $scope.devices = [];
-    $http.get('/api/users/me/devices').success(function(data){
+
+    $http.get('/api/users/'+$scope.constructor._id+'/devices').success(function(data){
       $scope.devices=data;
+      $scope.loading = true;
       socket.syncUpdates('device', $scope.devices);
     }).error();
 
@@ -18,9 +22,7 @@ angular.module('dascentApp')
       var lines;
       lines = fileContent.split('\n');
       for (var i = 1; i < lines.length; i++) {
-        console.log(i);
         var device = lines[i].split(',');
-        console.log(device);
         ManDev.createDevice({
           name: device[0],
           description: device[1],
@@ -29,14 +31,11 @@ angular.module('dascentApp')
           group: [device[4]]
         });
       }
-      console.log(lines);
-      console.log(lines.length);
       $state.go('construct');
     });
 
     $scope.getDevices = function () {
       ManDev.importDevice().then(function () {
-
         $state.go('construct');
       })
         .catch(function (err) {
@@ -44,12 +43,6 @@ angular.module('dascentApp')
           console.log(err);
 
         });
-    };
-    $scope.updateDevices = function () {
-      $http.get('/api/devices').success(function (data) {
-        console.log(data);
-        $scope.devices = data;
-      });
     };
     //console.log($scope.devices);
 

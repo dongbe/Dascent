@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'dascentApp.services' is found in services.js
 // 'dascentApp.controllers' is found in controllers.js
-angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
+angular.module('dascentApp', ['ionic','ngResource','btford.socket-io','ngCordova','uiGmapgoogle-maps'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -20,7 +20,7 @@ angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
     }
   });
 })
-  .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider) {
+  .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider, uiGmapGoogleMapApiProvider) {
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/dash');
@@ -35,9 +35,14 @@ angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
         templateUrl: "templates/tabs.html",
         authenticate: true
       });
+    uiGmapGoogleMapApiProvider.configure({
+      //    key: 'your api key',
+      v: '3.17',
+      libraries: 'geometry'
+    });
   })
 
-  .factory('authInterceptor', function ($localstorage, $q) {
+  .factory('authInterceptor', function ($localstorage, $q, $location) {
   return {
     // Add authorization token to headers
     request: function (config) {
@@ -49,9 +54,9 @@ angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
     },
 
     // Intercept 401s and redirect you to login
-    responseError: function(response, $state, $localstorage) {
+    responseError: function(response) {
       if(response.status === 401) {
-        $state.go('login');
+        $location.path('/login');
         // remove any stale tokens
         //$cookieStore.remove('token');
         $localstorage.remove('token');
@@ -62,4 +67,14 @@ angular.module('dascentApp', ['ionic','ngResource','btford.socket-io'])
       }
     }
   };
-});
+})
+  .run(function ($rootScope, $location, Auth) {
+    // Redirect to login if route requires auth and you're not logged in
+    $rootScope.$on('$stateChangeStart', function (event, next) {
+      Auth.isLoggedInAsync(function(loggedIn) {
+        if(!loggedIn){
+          $location.path('/login');
+        }
+      });
+    });
+  });

@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Device = require('../device/device.model');
+var rest = require('../../components/polling');
 var Notification = require('./notification.model');
 
 // Get list of notifications
@@ -23,15 +24,28 @@ exports.show = function(req, res) {
 
 // Creates a new notification in the DB.
 exports.create = function(req, res) {
-  console.log(req.body);
+  var nouveau=false;
   Device.findOne({
-    ds_id:req.body.id
+    ds_id:req.body.device.ds_id
   }, function(err, device){
+    if(err) { return handleError(res, err); }
+    if(!device){ return res.send(404); }
     _.forEach(device.streams,function(stream){
-      if(stream.id===req.body.stream.id){
-        console.log('test');
-      }
-    })
+      rest.postJSON(req.body.location,{id:device.ds_id,stream:stream.id},function(result){
+        if(result){
+          nouveau=true;
+          console.log("saving data");
+          var date = new Date(result.at);
+          stream.lastValue= req.body.location;
+          stream.lastPost=date;
+          stream.values.push({value:req.body.location,time:date});
+          device.save(function(err) {
+            if (err) console.log(err);
+          });
+        }
+      });
+    });
+
   });
   res.json(200);
 };

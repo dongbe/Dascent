@@ -16,7 +16,6 @@ angular.module('dascentApp')
       config: function(){
         if(Auth.isLoggedIn() && !Auth.isAdmin()) {
           currentUser = Auth.getCurrentUser();
-          console.log('current user: '+currentUser);
         }
 
         if (currentUser && Auth.isLoggedIn()) {
@@ -36,7 +35,7 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('/api/followers/'+profile.id+'/confirm', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('/api/profiles/'+profile.id+'/confirm', {user:profile.demand.user._id,device:profile.demand.device._id})
           .success(function (data) {
             deferred.resolve(data);
             return cb(data);
@@ -51,7 +50,7 @@ angular.module('dascentApp')
       cancel: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('/api/followers/'+profile.id+'/cancel', {user:profile.demand._owner,device:profile.demand._id})
+        $http.post('/api/profiles/'+profile.id+'/cancel', {user:profile.demand._owner,device:profile.demand._id})
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -65,7 +64,7 @@ angular.module('dascentApp')
       cancelRequest: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('/api/followers/'+profile.id+'/cancel', {user:profile.demand.user._id,device:profile.demand.device._id, options:'request'})
+        $http.post('/api/profiles/'+profile.id+'/cancel', {user:profile.demand.user._id,device:profile.demand.device._id, options:'request'})
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -81,7 +80,7 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('/api/followers/'+profile.id+'/discard', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('/api/profiles/'+profile.id+'/discard', {user:profile.demand.user._id,device:profile.demand.device._id})
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -150,14 +149,10 @@ angular.module('dascentApp')
       //get a device from datavenue API and save information in local database
       importDevice: function (callback) {
         this.config();
-        //var cb = callback || angular.noop;
+        var cb = callback || angular.noop;
         var def=$q.defer();
-
-        //var devices=[];
         $http.get('https://api.orange.com/datavenue/v1/datasources', config)
           .success(function (data) {
-            console.log(data);
-
 
             angular.forEach(data, function(d){
               var deferred = $q.defer();
@@ -191,7 +186,7 @@ angular.module('dascentApp')
                     streams.push({
                       id: st.id,
                       name: st.name,
-                      lastValue: st.lastValue,
+                      lastValue: st.lastValue?st.lastValue:{},
                       values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
                       lastPost: new Date()
                     });

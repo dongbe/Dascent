@@ -2,7 +2,7 @@
 
 var User = require('./user.model');
 var Device = require('../device/device.model');
-var Follower = require('../follower/follower.model');
+var Profile = require('../profile/profile.model');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
@@ -41,26 +41,29 @@ exports.create = function (req, res, next) {
     rest.on('end', function() {
       try {
         var parsedData = JSON.parse(data);
+
         console.log(parsedData);
 
         if(parsedData.success){
           var newUser = new User(req.body);
-          newUser.provider = 'local';
-          if(newUser.isskey) newUser.role = 'constructor';
-          else
-            newUser.role = 'user';
 
-          //create empty follower list
-          Follower.create({user:newUser._id, accepted:[], waitlist:[], watchs:[],waiting:[]}, function(err, follower) {
-            if(err) { return  next(err);}
-            newUser._profile=follower._id;
-            newUser.avatar='90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg';
-            newUser.save(function(err, user) {
-              if (err) return validationError(res, err);
-              var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
-              res.json({ token: token });
+          newUser.provider = 'local';
+          if(newUser.isskey) {
+            newUser.role = 'constructor' ;
+          }else {
+            Profile.create({user:newUser._id, accepted:[], waitlist:[], watchs:[],waiting:[]}, function(err, profile) {
+              if(err) { return  next(err);}
+              newUser._profile=profile._id;
+              newUser.avatar='3e8d178d-1566-40b2-9536-07ba32b8a390.jpg';
             });
+          }
+          console.log(newUser);
+          newUser.save(function(err, user) {
+            if (err) return validationError(res, err);
+            var token = jwt.sign({_id: user._id }, config.secrets.session, { expiresInMinutes: 60*5 });
+            res.json({ token: token });
           });
+          //create empty follower list
         }else{
           return res.json(422);
         }
@@ -75,8 +78,7 @@ exports.create = function (req, res, next) {
  * Get a single user
  */
 exports.show = function (req, res, next) {
-  var userId = req.params.id;
-
+  var userId = req.user._id;
   User.findById(userId, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
@@ -95,6 +97,11 @@ exports.destroy = function(req, res) {
   });
 };
 
+/**
+ * Update user information
+ * @param req
+ * @param res
+ */
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
   User.findById(req.params.id, function (err, user) {
@@ -142,6 +149,8 @@ exports.me = function(req, res, next) {
     res.json(user);
   });
 };
+
+
 /*
  * get all devices from a constructor
  */
@@ -156,8 +165,14 @@ exports.createDevices = function(req, res, next) {
   });
 };
 
+
+/**
+ * Confirm a subscription request
+ * @param req
+ * @param res
+ */
 exports.confirm = function(req, res){
-  //Follower.find({})
+  //Profile.find({})
   console.log(req);
   Device.findById(req.body.device, function(err,device){
     if(err) return res.send(500, err);
@@ -175,6 +190,11 @@ exports.confirm = function(req, res){
 
 };
 
+/**
+ * Get all devices of device provider
+ * @param req
+ * @param res
+ */
 exports.devices = function(req, res) {
   var userId = req.user._id;
         Device.find({
@@ -186,17 +206,26 @@ exports.devices = function(req, res) {
         });
 };
 
-exports.followers = function(req, res) {
-  var userId = req.user._id;
-  Follower.findOne({
-    user: userId
-  }).populate('waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting','-salt -hashedPassword').exec( function(err, ff) { // don't ever give out the password or salt
+
+/**
+ * Get a user profile
+ * @param req
+ * @param res
+ */
+exports.profile = function (req, res) {
+  Profile.findById(req.user._profile).populate('waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting','-salt -hashedPassword').exec( function(err, ff) { // don't ever give out the password or salt
     if (err) return res.send(500, err);
     if (!ff) return res.json(401);
     return res.json(200,ff);
   });
 };
 
+
+/**
+ * Add a device to the platform
+ * @param req
+ * @param res
+ */
 exports.addDevice = function(req, res) {
   var userId = req.user._id;//current user
   var serial = req.body.serial;// serial device
@@ -212,7 +241,7 @@ exports.addDevice = function(req, res) {
     //change ownership
 
     //Add device to my profile's lists
-    Follower.findOne({
+    Profile.findOne({
       user: userId
     }, function (err, follower) {
 
@@ -248,7 +277,7 @@ exports.addDevice = function(req, res) {
           //res.json(201);
         });
 
-        Follower.findOne({
+        Profile.findOne({
           user: device._owner
         }, function (err, foll) {
 
@@ -267,10 +296,21 @@ exports.addDevice = function(req, res) {
   });
 };
 
+
+/**
+ * return profile image
+ * @param req
+ * @param res
+ */
 exports.serveFile=function (req, res) {
   res.sendfile(path.resolve('images') +'/'+ req.params.id);
 };
 
+/**
+ * add image to server
+ * @param req
+ * @param res
+ */
 exports.postImage = function(req, res) {
 
   var form = new multiparty.Form();
@@ -283,7 +323,7 @@ exports.postImage = function(req, res) {
     // uuid is for generating unique filenames.
 
     var fileName = uuid.v4() + extension;
-    var destPath = path.resolve('server/images') +'/'+ fileName;
+    var destPath = path.resolve('images') +'/'+ fileName;
     console.log(destPath);
     // Server side file type checker.
     if (contentType !== 'image/png' && contentType !== 'image/jpeg') {

@@ -4,15 +4,16 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
+    <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
     <ion-list>
-      <a class="item item-icon-right" href="#">
-        <i class="icon ion-gear-a"></i>Settings
+      <a class="item item-icon-right" href="#"><i class="icon ion-gear-a"></i>Settings</a>
+      <ion-toggle ng-model="geolocationSetting" ng-change="changeGeolocationSetting(geolocationSetting)" toggle-class="toggle-calm">Tracking Mode</ion-toggle>
       <a class="item">
-      <div class="col">
-        <img ng-src="http://localhost:9000/api/users/avatar/90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg" width="50" height="50">
-      </div>
+        <div class="item item-avatar">
+        <img ng-src="http://localhost:9000/api/users/avatar/{{currentUser().avatar}}">
+      </div></a>
 
-      <a class="item" href="/#/tab/devices">
+      <a class="item" href="/tab/devices">
         <span class="badge badge-positive">{{profile.watchs.length}}</span>
         <span ng-if="profile.waiting.length" class="badge">{{profile.waiting.length}}</span>Devices</a>
       <a class="item">

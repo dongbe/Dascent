@@ -19,16 +19,13 @@ process.env.TMPDIR = path.resolve('server/tmp') || '/tmp';
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
-// Populate DB with sample data
-if(config.seedDB) { require('./config/seed'); }
-
 // Setup server
 
 var app = express();
 var cors = require('cors');
 var server = require('http').createServer(app);
 var socketio = require('socket.io')(server, {
-  serveClient: (config.env === 'production') ? false : true,
+  serveClient: true,
   path: '/socket.io-client'
 });
 app.use(cors());
@@ -43,8 +40,8 @@ server.listen(config.port, config.ip, function () {
 
 setInterval(function(){
   console.log('polling mode ....');
-  //data();
-}, 1 * 5000 * 1000);
+  data();
+}, 1 * 150000 * 1000);
 
 // Expose app
 exports = module.exports = app;

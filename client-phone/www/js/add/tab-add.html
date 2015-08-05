@@ -1,0 +1,44 @@
+<ion-view view-title="Add">
+  <ion-nav-buttons side="primary">
+    <button class="button ion-android-exit button-stable" ng-click="logout()">
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="padding">
+    <div class="item">
+      Ajouter un device (Propriétaire): <input type="checkbox" ng-model="checked" ng-init="checked=false"/><br/>
+    </div>
+    <div class="item item-energized" ng-if="checked">
+      <i class="icon ion-alert-circled"></i>
+      This is reserved to the device owner, please contact orange partner for more information
+    </div>
+    <div class="item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input name="serial" type="text" placeholder="device serial" ng-model="device.serial">
+      </label>
+      <button class="button button-clear" ng-click="scanBarcode()">
+        Scan
+      </button>
+    </div>
+
+    <div ng-if="!checked">
+      <form class="navbar-form" name="addDevice"  ng-submit="register()">
+        <label>Serial Number :</label>
+        <button type="submit" class="btn btn-success">
+          Subscribe
+        </button>
+      </form>
+    </div>
+    <div ng-if="checked">
+      <form class="navbar-form" name="addDevice" ng-submit="registerO()">
+        <label>Serial Number :</label>
+        <input name="serial" type="text" ng-model="device.serial" required>
+        <label>PIN Code:</label>
+        <input name="serial" type="password" ng-model="device.pass" required>
+        <button type="submit" class="btn btn-success">
+          Ajouter
+        </button>
+      </form>
+    </div>
+  </ion-content>
+</ion-view>

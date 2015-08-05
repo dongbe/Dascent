@@ -4,6 +4,7 @@ angular.module('dascentApp')
   .controller('SettingsCtrl', function ($scope, User, Auth, notifications, Upload, Modal) {
     $scope.errors = {};
     $scope.user=Auth.getCurrentUser();
+    $scope.isConstructor = Auth.isConstructor();
     $scope.uploadedImage={};
     $scope.new={};
 
@@ -30,7 +31,7 @@ angular.module('dascentApp')
        Auth.update({
           name: $scope.user.name,
           lastname: $scope.user.lastname,
-          email: $scope.user.email,
+          email: $scope.user.email
         })
           .then( function() {
             // Account created, redirect to home

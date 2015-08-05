@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var User = require('../user/user.model');
 var _ = require('lodash');
-var Follower=require('../follower/follower.model');
 
 var DeviceSchema = new Schema({
   ds_id: String,
@@ -19,14 +18,14 @@ var DeviceSchema = new Schema({
   streams: [
     { id:String,
     name:String,
-    lastValue: Number,
+    lastValue: Object,
     location:{
         longitude:Number,
         latitude: Number,
         elevation:Number
       },
     values: [{
-      value:Number,
+      value:Object,
       time:Date
     }],
     lastPost: { type: Date } }]

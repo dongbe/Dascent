@@ -5,14 +5,20 @@
     <form class="form" name="form" ng-submit="login(form)" novalidate>
     <div class="list list-inset">
       <label class="item item-input">
-        <input type="email" name="email" placeholder="Username" ng-model="user.email">
+        <input type="email" name="email" placeholder="Username" ng-model="user.email" required>
       </label>
       <label class="item item-input">
-        <input type="password" name="password"  placeholder="Password" ng-model="user.password">
+        <input type="password" name="password"  placeholder="Password" ng-model="user.password" required>
       </label>
     </div>
     <button class="button button-block button-positive" type="submit">Login</button>
   </form>
+    <p class="help-block" ng-show="form.email.$error.required && submitted">
+      An email is required
+    </p>
+    <p class="help-block" ng-show="form.password.$error.required && submitted">
+      A password is required
+    </p>
   </ion-content>
 
 </ion-view>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('SideBarCtrl', function ($scope, $location, Auth, $http, ManDev,socket,notifications,uiGmapGoogleMapApi) {
+  .controller('SideBarCtrl', function ($q,$scope, $location, Auth, $http, ManDev,socket,notifications,uiGmapGoogleMapApi) {
     $scope.menu = [
       {
         title:'My profile',
@@ -16,25 +16,68 @@ angular.module('dascentApp')
         link:'/follower'
       }
     ];
-
     $scope.followings=[];
     $scope.currentUser=Auth.getCurrentUser;
     $scope.profile=[];
     $scope.device={};
-    $scope.point={};
+    $scope.points=[];
     $scope.polylines=[];
-    $scope.map = { zoom: 15 };
     var presence=false;
 
 
-    $http.get('/api/users/me/followers').success(function(data){
+    $q.all($http.get('/api/users/me/profiles')
+      .success(function(data){
       $scope.profile=data;
-      socket.syncProfileUpdates('follower',$scope.profile);
+      socket.syncProfileUpdates('profile',$scope.profile);
       socket.syncDevUpdates('device',$scope.profile.watchs);
       var nope=false;
 
       //get followings profile information
       for(var i in $scope.profile.watchs){
+        if($scope.profile.watchs[i].device.group[0]==='GPS'){
+          var point={};
+          var location={};
+          var polyline={};
+              polyline.path=[];
+          var latitudes=[];
+          var existPoint=true;
+          angular.forEach($scope.profile.watchs[i].device.streams, function(stream){
+
+            if(stream.lastValue && stream.name==='GPS'){
+              point.latitude = stream.lastValue.latitude;
+              point.longitude= stream.lastValue.longitude;
+                if (stream.values.length>1){
+                  latitudes=stream.values;
+                }
+              location.coords=point;
+              location.id=$scope.points.length>0?$scope.points.length:0;
+              location.options= {
+                draggable: false,
+                labelContent: $scope.profile.watchs[i].device.name,
+                labelAnchor: "22 0",
+                labelClass: "marker-labels"
+              };
+            }
+            else {
+              existPoint= false;
+            }
+
+            if(latitudes.length>0){
+              polyline.id=$scope.polylines.length>0?$scope.polylines.length+1:1;
+              for(var y in latitudes){
+                polyline.path.push(latitudes[y].value);
+              }
+              polyline.stroke= {color: '#6060FB', weight: 3};
+              polyline.editable= true;
+              polyline.visible=true;
+              $scope.polylines.push(polyline);
+            }
+
+          });
+          if (existPoint){
+            $scope.points.push(location);
+          }
+        }
         if($scope.profile.watchs[i].type===false){
           for (var y in $scope.followings){
             if($scope.followings[y]===$scope.profile.watchs[i].device._owner){
@@ -47,35 +90,16 @@ angular.module('dascentApp')
           nope=false;
         }
       }
-      for (var g in $scope.profile.watchs[i].group){
+    })
+      .error(function(err){console.log(err);}))
+      .then(function(){
+      uiGmapGoogleMapApi.then(function(maps) {
 
-        if($scope.profile.watchs[i].group[g]==='GPS'){
-          var latitude=[];
-          var longitude=[];
-          for(var s in $scope.profile.watchs[i].group[g].streams){
-            if($scope.profile.watchs[i].group[g].streams[s].name==='Latitude'){
-              latitude=$scope.profile.watchs[i].group[g].streams[s].values;
-            }
-            if($scope.profile.watchs[i].group[g].streams[s].name==='Longitude'){
-              longitude=$scope.profile.watchs[i].group[g].streams[s].values;
-            }
-          }
-          if(latitude.length>longitude.length) {
-            $scope.polylines.path.push({latitude:latitude[0],longitude:longitude[0]});
-            for (var y in latitude){
-              if(latitude[y].time>longitude[y].time){
-                $scope.polylines.path.push({latitude:latitude[y],longitude:longitude[y]});
-              }else {
-                $scope.polylines.path.push({latitude:latitude[y],longitude:longitude[y-1]});
-              }
-            }
-          }
-        }
-      }
-    }).error(function(err){
-      console.log(err);
+        var last_element = $scope.points[$scope.points.length-1];
+        $scope.map = {center:last_element.coords,zoom: 16, pan:1};
+
+      });
     });
-
 
     $scope.type = function(device){
       return device.type;
@@ -83,8 +107,6 @@ angular.module('dascentApp')
     $scope.isActive = function(route) {
       return route === $location.path();
     };
-
-
     $scope.register = function(form){
       angular.forEach($scope.profile.watchs,function(u,i){
         if(u.device.serial===$scope.device.serial){
@@ -110,7 +132,6 @@ angular.module('dascentApp')
       $scope.device={};
 
     };
-
     //enregistrement proprietaire des capteurs
     $scope.registerO = function(form){
       angular.forEach($scope.profile.watchs,function(u){
@@ -136,7 +157,6 @@ angular.module('dascentApp')
       presence=false;
       $scope.device={};
     };
-
     $scope.confirm=function(dev){
       ManDev.confirm({id:$scope.profile._id, demand:dev})
         .then(function(){
@@ -160,7 +180,6 @@ angular.module('dascentApp')
           console.log(error);
         });
     };
-
     $scope.cancel=function(dev){
       ManDev.cancel({id:$scope.profile._id, demand:dev})
         .then(function(){
@@ -186,57 +205,84 @@ angular.module('dascentApp')
         });
     };
 
-    uiGmapGoogleMapApi.then(function(maps) {
-      $scope.polylines=[{
-        id: 3,
-        path: [
-          {
-            latitude: 45.7600,
-            longitude: 4.8400
-          },
-          {
-            latitude: 50,
-            longitude: -89
-          },
-          {
-            latitude: 57,
-            longitude: -122
-          },
-          {
-            latitude: 20,
-            longitude: -95
-          }
-        ],
-        stroke: {
-          color: '#FF0066',
-          weight: 3
-        },
-        editable: true,
-        draggable: true,
-        geodesic: true,
-        visible: true
-      }];
-      /*for (var i in $scope.polylines.path){
 
-      }*/
-    });
+    /*
     $scope.staticMarker = {
+
       id: 0,
-      coords: $scope.point,
-      options: { draggable: false }
+      coords: {latitude:5,longitude:45},
+      options: { draggable: false }*/
       /*events: {
-        dragend: function (marker, eventName, args) {
-
-          $log.log('marker dragend');
-          $log.log(marker.getPosition().lat());
-          $log.log(marker.getPosition().lng());
-
+       dragend: function (marker, eventName, args) {
+       $log.log('marker dragend');
+       $log.log(marker.getPosition().lat());
+       $log.log(marker.getPosition().lng());
+       }
+       }
+    };*/
+    $scope.markers2= [
+      {
+        id: 1,
+        icon: 'assets/images/blue_marker.png',
+        latitude: 46,
+        longitude: -77,
+        showWindow: false,
+        options: {
+          labelContent: '[46,-77]',
+          labelAnchor: "22 0",
+          labelClass: "marker-labels"
         }
-      } */
-    };
-    $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('follower');
-      socket.unsyncUpdates('device');
-    });
+      },
+      {
+        id: 2,
+        icon: 'assets/images/blue_marker.png',
+        latitude: 33,
+        longitude: -77,
+        showWindow: false,
+        options: {
+          labelContent: 'DRAG ME!',
+          labelAnchor: "22 0",
+          labelClass: "marker-labels",
+          draggable: true
+        }
+      },
+      {
+        id: 3,
+        icon: 'assets/images/blue_marker.png',
+        latitude: 35,
+        longitude: -125,
+        showWindow: false,
+        options: {
+          labelContent: '[35,-125]',
+          labelAnchor: "22 0",
+          labelClass: "marker-labels"
+        }
+      }];
 
+
+  })
+  .directive('loraReader', function($window,$compile){
+    return{
+      scope: {
+        loraReader:'='
+      },
+      link: function(scope,element){
+        var d3= $window.d3;
+        var extracted =[];
+        for (var i=0;i<=scope.loraReader.length-2;i=i+2){
+          extracted.push(parseInt(scope.loraReader.slice(i,i+2),16));
+        }
+        var display = '<div class="row">' +
+          '<div class="col-md-2">LED: '+extracted[0]+'</div>'+
+          '<div class="col-md-3">Pression: '+ (extracted[1]+extracted[2])/10+' hPa</div>'+
+          '<div class="col-md-3">Temperature: '+(extracted[3]+extracted[4])/100+' °C</div>'+
+          '<div class="col-md-4"><div id="chart" class="battery" style="width:100px;" ></div></div>'+
+          '</div>';
+        $compile(display)(scope);
+        element.append(display);
+        d3.select('#chart')
+          .append('div').attr('class', 'left').transition().ease('elastic').style('width', extracted[7]+'px').text(extracted[7] +'%');
+
+      }
+    }
   });

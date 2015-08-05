@@ -15,7 +15,7 @@ angular.module('dascentApp')
         views: {
           'tab-dash': {
             templateUrl: 'js/dashboard/tab-dash.html',
-            controller: 'DashCtrl',
+            controller: 'ProfilCtrl',
             authenticate: true
           }
         }

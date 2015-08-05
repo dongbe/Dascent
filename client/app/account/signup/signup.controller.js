@@ -16,7 +16,7 @@ angular.module('dascentApp')
 
     $scope.register = function(form) {
       $scope.submitted = true;
-      var response = vcRecaptchaService.getResponse($scope.widgetId);
+      var response = vcRecaptchaService?vcRecaptchaService.getResponse($scope.widgetId):'';
       if(response.length<1){
         $scope.response=false;
       }else{
@@ -69,7 +69,8 @@ angular.module('dascentApp')
         if($scope.user.password1===$scope.user.password2){
           Auth.createUser({
             name: $scope.user.name,
-            lastname: $scope.user.lastname,
+            isskey: $scope.user.isskey,
+            idclient: $scope.user.idclient,
             email: $scope.user.email,
             password: $scope.user.password1,
             key: response

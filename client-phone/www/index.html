@@ -17,14 +17,20 @@
     <script src="lib/ionic/js/ionic-angular.js"></script>
     <script src="lib/angular-resource/angular-resource.js"></script>
     <script src="lib/angular-socket-io/socket.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <script src='lib/angular-google-maps/dist/angular-google-maps.min.js'></script>
+    <script src='lib/lodash/lodash.min.js'></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
-    <script src="http://localhost:9000/socket.io-client/socket.io.js"></script>
+
 
 
     <!-- your app's js -->
+
     <script src="js/app.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/services.js"></script>
     <script src="js/account/account.js"></script>
     <script src="js/account/login/login.controller.js"></script>
     <script src="js/account/settings/settings.controller.js"></script>
@@ -36,12 +42,13 @@
     <script src="js/device/device.controller.js"></script>
     <script src="js/dashboard/dashboard.controllers.js"></script>
     <script src="js/dashboard/dashboard.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/services.js"></script>
+    <script src="js/notification/notif.js"></script>
+    <script src="js/add/add.js"></script>
+    <script src="js/add/add.controller.js"></script>
     <script src="components/auth/user.service.js"></script>
     <script src="components/auth/auth.service.js"></script>
+    <script src="components/devices/device.service.js"></script>
     <script src="components/mongoose-error/mongoose-error.directive.js"></script>
-    <script src="components/socket/socket.service.js"></script>
   </head>
   <body ng-app="dascentApp">
     <!--

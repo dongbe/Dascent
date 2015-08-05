@@ -19,16 +19,25 @@ angular.module('dascentApp')
             $state.go('tab.dash');
           })
           .catch( function(err) {
-            $scope.errors.other = err.message;
+            if (err){
+              $ionicPopup.alert({
+                title: 'Login failed!',
+                template: err.message +' Please check your credentials!'
+              });
+            }else{
+              $ionicPopup.alert({
+                title: 'Login failed!',
+                template: 'No internet connection!'
+              });
+            }
 
-            var alertPopup = $ionicPopup.alert({
-              title: 'Login failed!',
-              template: 'Please check your credentials!'
-            });
           });
       }else{
-
-      $state.go('login');
+        $ionicPopup.alert({
+          title: 'Login failed!',
+          template: 'Please check your credentials!'
+        });
+       $state.go('login');
     }
     };
 

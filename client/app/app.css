@@ -42,6 +42,26 @@
   background: #eee;
   padding: 3px;
 }
+.battery{
+  background: #eee;
+  padding: 1px;
+  border: 1px darkblue;
+}
+.battery div{
+  witdh: 0px;
+  transition: all 1s ease-out;
+  -moz-animation: all 1s ease-out;
+  -webkit-transition: all 1s ease-out;
+}
+.battery div{
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 5px;
+  color: white;
+  box-shadow: 2px 2px #666;
+}
 
 .chart div{
   witdh: 0px;

@@ -5,7 +5,7 @@
 
 angular.module('dascentApp')
   .controller('DashCtrl', function($scope, $state, Auth) {
-    $scope.getCurrentUser = Auth.getCurrentUser;
+    //$scope.getCurrentUser = Auth.getCurrentUser();
     $scope.logout = function() {
       Auth.logout();
       $state.go('login');

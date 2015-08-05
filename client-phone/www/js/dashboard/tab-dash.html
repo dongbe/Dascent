@@ -3,31 +3,42 @@
     <button class="button ion-android-exit button-stable" ng-click="logout()">
     </button>
   </ion-nav-buttons>
+
   <ion-content class="padding">
-    {{getCurrentUser().name}}
-    <div class="list card">
-      <div class="item item-divider">Recent Updates</div>
-      <div class="item item-body">
-        <div>
-          There is a fire in <b>sector 3</b>
+    <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
+      <ion-list>
+      </ion-list>
+    <div ng-hide="notif()">Vous n'avez pas de notifications</div>
+    <div ng-show="notif()" id="map-canvas">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom">
+        <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
+        </ui-gmap-markers>
+        <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
+                          fit="false" editable="p.editable">
+        </ui-gmap-polyline>
+      </ui-gmap-google-map>
+    </div>
+    <div ng-show="notif()" ng-repeat="watch in profile.watchs" >
+
+      <div ng-if="watch.device.group[0]!='GPS'">
+        <div  ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
+      || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'" >
+
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <a href="#">
+                <img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt">
+                <h2 class="panel-title">Device :{{watch.device.name}}</h2>
+              </a>
+            </div>
+            <div ng-if="watch.device.group=='LORA' && stream.name=='message'" lora-reader="stream.lastValue"></div>
+            <div ng-if="watch.device.group!='GPS' && device.device.group!='LORA'" ng-repeat="value in stream.values">
+              {{stream.name}} valeur : {{value.value}} le {{value.time | date:'dd.MM.yyyy à HH:mm:ss'}}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="list card">
-      <div class="item item-divider">Health</div>
-      <div class="item item-body">
-        <div>
-          You ate an apple today!
-        </div>
-      </div>
-    </div>
-    <div class="list card">
-      <div class="item item-divider">Upcoming</div>
-      <div class="item item-body">
-        <div>
-          You have <b>29</b> meetings on your calendar tomorrow.
-        </div>
-      </div>
-    </div>
+
   </ion-content>
 </ion-view>

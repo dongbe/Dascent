@@ -2,7 +2,7 @@
 
 angular.module('dascentApp')
   .factory('User', function ($resource) {
-    return $resource('https://localhost:9000/api/users/:id/:controller', {
+    return $resource('http://dascent-dascent.rhcloud.com/api/users/:id/:controller', {
       id: '@_id'
     },
     {

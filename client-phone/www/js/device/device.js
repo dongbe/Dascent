@@ -12,7 +12,7 @@ angular.module('dascentApp')
         views: {
           'tab-devices': {
             templateUrl: 'js/device/tab-devices.html',
-            controller: 'DeviceCtrl',
+            controller: 'ProfilCtrl',
             authenticate: true
           }
         }
