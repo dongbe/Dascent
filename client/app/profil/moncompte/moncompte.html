@@ -1,25 +1,29 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-<div class="container" ng-controller="SideBarCtrl">
+<div class="container">
   <div ng-include="'components/sidebar/sidebar.html'"></div>
   <div class="pullframe col-md-8">
-    <div ng-show="!profile.watchs.length">Vous n'avez pas de notifications</div>
-
-    <div ng-hide="!profile.watchs.length" >
-      <ui-gmap-google-map center="map.center" zoom="map.zoom">
-        <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
-        </ui-gmap-markers>
-        <ui-gmap-markers models="markers2" coords="'self'" icon="'icon'" click="onMarkerClicked" options="'options'" events="map.markers2Events">
-          <ui-gmap-windows show="'showWindow'" closeClick="'closeClick'" ng-cloak>
-          </ui-gmap-windows>
-        </ui-gmap-markers>
-        <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
-                          fit="false" editable="p.editable">
-        </ui-gmap-polyline>
-      </ui-gmap-google-map>
-
+    <div ng-if="!notif()">Vous n'avez pas de notifications</div>
+    <div ng-if="notif()" >
+      <div ng-repeat="watch in profile.watchs">
+        <div ng-if="watch.device.tracking"> {{watch.device.name}} : tracking mode activated</div>
+      </div>
     </div>
 
-    <div ng-hide="!profile.watchs.length" ng-repeat="watch in profile.watchs" >
+    <div ng-if="notif()" >
+        <ui-gmap-google-map center="map.center" zoom="map.zoom">
+          <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
+          </ui-gmap-markers>
+          <ui-gmap-markers models="markers2" coords="'self'" icon="'icon'" click="onMarkerClicked" options="'options'" events="map.markers2Events">
+            <ui-gmap-windows show="'showWindow'" closeClick="'closeClick'" ng-cloak>
+            </ui-gmap-windows>
+          </ui-gmap-markers>
+          <ui-gmap-polyline ng-if="watch.device.tracking" ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
+                            fit="false" editable="p.editable">
+          </ui-gmap-polyline>
+        </ui-gmap-google-map>
+    </div>
+
+    <div ng-if="!profile.watchs.length" ng-repeat="watch in profile.watchs" >
       <div ng-if="watch.device.group[0]!='GPS'">
         <div  ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
       || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'" >

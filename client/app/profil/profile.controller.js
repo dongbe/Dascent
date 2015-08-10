@@ -2,20 +2,7 @@
 
 angular.module('dascentApp')
   .controller('SideBarCtrl', function ($q,$scope, $location, Auth, $http, ManDev,socket,notifications,uiGmapGoogleMapApi) {
-    $scope.menu = [
-      {
-        title:'My profile',
-        link:'/moncompte'
-      },
-      {
-        title:'My devices',
-        link:'/device'
-      },
-      {
-        title:'My followers',
-        link:'/follower'
-      }
-    ];
+
     $scope.followings=[];
     $scope.currentUser=Auth.getCurrentUser;
     $scope.profile=[];
@@ -24,8 +11,7 @@ angular.module('dascentApp')
     $scope.polylines=[];
     var presence=false;
 
-
-    $q.all($http.get('/api/users/me/profiles')
+    $scope.init= $http.get('/api/users/'+$scope.currentUser()._id+'/profiles')
       .success(function(data){
       $scope.profile=data;
       socket.syncProfileUpdates('profile',$scope.profile);
@@ -90,16 +76,14 @@ angular.module('dascentApp')
           nope=false;
         }
       }
+        uiGmapGoogleMapApi.then(function(map) {
+          map.visualRefresh=true;
+          var last_element =$scope.points.length?$scope.points[$scope.points.length-1]:{};
+          $scope.map = {center:last_element.coords,zoom: 16, pan:1};
+
+        });
     })
-      .error(function(err){console.log(err);}))
-      .then(function(){
-      uiGmapGoogleMapApi.then(function(maps) {
-
-        var last_element = $scope.points[$scope.points.length-1];
-        $scope.map = {center:last_element.coords,zoom: 16, pan:1};
-
-      });
-    });
+      .error(function(err){console.log(err);});
 
     $scope.type = function(device){
       return device.type;
@@ -204,6 +188,18 @@ angular.module('dascentApp')
           console.log(error);
         });
     };
+    $scope.activateTracking=function(device){
+      device.tracking=true;
+      ManDev.updateDevice(device).then(function(data){
+
+      });
+    };
+    $scope.deactivateTracking=function(device){
+      device.tracking=false;
+      ManDev.updateDevice(device).then(function(data){
+
+      });
+    };
 
 
     /*
@@ -259,7 +255,23 @@ angular.module('dascentApp')
         }
       }];
 
+    $scope.notif =function(){
+      if($scope.profile.length) return false;
+      else{
+        for(var x in $scope.profile.watchs){
+          for(var s in $scope.profile.watchs[x].device.streams){
+            if($scope.profile.watchs[x].device.streams[s].lastValue){
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+    };
 
+
+    socket.unsyncUpdates('profile');
+    socket.unsyncUpdates('device');
   })
   .directive('loraReader', function($window,$compile){
     return{

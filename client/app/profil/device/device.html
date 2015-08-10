@@ -1,5 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-<div class="container" ng-controller="SideBarCtrl">
+<div class="container">
   <div ng-include="'components/sidebar/sidebar.html'"></div>
   <div class="col-md-8">
     <div>
@@ -31,15 +31,19 @@
     <div>
       <h4>Subscribed sensors</h4>
       <div ng-show="!profile.watchs.length">Vous n'avez pas de devices</div>
-      <div ng-hide="!profile.watchs.length" class="panel panel-default" ng-repeat="device in profile.watchs" >
+      <div ng-hide="!profile.watchs.length" class="panel panel-default" ng-repeat="watch in profile.watchs" >
         <div class="panel-body">
           <div>
             <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
-            <h3 class="panel-title">Capteur :{{device.device.name}} </h3>
+            <h3 class="panel-title">Capteur :{{watch.device.name}} </h3>
           </div>
-          SN: {{device.device.serial}} - Description: {{device.device.description}} <h4 ng-if="type(device)" class="text-danger pull-right">Owner</h4>
-          <h4 ng-if="!type(device)" class="text-danger pull-right">subscribe</h4>
+          SN: {{watch.device.serial}} - Description: {{watch.device.description}}
+          <h4 ng-if="type(watch)" class="text-danger pull-right">Owner</h4>
+          <h4 ng-if="!type(watch)" class="text-danger pull-right">subscribe</h4>
+          <button ng-if="type(watch) && !watch.device.tracking"type="button" ng-click="activateTracking(watch.device)" class="btn-default pull-right">Activate Tracking</button>
+          <button ng-if="type(watch) && watch.device.tracking"type="button" ng-click="deactivateTracking(watch.device)" class="btn-default pull-right">Cancel Tracking</button>
         </div>
+
       </div>
 
       <h4>Pending requests</h4>

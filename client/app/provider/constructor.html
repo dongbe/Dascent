@@ -1,5 +1,5 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-<div class="container" ng-controller="ConstructorCtrl">
+<div class="container">
 <div class="col-md-12">
   <div class="col-md-3">
     <ul id="link" class="nav nav-pills nav-stacked">
@@ -15,52 +15,44 @@
 
       <div class="row info">
         <!-- champ de sauvergarde et de mise à jour de l'apikey-->
-        <div class="col-md-6">
+        <div class="col-md-8">
           <div class="input-group">
-            <label>CLIENT ID : {{constructor().idclient}}</label>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">X</button>
-          </span>
+            <label>Orange Partner Key : {{constructor().idclient}}</label>
           </div>
 
         <!-- champ de sauvergarde et de mise à jour de l'isskey-->
           <div class="input-group">
-            <label>ISSKEY : {{constructor().isskey}}</label>
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">X</button>
-          </span>
+            <label>ISS Key : {{constructor().isskey}}</label>
           </div>
         </div>
-        <!-- boutons de sauvergarde et de mise à jour des datasources-->
-        <div class="col-md-6">
-
-          <div class="row">
+      </div>
+    <!-- boutons de sauvergarde et de mise à jour des datasources-->
+      <div class="row">
+        <div class="col-md-8">
+          <form name="upload" class="form" ng-submit="createDevice(fileContent)" novalidate>
             <div class="col-md-6">
-            <form class="form" ng-submit="getDevices()" novalidate>
-              <button ng-hide="devices.length" class="btn btn-success" type="submit">Import devices</button>
-              <button ng-show="devices.length" class="btn btn-success" type="submit">Update devices</button>
-            </form>
+              <input name="file" type="file" file-reader="fileContent" accept=".csv" required>
             </div>
+            <p class="help-block" ng-show="upload.file.$error.required">
+              An email is required
+            </p>
             <div class="col-md-6">
-            </div>
-          </div>
-          <div class="row">
-            <form class="form" ng-submit="createDevice(fileContent)" novalidate>
-              <div class="col-md-6">
-                <input type="file" file-reader="fileContent" accept=".csv"/>
-              </div>
-              <div class="col-md-6">
               <button class="btn btn-success" type="submit">Create devices</button>
-              </div>
-            </form>
-          </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-md-4">
+          <form ng-submit="getDevices()">
+            <button ng-hide="devices.length" class="btn btn-success" type="submit">Import devices</button>
+            <button ng-show="devices.length" class="btn btn-success" type="submit">Update devices</button>
+          </form>
         </div>
       </div>
 
     <div id="dashboard" class="row" ng-if="toggle">
       <h2>Graphe d'utilisation des devices</h2>
-      <div ng-show="!devices.length">  Aucun device declaré </div>
-      <chart ng-hide="!devices.length" chart-data="devices"></chart>
+      <div ng-if="!devices.length">  Aucun device declaré </div>
+      <chart ng-if="devices.length" chart-data="devices" ></chart>
     </div>
     <div id="list" ng-if="!toggle">
       <h2>Liste des devices</h2>

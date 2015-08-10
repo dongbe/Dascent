@@ -119,7 +119,11 @@ angular.module('dascentApp')
               modal: {
                 dismissable: true,
                 title: 'Confirm upload',
-                html: '<p>Are you sure you want to Upload the file?</p>',
+                html: '<p>Are you sure you want to Upload the file?</p>  ' +
+                      '<form class="form" ng-submit="createDevice(fileContent)" novalidate>' +
+                      '<input type="file" file-reader="fileContent" accept=".csv" required>'+
+                      '<button class="btn btn-success" type="submit">Create devices</button>'+
+                      '</form>',
                 buttons: [{
                   classes: 'btn-primary',
                   text: 'Create device',

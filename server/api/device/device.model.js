@@ -28,7 +28,11 @@ var DeviceSchema = new Schema({
       value:Object,
       time:Date
     }],
-    lastPost: { type: Date } }]
+    lastPost: { type: Date } }],
+  tracking:{
+    type: Boolean,
+    default: false
+  }
 });
 
 

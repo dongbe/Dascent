@@ -78,3 +78,7 @@
   color: white;
   box-shadow: 2px 2px 2px #666;
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}

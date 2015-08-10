@@ -4,8 +4,11 @@
 
   <div class="row col-md-8 col-md-offset-1" ng-controller="SettingsCtrl">
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-3" ng-if="!isConstructor">
         Avatar:
+      </div>
+      <div class="col-lg-3" ng-if="isConstructor">
+        Logo:
       </div>
       <div class="col-lg-5">
         <div class="col-lg-3"><img width="50" ng-src="/api/users/avatar/{{user.avatar}}"/></div>
@@ -34,8 +37,11 @@
     <br>
     <form name="form1" class="form">
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-3" ng-if="!isConstructor">
         Firstname:
+      </div>
+      <div class="col-lg-3" ng-if="isConstructor">
+        Company name:
       </div>
       <div class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
                                             'has-error': form1.name.$invalid && submitted }">
@@ -47,14 +53,20 @@
     </div>
     </br>
     <div class="row">
-      <div class="col-lg-3">
+      <div class="col-lg-3" ng-if="!isConstructor">
         Lastname:
+      </div>
+      <div class="col-lg-3" ng-if="isConstructor">
+        SIREN:
       </div>
       <div class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
                                             'has-error': form1.lastname.$invalid && submitted }">
         <input name="lastname" type="text" class="form-control" ng-model="user.lastname" required>
-        <p class="help-block" ng-show="form1.lastname.$error.required">
+        <p class="help-block" ng-if="form1.lastname.$error.required && !isConstructor">
           A lastname is required
+        </p>
+        <p class="help-block" ng-if="form1.lastname.$error.required && isConstructor">
+          A SIREN is required
         </p>
       </div>
     </div>

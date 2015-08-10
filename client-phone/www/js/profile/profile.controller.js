@@ -10,8 +10,8 @@ angular.module('dascentApp')
     $scope.polylines=[];
     $scope.geolocationSetting=false;
 
-    $scope.changeGeolocationSetting= function(start){
-      if(start){
+    $scope.changeGeolocationSetting= function(trackingMode){
+      if(trackingMode){
         geolocalisation.initialize($cordovaDevice,$http);
       }else{
         if(window.plugins.backgroundGeoLocation){
@@ -19,6 +19,8 @@ angular.module('dascentApp')
           geolocalisation.stopPositionWatch();
           }
       }
+      $scope.device.tracking=trackingMode;
+      ManDev.update($scope.device);
     };
 
     $scope.logout = function() {
@@ -139,7 +141,7 @@ angular.module('dascentApp')
       .success(function(data){
 
       $scope.profile=data;
-      var deviceID='91435c1dd2183934';//$cordovaDevice.getUUID();
+      var deviceID=$cordovaDevice.getUUID();
       var nope=false;
       var phone=false;
       if ($scope.profile.watchs){
@@ -159,6 +161,7 @@ angular.module('dascentApp')
           // check if phone serial is known
           if(deviceID===$scope.profile.watchs[i].device.serial){
             phone=true;
+            $scope.device=$scope.profile.watchs[i].device;
           }
           // check if some devices are GPS
           if($scope.profile.watchs[i].device.group[0]==='GPS'){

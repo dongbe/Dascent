@@ -52,8 +52,6 @@ angular.module('dascentApp')
     };
 
     $scope.onFileSelect = function(image) {
-      console.log(image);
-
       // This is how I handle file types in client side
       if (image.type !== 'image/png' && image.type !== 'image/jpeg') {
         alert('Only PNG and JPEG are accepted.');

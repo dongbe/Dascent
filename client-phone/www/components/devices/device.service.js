@@ -11,6 +11,23 @@ angular.module('dascentApp')
     var config = {};
 
     return {
+      updateDevice: function(device,callback)
+      {
+        var cb = callback || angular.noop;
+        var deferred = $q.defer();
+        $http.patch('/api/devices/'+device._id, device).
+          success(function(data) {
+            deferred.resolve(data);
+            return cb();
+          }).
+          error(function(err) {
+            deferred.reject(err);
+            return cb(err);
+          }.bind(this));
+
+        return deferred.promise;
+
+      },
       config: function(){
         if(Auth.isLoggedIn() && !Auth.isAdmin()) {
           currentUser = Auth.getCurrentUser();

@@ -139,10 +139,21 @@ angular.module('dascentApp')
           }.bind(this)).$promise;
 
       },
-      getData: function()
+      updateDevice: function(device,callback)
       {
+        var cb = callback || angular.noop;
+        var deferred = $q.defer();
+        $http.patch('/api/devices/'+device._id, device).
+          success(function(data) {
+            deferred.resolve(data);
+            return cb();
+          }).
+          error(function(err) {
+            deferred.reject(err);
+            return cb(err);
+          }.bind(this));
 
-        return;
+        return deferred.promise;
 
       },
 
@@ -182,7 +193,6 @@ angular.module('dascentApp')
                   }
 
                   angular.forEach(ret[0].data, function(st) {
-                    console.log(st);
                     streams.push({
                       id: st.id,
                       name: st.name,

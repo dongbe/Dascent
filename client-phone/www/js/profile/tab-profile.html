@@ -7,7 +7,7 @@
     <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
     <ion-list>
       <a class="item item-icon-right" href="#"><i class="icon ion-gear-a"></i>Settings</a>
-      <ion-toggle ng-model="geolocationSetting" ng-change="changeGeolocationSetting(geolocationSetting)" toggle-class="toggle-calm">Tracking Mode</ion-toggle>
+      <ion-toggle ng-model="device.tracking" ng-change="changeGeolocationSetting(device.tracking)" toggle-class="toggle-calm">Tracking Mode</ion-toggle>
       <a class="item">
         <div class="item item-avatar">
         <img ng-src="http://localhost:9000/api/users/avatar/{{currentUser().avatar}}">

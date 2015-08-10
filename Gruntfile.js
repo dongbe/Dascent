@@ -388,6 +388,12 @@ module.exports = function (grunt) {
           remote: 'openshift',
           branch: 'master'
         }
+      },
+      orange: {
+        options: {
+          remote: 'git@github.com:dongbe/Dascent.git',
+          branch: 'build'
+        }
       }
     },
 

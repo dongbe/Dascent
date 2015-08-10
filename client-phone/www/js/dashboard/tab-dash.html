@@ -8,8 +8,8 @@
     <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
       <ion-list>
       </ion-list>
-    <div ng-hide="notif()">Vous n'avez pas de notifications</div>
-    <div ng-show="notif()" id="map-canvas">
+    <div ng-if="!notif()">Vous n'avez pas de notifications</div>
+    <div ng-if="notif()" id="map-canvas">
       <ui-gmap-google-map center="map.center" zoom="map.zoom">
         <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
         </ui-gmap-markers>

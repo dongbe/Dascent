@@ -49,34 +49,34 @@ exports.update = function(req, res) {
  * @param res
  */
 exports.confirm = function(req,res){
-  Profile.findOne({user:req.body.user},function(err,foll){
+  Profile.findOne({user:req.body.user},function(err,followerProfile){
     if (err) { return handleError(res, err); }
-    if(!foll) { return res.send(404); }
+    if(!followerProfile) { return res.send(404); }
 
-    _.forEach(foll.waiting,function(u,i){
-      if(u!==undefined && u===req.body.device){
-        foll.waiting.splice(i,1);
-        foll.watchs.push({device:u,type:false});
+    _.forEach(followerProfile.waiting,function(deviceId,i){
+      if(deviceId!==undefined && deviceId==req.body.device){
+        followerProfile.waiting.splice(i,1);
+        followerProfile.watchs.push({device:deviceId,type:false});
       }
     });
 
-    foll.save(function (err) {
+    followerProfile.save(function (err) {
       if (err) { return handleError(res, err); }
       //return res.json(200);
     });
   });
-  Profile.findById(req.params.id, function (err, profile) {
-    if (err) { return handleError(res, err); }
-    if(!profile) { return res.send(404); }
 
-    _.forEach(profile.waitlist,function(u,i){
-      if(u!==undefined && u.user===req.body.user && u.device===req.body.device){
-        console.log('after if: '+i);
-        profile.waitlist.splice(i,1);
-        profile.accepted.push(u);
+  Profile.findById(req.params.id, function (err, ownerProfile) {
+    if (err) { return handleError(res, err); }
+    if(!ownerProfile) { return res.send(404); }
+
+    _.forEach(ownerProfile.waitlist,function(u,i){
+      if(u!==undefined && u.user==req.body.user && u.device==req.body.device){
+        ownerProfile.waitlist.splice(i,1);
+        ownerProfile.accepted.push(u);
       }
     });
-    profile.save(function (err) {
+    ownerProfile.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.json(200);
     });

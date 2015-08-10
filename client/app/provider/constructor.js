@@ -5,7 +5,7 @@ angular.module('dascentApp')
     $stateProvider
       .state('construct', {
         url: '/constructor',
-        templateUrl: 'app/constructor/constructor.html',
+        templateUrl: 'app/provider/constructor.html',
         controller: 'ConstructorCtrl',
         authenticate: true,
         access: 'constructor'

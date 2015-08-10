@@ -4,16 +4,18 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('AddCtrl', function($scope, $cordovaBarcodeScanner) {
+  .controller('AddCtrl', function($scope, $cordovaBarcodeScanner, ManDev) {
 
    $scope.scanBarcode= function(){
      $cordovaBarcodeScanner.scan().then(function(imgData){
-       alert(imgData.text);
-       console.log(imgData.format);
-       console.log(imgData.cancelled);
+
+       ManDev.addDevice(imgData.text).then(function(){
+         alert("Device "+imgData.text+" added successfully");
+       }).catch(function(error){
+         alert(error.message);
+       });
      }, function(error){
-       console.log("check");
-       console.log(error);
+       alert(error.message);
      });
    }
   });
