@@ -211,8 +211,8 @@ angular.module('dascentApp')
                 });
             });
           })
-          .error(function (data) {
-            console.log(data);
+          .error(function (error) {
+            def.reject(error);
           });
         return def.promise;
       },

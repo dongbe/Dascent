@@ -5,6 +5,7 @@ angular.module('dascentApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
+  'angular-loading-bar',
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
@@ -12,7 +13,7 @@ angular.module('dascentApp', [
   'vcRecaptcha',
   'ngFileUpload'
 ])
-  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,uiGmapGoogleMapApiProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,uiGmapGoogleMapApiProvider,cfpLoadingBarProvider) {
     $urlRouterProvider
       .otherwise('/');
 
@@ -23,6 +24,7 @@ angular.module('dascentApp', [
       v: '3.17',
       libraries: 'weather,geometry,visualization'
     });
+    cfpLoadingBarProvider.includeSpinner=true;
   })
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {

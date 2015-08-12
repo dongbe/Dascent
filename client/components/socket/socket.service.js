@@ -45,7 +45,6 @@ angular.module('dascentApp')
             array.splice(index, 1, item);
             event = 'updated';
           } else {
-            console.log(item);
             array.push(item);
           }
 

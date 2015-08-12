@@ -1,17 +1,16 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('ConstructorCtrl', function ($scope, Auth, $timeout, ManDev, $state, $http, socket, Modal) {
+  .controller('ConstructorCtrl', function ($scope, Auth, $timeout, ManDev, $state, $http, socket, Modal, cfpLoadingBar,notifications) {
 
     $scope.constructor = Auth.getCurrentUser; // information provider
-    $scope.loading = false;
+    $scope.importDevice = false;
     $scope.toggle = true;
     $scope.disable = false;
     $scope.devices = [];
 
     $http.get('/api/users/'+$scope.constructor()._id+'/devices').success(function(data){
       $scope.devices=data;
-      $scope.loading = true;
       socket.syncUpdates('device', $scope.devices);
     }).error();
 
@@ -19,30 +18,41 @@ angular.module('dascentApp')
       $scope.disable = true;
     }
     $scope.createDevice = function(fileContent){
-      if(fileContent) Modal.confirm.browse(function (fileContent) {
-        var lines;
-        lines = fileContent.split('\n');
-        for (var i = 1; i < lines.length; i++) {
-          var device = lines[i].split(',');
-          ManDev.createDevice({
-            name: device[0],
-            description: device[1],
-            serial: device[2],
-            templateId: device[3],
-            group: [device[4]]
-          });
-        }
-        $state.go('construct');
-      });
+      if(fileContent) {
+        Modal.confirm.browse(function (fileContent) {
+          var lines;
+          lines = fileContent.split('\n');
+          for (var i = 1; i < lines.length; i++) {
+            var device = lines[i].split(',');
+            ManDev.createDevice({
+              name: device[0],
+              description: device[1],
+              serial: device[2],
+              templateId: device[3],
+              group: [device[4]]
+            });
+          }
+          $state.go('construct');
+        });
+      }else{
+        $scope.error.message="veuillez choisir un fichier!!";
+      }
     };
 
     $scope.getDevices = function () {
+      $scope.importDevice=true;
       ManDev.importDevice().then(function () {
         $state.go('construct');
+        //$scope.$broadcast("import:completed");
       })
         .catch(function (err) {
-          err = err.data;
-          console.log(err);
+          if(err){
+            err = err.data;
+            console.log(err);
+          }else{
+            notifications.showError("No internet connection");
+          }
+
 
         });
     };

@@ -40,16 +40,16 @@ exports.create = function(req, res) {
         dev=req.body;
         dev.group=[];
         dev.group[0]="LORA";
-        Device.create(dev, function(err, devic) {
+        Device.create(dev, function(err, lora) {
           if(err) { return handleError(res, err); }
-          if(!devic) { return res.send(404); }
-          return res.json(201, devic);
+          if(!lora) { return res.send(404); }
+          return res.json(201, lora);
         });
       }else{
-        Device.create(req.body, function(err, devic) {
+        Device.create(req.body, function(err, newDevice) {
           if(err) { return handleError(res, err); }
-          if(!devic) { return res.send(404); }
-          return res.json(201, devic);
+          if(!newDevice) { return res.send(404); }
+          return res.json(201, newDevice);
         });
       }
 

@@ -73,10 +73,15 @@
   font: 10px sans-serif;
   background-color: steelblue;
   text-align: right;
-  padding: 3px;
-  margin: 5px;
+  padding: 2px;
   color: white;
   box-shadow: 2px 2px 2px #666;
+}
+.charty div{
+  font: 10px sans-serif;
+  background-color: #09990d;
+  text-align: right;
+  color: white;
 }
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
