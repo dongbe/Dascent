@@ -95,5 +95,4 @@ exports.postJSON = function(data,device,onResult){
   });
   post_st_req.end();
 
-
 };

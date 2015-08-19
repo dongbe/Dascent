@@ -40,16 +40,16 @@ exports.create = function(req, res) {
         dev=req.body;
         dev.group=[];
         dev.group[0]="LORA";
-        Device.create(dev, function(err, devic) {
+        Device.create(dev, function(err, lora) {
           if(err) { return handleError(res, err); }
-          if(!devic) { return res.send(404); }
-          return res.json(201, devic);
+          if(!lora) { return res.send(404); }
+          return res.json(201, lora);
         });
       }else{
-        Device.create(req.body, function(err, devic) {
+        Device.create(req.body, function(err, newDevice) {
           if(err) { return handleError(res, err); }
-          if(!devic) { return res.send(404); }
-          return res.json(201, devic);
+          if(!newDevice) { return res.send(404); }
+          return res.json(201, newDevice);
         });
       }
 
@@ -151,8 +151,9 @@ exports.getData= function(){
   Device.find({}).populate('_constructor').exec(function (err, devices) {
     if(err) { console.log('error: '+err)}
     if(!devices){console.log('no devices found');}
+
     _.forEach(devices,function(device){
-      if(device._owner && device._constructor){
+      if(device._owner && device._constructor && device.group[0]!='AE'){
         _.forEach (device.streams, function(stream){
           var config = {
             host: 'api.orange.com',
@@ -194,8 +195,40 @@ exports.getData= function(){
           });
         });
       }
+      else if(device._owner && device._constructor && device.group[0]=='AE'){
+        var stconfig={
+          host:'iotsandbox.cisco.com',
+          port:8888,
+          method:'GET',
+          path:'/stdacsent/stdtAE/stdtContainer2?rcn=4',
+          headers:{
+            'Content-Type': 'application/json',
+            'X-M2M-Origin': '//iotsandbox.cisco.com:10000',
+            'X-M2M-RI': 12345
+          }
+        };
 
-    });
+        rest.getJSON(stconfig, function(statusCode, result) {
+          if (result) {
+            _.forEach(result.ch, function (res) {
+              var time = res.lt.slice(0,4)+'-'+res.lt.slice(4,6)+'-'+res.lt.slice(6,11)+':'+res.lt.slice(11,13)+':'+res.lt.slice(13,15);
+              var date = new Date(time);
+              if (res.rty == 4 && date>device.lastPost) {
+                console.log('test');
+                device.streams[0].lastValue= res.con;
+                device.lastPost=date;
+                device.streams[0].values.push({value:res.con,time:date});
+
+                device.save(function(err) {
+                  if (err) console.log(err);
+                });
+              }
+
+            });
+          }
+      });
+      }
+  });
   });
 };
 

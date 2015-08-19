@@ -9,11 +9,13 @@ var router = express.Router();
 
 router.get('/', auth.hasRole('admin'), controller.index);
 router.post('/', controller.create);
+router.post('/:id/confirm', auth.isAuthenticated(), controller.confirm);
 router.get('/:id', controller.show);
 router.put('/:id', auth.isAuthenticated(),controller.update);
 router.patch('/:id', auth.isAuthenticated(),controller.update);
 router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.post('/:id/confirm', auth.isAuthenticated(), controller.confirm);
+
 router.post('/:id/discard', auth.isAuthenticated(), controller.discard);
 router.post('/:id/cancel', auth.isAuthenticated(), controller.cancel);
+router.post('/:id/deletedevice/:dev', auth.isAuthenticated(), controller.deleteDevice);
 module.exports = router;

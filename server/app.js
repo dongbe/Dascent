@@ -41,7 +41,7 @@ server.listen(config.port, config.ip, function () {
 setInterval(function(){
   console.log('polling mode ....');
   data();
-}, 1 * 150000 * 1000);
+}, 1 * 500000 * 1000);
 
 // Expose app
 exports = module.exports = app;
