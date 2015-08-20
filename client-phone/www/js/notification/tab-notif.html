@@ -4,6 +4,7 @@
     </button>
   </ion-nav-buttons>
   <ion-content class="padding">
+    <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
     <h4>Pending requests</h4>
     <div ng-show="!profile.waiting.length">Vous n'avez pas de demandes</div>
     <div class="list card" ng-hide="!profile.waiting.length"  ng-repeat="device in profile.waiting" >

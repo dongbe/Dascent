@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('SettingsCtrl', function ($scope, User, Auth, notifications, Upload, Modal) {
+  .controller('SettingsCtrl', function ($scope, User, Auth, notifications, Upload) {
     $scope.errors = {};
     $scope.user=Auth.getCurrentUser();
     $scope.isConstructor = Auth.isConstructor();
@@ -26,35 +26,60 @@ angular.module('dascentApp')
 
     $scope.update = function(form) {
       $scope.submitted = true;
-
       if(form.$valid) {
-       Auth.update({
-          name: $scope.user.name,
-          lastname: $scope.user.lastname,
-          email: $scope.user.email
-        })
-          .then( function() {
-            // Account created, redirect to home
-            notifications.showSuccess('Account successfully updated!!');
-          })
-          .catch( function(err) {
-            err = err.data;
-            $scope.errors = {};
-            $scope.response=false;
 
-            // Update validity of form fields that match the mongoose errors
-            angular.forEach(err.errors, function(error, field) {
-              form[field].$setValidity('mongoose', false);
-              $scope.errors[field] = error.message;
+        if($scope.isConstructor){
+          Auth.updateProvider({
+            name: $scope.user.name,
+            lastname: $scope.user.lastname,
+            email: $scope.user.email
+          })
+            .then( function() {
+              // Account created, redirect to home
+              notifications.showSuccess('Account successfully updated!!');
+            })
+            .catch( function(err) {
+              err = err.data;
+              $scope.errors = {};
+              $scope.response=false;
+
+              // Update validity of form fields that match the mongoose errors
+              angular.forEach(err.errors, function(error, field) {
+                form[field].$setValidity('mongoose', false);
+                $scope.errors[field] = error.message;
+              });
             });
-          });
+        }else{
+          Auth.update({
+            name: $scope.user.name,
+            lastname: $scope.user.lastname,
+            email: $scope.user.email,
+            isskey:user.isskey,
+            idclient:user.idclient
+          })
+            .then( function() {
+              // Account created, redirect to home
+              notifications.showSuccess('Account successfully updated!!');
+            })
+            .catch( function(err) {
+              err = err.data;
+              $scope.errors = {};
+              $scope.response=false;
+
+              // Update validity of form fields that match the mongoose errors
+              angular.forEach(err.errors, function(error, field) {
+                form[field].$setValidity('mongoose', false);
+                $scope.errors[field] = error.message;
+              });
+            });
+        }
       }
     };
 
     $scope.onFileSelect = function(image) {
       // This is how I handle file types in client side
       if (image.type !== 'image/png' && image.type !== 'image/jpeg') {
-        alert('Only PNG and JPEG are accepted.');
+        notifications.showError('Only PNG and JPEG are accepted.');
         return;
       }
       $scope.uploadInProgress = true;
@@ -78,10 +103,10 @@ angular.module('dascentApp')
       });
     };
   })
-  .directive("ngFileSelect",function(){
+  .directive('ngFileSelect',function(){
     return {
       link: function($scope,el){
-        el.bind("change", function(e){
+        el.bind('change', function(e){
           var reader = new FileReader();
           reader.onload = function (loadEvent) {
             $scope.$apply(function () {
@@ -92,5 +117,5 @@ angular.module('dascentApp')
           reader.readAsDataURL(e.target.files[0]);
         });
       }
-    }
+    };
   });

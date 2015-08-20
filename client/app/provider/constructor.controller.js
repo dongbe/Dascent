@@ -43,6 +43,25 @@ angular.module('dascentApp')
       $scope.importDevice=true;
       ManDev.importDevice().then(function () {
         $state.go('construct');
+        $scope.importDevice=false;
+        //$scope.$broadcast("import:completed");
+      })
+        .catch(function (err) {
+          if(err){
+            var error = err.message;
+            notifications.showError('Datavenue: '+error);
+          }else{
+            notifications.showError("No internet connection");
+          }
+        });
+    };
+
+
+    $scope.getStDevices = function () {
+      $scope.importDevice=true;
+      ManDev.importStDevice().then(function () {
+        $state.go('construct');
+        $scope.importDevice=false;
         //$scope.$broadcast("import:completed");
       })
         .catch(function (err) {
@@ -56,15 +75,7 @@ angular.module('dascentApp')
 
         });
     };
-    //console.log($scope.devices);
 
-    /*
-     $http.get('/api/devices/').success(function(awesomeThings) {
-
-     $scope.awesomeThings = awesomeThings;
-     socket.syncUpdates('thing', $scope.awesomeThings);
-     });
-     */
     $scope.delete=function(device){
       $http.delete('/api/devices/'+device._id);
       angular.forEach($scope.devices, function(u, i) {

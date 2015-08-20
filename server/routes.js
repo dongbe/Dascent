@@ -11,7 +11,6 @@ module.exports = function(app) {
   // Insert routes below
   app.use('/api/notifications', require('./api/notification'));
   app.use('/api/profiles', require('./api/profile'));
-  app.use('/api/feeds', require('./api/feed'));
   app.use('/api/devices', require('./api/device'));
   app.use('/api/users', require('./api/user'));
 

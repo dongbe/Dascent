@@ -13,22 +13,22 @@ angular.module('dascentApp')
     var config = {};
 
     return {
-      config: function(){
-        if(Auth.isLoggedIn() && !Auth.isAdmin()) {
-          currentUser = Auth.getCurrentUser();
-        }
+      config: function(standard){
+          if(Auth.isLoggedIn() && !Auth.isAdmin()) {
+            currentUser = Auth.getCurrentUser();
+          }
 
-        if (currentUser && Auth.isLoggedIn()) {
-          //currentDevices = User.getDevices({id: currentUser._id});
-          config = {
-            headers: {
-              'X-ISS-Key': currentUser.isskey,
-              'X-OAPI-Key': currentUser.idclient,
-              'Content-Type': 'application/json'
-            }
-          };
+          if (currentUser && Auth.isLoggedIn()) {
+            //currentDevices = User.getDevices({id: currentUser._id});
+            config = {
+              headers: {
+                'X-ISS-Key': currentUser.isskey,
+                'X-OAPI-Key': currentUser.idclient,
+                'Content-Type': 'application/json'
+              }
+            };
+          }
 
-        }
       },
       confirm: function (profile, callback) {
         var cb = callback || angular.noop;
@@ -159,59 +159,79 @@ angular.module('dascentApp')
 
       //get a device from datavenue API and save information in local database
       importDevice: function (callback) {
+
+        var cb = callback || angular.noop;
+        var def=$q.defer();
+          this.config();
+          $http.get('https://api.orange.com/datavenue/v1/datasources', config)
+            .success(function (data) {
+
+              angular.forEach(data, function(d){
+                var deferred = $q.defer();
+                var device = {};
+                device.ds_id = d.id;
+                device.name = d.name;
+                device.description = d.description;
+                device.serial = d.serial;
+                device._constructor = currentUser._id;
+                device.group = d.group;
+                device.streams = [];
+                device.apikeys = [];
+
+                $q.all([
+                  $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/streams',config).success(function(data){deferred.resolve(data);}),
+                  $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/keys',config).success(function(data){deferred.resolve(data);})])
+                  .then(function (ret) {
+                    var streams=[];
+                    var apikeys=[];
+                    if (ret[1].data){
+                      for (var y in ret[1].data) {
+                        for(var x in ret[1].data[y].rights) {
+                          if (ret[1].data[y].rights[x]==='GET') {
+                            apikeys.push(ret[1].data[y].value);
+                          }
+                        }
+                      }
+                    }
+
+                    if (ret[0].data){
+                      angular.forEach(ret[0].data, function(st) {
+                        streams.push({
+                          id: st.id,
+                          name: st.name,
+                          lastValue: st.lastValue?st.lastValue:{},
+                          values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
+                          lastPost: new Date()
+                        });
+                      });
+                    }
+
+                    device.streams=streams;
+                    device.apikeys=apikeys;
+                    $http.post('/api/devices',device).success(function(data){
+                      def.resolve(data);
+                    }).error(function(error){
+                      def.reject(error);
+                    });
+                  });
+              });
+            })
+            .error(function (error) {
+              console.log(error);
+              def.reject(error);
+            });
+        return def.promise;
+      },
+      importStDevice: function (callback) {
         this.config();
         var cb = callback || angular.noop;
         var def=$q.defer();
-        $http.get('https://api.orange.com/datavenue/v1/datasources', config)
+        console.log(currentUser._id);
+        $http.get('/api/users/'+currentUser._id+'/des')
           .success(function (data) {
-
-            angular.forEach(data, function(d){
-              var deferred = $q.defer();
-              var device = {};
-              device.ds_id = d.id;
-              device.name = d.name;
-              device.description = d.description;
-              device.serial = d.serial;
-              device._constructor = currentUser._id;
-              device.group = d.group;
-              device.streams = [];
-              device.apikeys = [];
-
-              $q.all([
-                $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/streams',config).success(function(data){deferred.resolve(data);}),
-                $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/keys',config).success(function(data){deferred.resolve(data);})])
-                .then(function (ret) {
-                  var streams=[];
-                  var apikeys=[];
-
-                  for (var y in ret[1].data) {
-                    for(var x in ret[1].data[y].rights) {
-                      if (ret[1].data[y].rights[x]==='GET') {
-                        apikeys.push(ret[1].data[y].value);
-                      }
-                    }
-                  }
-
-                  angular.forEach(ret[0].data, function(st) {
-                    streams.push({
-                      id: st.id,
-                      name: st.name,
-                      lastValue: st.lastValue?st.lastValue:{},
-                      values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
-                      lastPost: new Date()
-                    });
-                  });
-                  device.streams=streams;
-                  device.apikeys=apikeys;
-                  $http.post('/api/devices',device).success(function(data){
-                    def.resolve(data);
-                  }).error(function(error){
-                    def.reject(error);
-                  });
-                });
-            });
+            def.resolve(data);
           })
-          .error(function (error) {
+          .error(function(error){
             def.reject(error);
           });
         return def.promise;

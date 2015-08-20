@@ -17,33 +17,47 @@ angular.module('dascentApp')
         var r = h/2;
         var data = [];
         var devices=[];
+        var group={};
+        var object={};
         var color = d3.scale.category10();
         var grp=[{name:'unknown',total:0,used:0}];
 
-
-        scope.$on("cfpLoadingBar:completed",function(){
+        scope.$on('cfpLoadingBar:completed',function(){
           init++;
-          if(scope.$parent.devices && init==2 && !loading) {
+          if(scope.$parent.devices && init===2 && !loading) {
+            scope.$parent.importDevice=false;
             for (var i in scope.$parent.devices){
               if(!scope.$parent.devices[i].group){
                 grp[0].total=grp[0].total+1;
               }else{
-                var group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
-                if(group!=undefined) group.total++; else grp.push({name:scope.$parent.devices[i].group[0],total:1});
+                 group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
+                if(group!==undefined) {
+                  group.total++;
+                } else {
+                  grp.push({name:scope.$parent.devices[i].group[0],total:1});
+                }
               }
               if(scope.$parent.devices[i].hasOwnProperty('_owner')){
-                var group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
+                group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
                 group.used++;
-                var object=_.find(data,{label:"Used"});
-                if(object==undefined)data.push({label:"Used",value:1}); else object.value++;
-              }else{
-                var object=_.find(data,{label:"Unused"});
-                if(object==undefined)data.push({label:"Unused",value:1});
-                else
+                object=_.find(data,{label:'Used'});
+                if(object===undefined){
+                  data.push({label:'Used',value:1});
+                } else {
                   object.value++;
+                }
+              }else{
+                object=_.find(data,{label:'Unused'});
+                if(object===undefined){
+                  data.push({label:'Unused',value:1});
+                }
+                else
+                {
+                  object.value++;
+                }
               }
             }
-            var d3=$window.d3;
+
             var x = d3.scale.linear()
               .domain([0, scope.$parent.devices.length])
               .range([0, 500]);
@@ -55,40 +69,44 @@ angular.module('dascentApp')
               .append('text')
               .attr('class', 'left')
               .text(function(d) { return d.name; })
-              .append('div').transition().ease('elastic')
+              .append('div')
               .style('width', function(d) { return x(d.total) + 'px'; })
-              .text(function(d) { return d.total; });
+              .text(function(d) { return d.total; })
+              .append('div').attr('class', 'charty')
+              .style('background-color', '#09990d')
+              .style('width', function(d) { return x(d.used) + 'px'; })
+              .text(function(d) { return d.used; });
 
             var vis = d3.select('#chart')
-              .append("svg:svg")
-              .data([data]).attr("width", w).attr("height", h)
-              .append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+              .append('svg:svg')
+              .data([data]).attr('width', w).attr('height', h)
+              .append('svg:g').attr('transform', 'translate(' + r + ',' + r + ')');
             var pie = d3.layout.pie().value(function(d){return d.value;});
 
 // declare an arc generator function
             var arc = d3.svg.arc().outerRadius(r);
 
 // select paths, use arc generator to draw
-            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-            arcs.append("svg:path")
-              .attr("fill", function(d, i){
+            var arcs = vis.selectAll('g.slice').data(pie).enter().append('svg:g').attr('class', 'slice');
+            arcs.append('svg:path')
+              .attr('fill', function(d, i){
                 return color(i+2);
               })
-              .attr("d", function (d) {
+              .attr('d', function (d) {
                 return arc(d);
               });
 
 // add the text
-            arcs.append("svg:text").attr("transform", function(d){
+            arcs.append('svg:text').attr('transform', function(d){
               d.innerRadius = 0;
               d.outerRadius = r;
-              return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+              return 'translate(' + arc.centroid(d) + ')';}).attr('text-anchor', 'middle').text( function(d, i) {
                 return data[i].value+' '+data[i].label+' devices';}
             );
           }
         });
 
-        if(scope.$parent.devices && init==0){
+        if(scope.$parent.devices && init===0){
           if(!scope.$parent.importDevice){
             loading=true;
             for (var i in scope.$parent.devices){
@@ -96,22 +114,21 @@ angular.module('dascentApp')
                 grp[0].total=grp[0].total+1;
               }else{
                 var group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
-                if(group!=undefined) group.total++; else grp.push({name:scope.$parent.devices[i].group[0],total:1,used:0});
+                if(group!==undefined) group.total++; else grp.push({name:scope.$parent.devices[i].group[0],total:1,used:0});
               }
               if(scope.$parent.devices[i].hasOwnProperty('_owner')){
                 var group= _.find(grp,{name:scope.$parent.devices[i].group[0]});
                 group.used++;
-                var object=_.find(data,{label:"Used"});
-                if(object==undefined)data.push({label:"Used",value:1}); else object.value++;
+                var object=_.find(data,{label:'Used'});
+                if(object===undefined)data.push({label:'Used',value:1}); else object.value++;
               }else{
-                var object=_.find(data,{label:"Unused"});
-                if(object==undefined)data.push({label:"Unused",value:1});
+                var object=_.find(data,{label:'Unused'});
+                if(object===undefined)data.push({label:'Unused',value:1});
                 else
                   object.value++;
               }
             }
-            console.log(grp);
-            var d3=$window.d3;
+
             var x = d3.scale.linear()
               .domain([0, scope.$parent.devices.length])
               .range([0, 500]);
@@ -134,29 +151,29 @@ angular.module('dascentApp')
 
 
             var vis = d3.select('#chart')
-              .append("svg:svg")
-              .data([data]).attr("width", w).attr("height", h)
-              .append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+              .append('svg:svg')
+              .data([data]).attr('width', w).attr('height', h)
+              .append('svg:g').attr('transform', 'translate(' + r + ',' + r + ')');
             var pie = d3.layout.pie().value(function(d){return d.value;});
 
 // declare an arc generator function
             var arc = d3.svg.arc().outerRadius(r);
 
 // select paths, use arc generator to draw
-            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
-            arcs.append("svg:path")
-              .attr("fill", function(d, i){
+            var arcs = vis.selectAll('g.slice').data(pie).enter().append('svg:g').attr('class', 'slice');
+            arcs.append('svg:path')
+              .attr('fill', function(d, i){
                 return color(i+2);
               })
-              .attr("d", function (d) {
+              .attr('d', function (d) {
                 return arc(d);
               });
 
 // add the text
-            arcs.append("svg:text").attr("transform", function(d){
+            arcs.append('svg:text').attr('transform', function(d){
               d.innerRadius = 0;
               d.outerRadius = r;
-              return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+              return 'translate(' + arc.centroid(d) + ')';}).attr('text-anchor', 'middle').text( function(d, i) {
                 return data[i].value+' '+data[i].label+' devices';}
             );
           }

@@ -1,6 +1,6 @@
 'use strict';
 angular.module('dascentApp')
-  .controller('ProfilCtrl', function ($scope,$q, $http, Auth, $state, $ionicPlatform, ManDev, $cordovaDevice, uiGmapGoogleMapApi) {
+  .controller('ProfilCtrl', function ($scope,$q, $http, Auth, $state, $ionicPlatform, $cordovaBarcodeScanner, ManDev, $cordovaDevice, uiGmapGoogleMapApi) {
 
     $scope.followings=[];
     $scope.currentUser=Auth.getCurrentUser;
@@ -9,6 +9,19 @@ angular.module('dascentApp')
     $scope.points=[];
     $scope.polylines=[];
     $scope.geolocationSetting=false;
+
+    $scope.scanBarcode= function(){
+      $cordovaBarcodeScanner.scan().then(function(imgData){
+
+        ManDev.addDevice(imgData.text).then(function(){
+          alert("Device "+imgData.text+" added successfully");
+        }).catch(function(error){
+          alert(error.message);
+        });
+      }, function(error){
+        alert(error.message);
+      });
+    };
 
     $scope.changeGeolocationSetting= function(trackingMode){
       if(trackingMode){
@@ -20,7 +33,7 @@ angular.module('dascentApp')
           }
       }
       $scope.device.tracking=trackingMode;
-      ManDev.update($scope.device);
+      ManDev.updateDevice($scope.device);
     };
 
     $scope.logout = function() {
@@ -48,7 +61,7 @@ angular.module('dascentApp')
         .success(function(data){
 
           $scope.profile=data;
-          var deviceID='91435c1dd2183934';//$cordovaDevice.getUUID();
+          var deviceID=$cordovaDevice.getUUID();
           var nope=false;
           var phone=false;
           if ($scope.profile.watchs){
@@ -127,7 +140,7 @@ angular.module('dascentApp')
           }
           uiGmapGoogleMapApi.then(function(map) {
             var last_element = $scope.points[$scope.points.length-1];
-            $scope.map = {center:last_element.coords,zoom: 16};
+            $scope.map = last_element?{center:last_element.coords,zoom: 16}:{};
             geolocalisation.map=map;
           });
         })
@@ -221,7 +234,7 @@ angular.module('dascentApp')
       }
         uiGmapGoogleMapApi.then(function(map) {
           var last_element = $scope.points[$scope.points.length-1];
-          $scope.map = {center:last_element.coords,zoom: 16};
+          $scope.map = last_element?{center:last_element.coords,zoom: 16}:{};
           geolocalisation.map=map;
         });
     })

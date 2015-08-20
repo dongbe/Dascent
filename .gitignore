@@ -8,6 +8,8 @@ dist
 data
 server/config/local.env.js
 server/config/environment
-server/images
+server/images/
+server/tmp/
 *.iml
 client-phone/www/lib
+.DS_Store

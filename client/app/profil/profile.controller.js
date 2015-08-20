@@ -11,7 +11,7 @@ angular.module('dascentApp')
     $scope.polylines=[];
     var presence=false;
 
-    $scope.init= $http.get('/api/users/'+$scope.currentUser()._id+'/profiles')
+    $http.get('/api/users/'+$scope.currentUser()._id+'/profiles')
       .success(function(data){
       $scope.profile=data;
       socket.syncProfileUpdates('profile',$scope.profile);
@@ -20,7 +20,7 @@ angular.module('dascentApp')
 
       //get followings profile information
       for(var i in $scope.profile.watchs){
-        if($scope.profile.watchs[i].device.group[0]==='GPS'){
+        if($scope.profile.watchs[i].device.group.indexOf('GPS')>-1){
           var point={};
           var location={};
           var polyline={};
@@ -28,7 +28,6 @@ angular.module('dascentApp')
           var latitudes=[];
           var existPoint=true;
           angular.forEach($scope.profile.watchs[i].device.streams, function(stream){
-
             if(stream.lastValue && stream.name==='GPS'){
               point.latitude = stream.lastValue.latitude;
               point.longitude= stream.lastValue.longitude;
@@ -40,8 +39,8 @@ angular.module('dascentApp')
               location.options= {
                 draggable: false,
                 labelContent: $scope.profile.watchs[i].device.name,
-                labelAnchor: "22 0",
-                labelClass: "marker-labels"
+                labelAnchor: '22 0',
+                labelClass: 'marker-labels'
               };
             }
             else {
@@ -76,17 +75,35 @@ angular.module('dascentApp')
           nope=false;
         }
       }
+    })
+      .error(function(err){console.log(err);})
+      .then(function(){
         uiGmapGoogleMapApi.then(function(map) {
-          map.visualRefresh=true;
+          //map.visualRefresh=true;
           var last_element =$scope.points.length?$scope.points[$scope.points.length-1]:{};
-          $scope.map = {center:last_element.coords,zoom: 16, pan:1};
+          $scope.map = last_element?{center:last_element.coords,zoom: 16, pan:1}:{};
 
         });
-    })
-      .error(function(err){console.log(err);});
+      });
 
     $scope.type = function(device){
       return device.type;
+    };
+    $scope.isGPS = function(device){
+      //console.log(device.device.group.indexOf('GPS')>-1);
+      if(device.device.group.indexOf('GPS')>-1){
+        return true;
+      }
+      return false;
+    };
+    $scope.deleteDevice=function(watch){
+      console.log(watch._id);
+      $http.post('/api/profiles/'+$scope.currentUser()._profile+'/deletedevice/'+watch._id).success(function(data){console.log(data)}).error(function(err){console.log(err)});
+      angular.forEach($scope.profile.watchs, function(u, i) {
+        if (u === watch) {
+          $scope.profile.watchs.splice(i, 1);
+        }
+      });
     };
     $scope.isActive = function(route) {
       return route === $location.path();
@@ -107,7 +124,7 @@ angular.module('dascentApp')
               notifications.showSuccess('Demande envoyé!');
 
         }).catch(function(err){
-          notifications.showError('Oops! Something bad just happened!'+err);
+          notifications.showError('Oops! Device '+err);
         });
       }else{
         notifications.showError('Vous avez deja souscrit à ce capteur');
@@ -133,7 +150,7 @@ angular.module('dascentApp')
                 notifications.showSuccess('Capteur enregistré!');
 
           }).catch(function(err){
-            notifications.showError('Oops! Something bad just happened!'+err);
+            notifications.showError('Oops! Device '+err);
           });
       }else{
         notifications.showError('Vous etes dèja proprietaire de ce capteur');
@@ -225,8 +242,8 @@ angular.module('dascentApp')
         showWindow: false,
         options: {
           labelContent: '[46,-77]',
-          labelAnchor: "22 0",
-          labelClass: "marker-labels"
+          labelAnchor: '22 0',
+          labelClass: 'marker-labels'
         }
       },
       {
@@ -237,8 +254,8 @@ angular.module('dascentApp')
         showWindow: false,
         options: {
           labelContent: 'DRAG ME!',
-          labelAnchor: "22 0",
-          labelClass: "marker-labels",
+          labelAnchor: '22 0',
+          labelClass: 'marker-labels',
           draggable: true
         }
       },
@@ -250,13 +267,15 @@ angular.module('dascentApp')
         showWindow: false,
         options: {
           labelContent: '[35,-125]',
-          labelAnchor: "22 0",
-          labelClass: "marker-labels"
+          labelAnchor: '22 0',
+          labelClass: 'marker-labels'
         }
       }];
 
     $scope.notif =function(){
-      if($scope.profile.length) return false;
+      if($scope.profile.length){
+        return false;
+      }
       else{
         for(var x in $scope.profile.watchs){
           for(var s in $scope.profile.watchs[x].device.streams){
@@ -284,17 +303,17 @@ angular.module('dascentApp')
         for (var i=0;i<=scope.loraReader.length-2;i=i+2){
           extracted.push(parseInt(scope.loraReader.slice(i,i+2),16));
         }
-        var display = '<div class="row">' +
-          '<div class="col-md-2">LED: '+extracted[0]+'</div>'+
-          '<div class="col-md-3">Pression: '+ (extracted[1]+extracted[2])/10+' hPa</div>'+
-          '<div class="col-md-3">Temperature: '+(extracted[3]+extracted[4])/100+' °C</div>'+
-          '<div class="col-md-4"><div id="chart" class="battery" style="width:100px;" ></div></div>'+
-          '</div>';
+        var display = "<div class='row'>" +
+          "<div class='col-md-2'>LED: "+extracted[0]+"</div>"+
+          "<div class='col-md-3'>Pression: "+ (extracted[1]+extracted[2])/10+" hPa</div>"+
+          "<div class='col-md-3'>Temperature: "+(extracted[3]+extracted[4])/100+" °C</div>"+
+          "<div class='col-md-4'><div id='chart' class='battery' style='width:100px;' ></div></div>"+
+          "</div>";
         $compile(display)(scope);
         element.append(display);
         d3.select('#chart')
           .append('div').attr('class', 'left').transition().ease('elastic').style('width', extracted[7]+'px').text(extracted[7] +'%');
 
       }
-    }
+    };
   });

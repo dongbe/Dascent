@@ -3,6 +3,7 @@
 var User = require('./user.model');
 var Device = require('../device/device.model');
 var Profile = require('../profile/profile.model');
+var rest = require('../../components/polling');
 var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
@@ -43,7 +44,7 @@ exports.create = function (req, res, next) {
         var parsedData = JSON.parse(data);
         if (parsedData.success) {
           var newUser = new User(req.body);
-          if (newUser.isskey) {
+          if (newUser.isskey!==undefined) {
             newUser.role = 'constructor';
           } else {
             //create a profile for users if not device provider
@@ -54,9 +55,7 @@ exports.create = function (req, res, next) {
               watchs: [],
               waiting: []
             }, function (err, profile) {
-              if (err) {
-                return next(err);
-              }
+              if (err) {return next(err);}
               newUser._profile = profile._id;
               newUser.avatar = '90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg';//default picture on account creation
             });
@@ -110,7 +109,7 @@ exports.update = function (req, res) {
   }
   User.findById(req.params.id, function (err, user) {
     if (err) {
-      return handleError(res, err);
+      return res.send(401);
     }
     if (!user) {
       return res.send(404);
@@ -118,7 +117,7 @@ exports.update = function (req, res) {
     var updated = _.merge(user, req.body);
     updated.save(function (err) {
       if (err) {
-        return handleError(res, err);
+        return res.json(401);
       }
       return res.json(200, user);
     });
@@ -170,7 +169,7 @@ exports.createDevices = function (req, res, next) {
   device._constructor = userId;
   device.save(function (err, device) { // don't ever give out the password or salt
     if (err) return validationError(res, err);
-    if (!device) return res.json(401);
+    if (!device) return res.json(404);
     res.json(device);
   });
 };
@@ -186,10 +185,10 @@ exports.confirm = function (req, res) {
   console.log(req);
   Device.findById(req.body.device, function (err, device) {
     if (err) return res.send(500, err);
-    if (!device) return res.json(401);
+    if (!device) return res.json(404);
     User.findById(req.user._id, '-salt -hashedPassword', function (err, user) {
       if (err) return res.send(500, err);
-      if (!user) return res.json(401);
+      if (!user) return res.json(404);
       user.watchs.push(device._id);
       user.save(function (err) {
         if (err) return validationError(res, err);
@@ -211,7 +210,7 @@ exports.devices = function (req, res) {
     _constructor: userId
   }, '-location -streams', function (err, devices) { // don't ever give out the password or salt
     if (err) return res.send(500, err);
-    if (!devices) return res.json(401);
+    if (!devices) return res.json(404);
     return res.json(200, devices);
   });
 };
@@ -225,18 +224,19 @@ exports.devices = function (req, res) {
 exports.profile = function (req, res) {
   Profile.findById(req.user._profile).populate('waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting', '-salt -hashedPassword').exec(function (err, ff) { // don't ever give out the password or salt
     if (err) return res.send(500, err);
-    if (!ff) return res.json(401);
+    if (!ff) return res.json(404);
     return res.json(200, ff);
   });
 };
 
 
 /**
- * Add a device to the platform
+ * Add a device to a profile
  * @param req
  * @param res
  */
 exports.addDevice = function (req, res) {
+
   var userId = req.user._id;//current user
   var serial = req.body.serial;// serial device
   if (req.body.password) {
@@ -245,25 +245,27 @@ exports.addDevice = function (req, res) {
   Device.findOne({
     serial: serial
   }, '-location -streams', function (err, device) { // don't ever give out the password or salt
+
     if (err) return res.send(500, err);
-    if (!device) return res.json(401);
-
+    if (!device) {
+      return res.send(404);
+    }
     //change ownership
-
     //Add device to my profile's lists
     Profile.findOne({
       user: userId
     }, function (err, follower) {
 
       if (err) return res.send(500, err);
-      if (!follower) return res.json(401);
+      if (!follower) return res.json(404);
 
       //if password that means owner so
       // create follower list update
       // device information
       if (pass) {
         //add device to watch list
-        if (!device._owner) {
+        console.log(device._owner);
+        //if (device._owner==undefined) {
           follower.watchs.push({device: device._id, type: true});
           follower.save(function (err) {
             if (err) return validationError(res, err);
@@ -271,13 +273,12 @@ exports.addDevice = function (req, res) {
           });
           //add device ownership info
           device._owner = userId;
-
           //save device
           device.save(function (err) {
             if (err) return validationError(res, err);
             //res.json(201, device);
           });
-        } else {
+        /*} else {
           //add device to waiting list
           follower.waiting.push(device._id);
           follower.save(function (err) {
@@ -290,7 +291,7 @@ exports.addDevice = function (req, res) {
           }, function (err, foll) {
 
             if (err) return res.send(500, err);
-            if (!foll) return res.json(401);
+            if (!foll) return res.json(404);
             //add device to waitlist of the owner
             foll.waitlist.push({user: userId, device: device._id});
             //save owner profile
@@ -298,7 +299,7 @@ exports.addDevice = function (req, res) {
               if (err) return validationError(res, err);
             });
           });
-        }
+        }*/
 
       } else {
         //add device to waiting list
@@ -313,7 +314,7 @@ exports.addDevice = function (req, res) {
         }, function (err, foll) {
 
           if (err) return res.send(500, err);
-          if (!foll) return res.json(401);
+          if (!foll) return res.json(404);
           //add device to waitlist of the owner
           foll.waitlist.push({user: userId, device: device._id});
           //save owner profile
@@ -325,6 +326,55 @@ exports.addDevice = function (req, res) {
     });
     return res.json(201, device);
   });
+};
+
+
+
+exports.createDevices = function (req, res) {
+
+  var userId = req.params.id;//current user
+  var config={
+    host:'iotsandbox.cisco.com',
+    port:8888,
+    method:'GET',
+    path:'/stdacsent?rcn=4',
+    headers:{
+      'Content-Type': 'application/json',
+      'X-M2M-Origin': '//iotsandbox.cisco.com:10000',
+      'X-M2M-RI': 12345
+    }
+  };
+
+  rest.getJSON(config, function(statusCode, result) {
+    if (result){
+      _.forEach(result.ch, function(res){
+        var device = {};
+        if(res.rty==2){
+          device.ds_id = res.ri;
+          device.name = res.apn;
+          device.description = res.or;
+          device.serial = res.api;
+          device._constructor = userId;
+          device.link=res.rn;
+          device.group=['AE'];
+          device.streams=[{id:'st', name:'st', lastValue: '', values:[]}];
+          var time = res.lt.slice(0,4)+'-'+res.lt.slice(4,6)+'-'+res.lt.slice(6,11)+':'+res.lt.slice(11,13)+':'+res.lt.slice(13,15);
+          var date = new Date(time);
+          device.lastPost = date;
+
+          Device.create(device,function(err) {
+            if (err) console.log(err);
+            console.log(device);
+          });
+
+        }
+
+      });
+      return res.json(201);
+    }
+    return res.json(304);
+  });
+
 };
 
 

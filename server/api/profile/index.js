@@ -17,4 +17,5 @@ router.delete('/:id', auth.hasRole('admin'), controller.destroy);
 
 router.post('/:id/discard', auth.isAuthenticated(), controller.discard);
 router.post('/:id/cancel', auth.isAuthenticated(), controller.cancel);
+router.post('/:id/deletedevice/:dev', auth.isAuthenticated(), controller.deleteDevice);
 module.exports = router;

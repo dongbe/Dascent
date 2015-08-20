@@ -1,6 +1,15 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
 <div class="col-md-12">
+  <div class="row">
+    <div class="col-md-6">
+      Choose Backend - Default is Datavenue -> Standard IOTDM: <input type="checkbox" ng-model="checked" ng-init="checked=false"/>
+    </div>
+    <div ng-if="checked" class="col-md-6" >
+            This is an implementation of OneM2M, please contact Fatima for more information
+    </div>
+  </div>
+  <br>
   <div class="col-md-3">
     <ul id="link" class="nav nav-pills nav-stacked">
       <li id="link1" role="presentation" class="active" ng-model="toggle" ng-click="toggle = true">
@@ -29,12 +38,12 @@
     <!-- boutons de sauvergarde et de mise à jour des datasources-->
       <div class="row">
         <div class="col-md-8">
-          <form name="upload" class="form" ng-submit="createDevice(fileContent)" novalidate>
+          <form name="upload" class="form" ng-submit="createDevice(fileContent)" ng-if="!checked">
             <div class="col-md-6">
               <input name="file" type="file" file-reader="fileContent" accept=".csv" ng-model="file" required>
             </div>
             <p class="help-block" ng-show="file">
-              An email is required
+              A file is required
             </p>
             <div class="col-md-6">
               <button class="btn btn-success" type="submit">Create devices</button>
@@ -42,7 +51,11 @@
           </form>
         </div>
         <div class="col-md-4">
-          <form ng-submit="getDevices()">
+          <form ng-submit="getDevices()" ng-if="!checked">
+            <button ng-hide="devices.length" class="btn btn-success" type="submit">Import devices</button>
+            <button ng-show="devices.length" class="btn btn-success" type="submit">Update devices</button>
+          </form>
+          <form ng-submit="getStDevices()" ng-if="checked">
             <button ng-hide="devices.length" class="btn btn-success" type="submit">Import devices</button>
             <button ng-show="devices.length" class="btn btn-success" type="submit">Update devices</button>
           </form>

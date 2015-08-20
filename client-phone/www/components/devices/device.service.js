@@ -134,6 +134,7 @@ angular.module('dascentApp')
             device.description = data.description;
             device.serial = data.serial;
             device._owner = currentUser._id;
+            //device._constructor = currentUser._id;
             device.group = data.group;
             device.streams = [];
             device.apikeys = [];

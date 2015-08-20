@@ -20,10 +20,10 @@ angular.module('dascentApp')
         .catch( function(err) {
             //$scope.errors.other = err.message;
             $location.path('/login');
-            notifications.showError(err.message+" Check your credentials and try again");
+            notifications.showError(err.message+ 'Check your credentials and try again');
         });
       }else{
-        notifications.showWarning("Login error: Check your credentials and try again");
+        notifications.showWarning('Login error: Check your credentials and try again');
         $location.path('/login');
       }
     };

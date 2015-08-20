@@ -40,13 +40,17 @@ angular.module('dascentApp', [
       // Intercept 401s and redirect you to login
       responseError: function(response) {
         if(response.status === 401) {
-          if ($location.path()==='/'){
-            $location.path('/');
-          }else{
-            $location.path('/login');
+          if(response.data.code===901){
+            console.log("datavenue access denied");
+          }else {
+            if ($location.path()==='/'){
+              $location.path('/');
+            }else{
+              $location.path('/login');
+            }
+            // remove any stale tokens
+            $cookieStore.remove('token');
           }
-          // remove any stale tokens
-          $cookieStore.remove('token');
           return $q.reject(response);
         }
         else {

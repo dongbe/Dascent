@@ -51,7 +51,33 @@
         </p>
       </div>
     </div>
-    </br>
+      <br>
+      <div class="row" ng-if="isConstructor">
+        <div class="col-lg-3" >
+          ISS KEY:
+        </div>
+        <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
+                                            'has-error': form1.name.$invalid && submitted }">
+          <input name="isskey" type="text" class="form-control" ng-model="user.isskey" required>
+          <p class="help-block" ng-show="form1.isskey.$error.required">
+            A ISS is required
+          </p>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-3" ng-if="isConstructor">
+          Orange APIGEE KEY:
+        </div>
+        <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
+                                            'has-error': form1.name.$invalid && submitted }">
+          <input name="apikey" type="text" class="form-control" ng-model="user.idclient" required>
+          <p class="help-block" ng-show="form1.isskey.$error.required">
+            A Orange APIGEE is required
+          </p>
+        </div>
+      </div>
+    <br>
     <div class="row">
       <div class="col-lg-3" ng-if="!isConstructor">
         Lastname:
@@ -59,7 +85,7 @@
       <div class="col-lg-3" ng-if="isConstructor">
         SIREN:
       </div>
-      <div class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
+      <div ng-if="!isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
                                             'has-error': form1.lastname.$invalid && submitted }">
         <input name="lastname" type="text" class="form-control" ng-model="user.lastname" required>
         <p class="help-block" ng-if="form1.lastname.$error.required && !isConstructor">
@@ -68,6 +94,10 @@
         <p class="help-block" ng-if="form1.lastname.$error.required && isConstructor">
           A SIREN is required
         </p>
+      </div>
+      <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
+                                            'has-error': form1.lastname.$invalid && submitted }">
+        <input name="lastname" type="text" class="form-control" ng-model="user.lastname">
       </div>
     </div>
     </br>
@@ -122,7 +152,7 @@
         <br>
       </div>
     </div>
-    </br>
+    <br>
     <div class="row">
       <div class="col-lg-5 col-lg-offset-3">
         <button class="btn btn-success" type="button" ng-click="update(form1)">Save changes</button>

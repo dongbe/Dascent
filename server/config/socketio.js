@@ -20,7 +20,6 @@ function onConnect(socket) {
   // Insert sockets below
   require('../api/notification/notification.socket').register(socket);
   require('../api/profile/profile.socket').register(socket);
-  require('../api/feed/feed.socket').register(socket);
   require('../api/device/device.socket').register(socket);
 }
 

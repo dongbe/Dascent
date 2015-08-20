@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Profile = require('./profile.model');
+var Device = require('../device/device.model');
 
 // Get list of user profile
 exports.index = function(req, res) {
@@ -95,7 +96,7 @@ exports.discard = function(req,res){
     if(!profile) { return res.send(404); }
 
     _.forEach(profile.accepted,function(u,i){
-      if(u!==undefined && u.user===req.body.user && u.device===req.body.device){
+      if(u!==undefined && u.user==req.body.user && u.device==req.body.device){
         console.log('after if: '+i);
         profile.accepted.splice(i,1);
       }
@@ -110,7 +111,7 @@ exports.discard = function(req,res){
     if(!foll) { return res.send(404); }
 
     _.forEach(foll.watchs,function(u,i){
-      if(u!==undefined && u.device===req.body.device){
+      if(u!==undefined && u.device==req.body.device){
         console.log('after if: '+i);
         foll.watchs.splice(i,1);
       }
@@ -136,7 +137,7 @@ exports.cancel = function(req,res){
     if(req.body.options){
 
       _.forEach(profile.waitlist,function(u,i){
-        if(u!==undefined && u.device===req.body.device && u.user===req.body.user){
+        if(u!==undefined && u.device==req.body.device && u.user==req.body.user){
           profile.waitlist.splice(i,1);
         }
       });
@@ -150,7 +151,7 @@ exports.cancel = function(req,res){
         if(!foll) { return res.send(404); }
 
         _.forEach(foll.waiting,function(u,i){
-          if(u!==undefined && u===req.body.device){
+          if(u!==undefined && u==req.body.device){
             foll.waiting.splice(i,1);
           }
         });
@@ -161,7 +162,7 @@ exports.cancel = function(req,res){
       return res.json(200);
     }else{
       _.forEach(profile.waiting,function(u,i){
-        if(u!==undefined && u===req.body.device){
+        if(u!==undefined && u==req.body.device){
           profile.waiting.splice(i,1);
         }
       });
@@ -176,7 +177,7 @@ exports.cancel = function(req,res){
         if(!foll) { return res.send(404); }
 
         _.forEach(foll.waitlist,function(u,i){
-          if(u!==undefined && u.device===req.body.device && _.isEqual(u.user,profile.user)){
+          if(u!==undefined && u.device==req.body.device && _.isEqual(u.user,profile.user)){
             foll.waitlist.splice(i,1);
           }
         });
@@ -203,6 +204,82 @@ exports.destroy = function(req, res) {
       return res.send(204);
     });
   });
+};
+
+exports.deleteDevice = function(req,res){
+  var device={};
+  var type=false;
+  var currentUserId={};
+  Profile.findById(req.params.id, function (err, profile) {
+    if(err) { return handleError(res, err); }
+    if(!profile) { return res.send(404); }
+    currentUserId=profile.user;
+    _.forEach(profile.watchs, function(watch,i){
+      if(watch!=undefined && watch._id==req.params.dev){
+        device=watch.device;
+        type=watch.type;
+        profile.watchs.splice(i,1);
+      }
+    });
+    if(type) {
+      _.forEach(profile.accepted, function(accepted,i){
+        if(accepted.device===device){
+          Profile.find({user:accepted.user},function(err,acceptedProfile){
+            _.forEach(acceptedProfile.watchs, function(watch,i){
+              if(watch!=undefined && watch.device===device){
+                profile.watchs.splice(i,1);
+              }
+            });
+            acceptedProfile.save(function(err) {
+              if(err) { return handleError(res, err); }
+            });
+          });
+        }
+      });
+    _.forEach(profile.waitlist, function(waitItem,i){
+      if(waitItem.device===device){
+        Profile.find({user:waitItem.user},function(err,waitlistProfile){
+          _.forEach(waitlistProfile.watchs, function(watch,i){
+            if(watch!=undefined && watch.device===device){
+              waitlistProfile.watchs.splice(i,1);
+            }
+          });
+          waitlistProfile.save(function(err) {
+            if(err) { return handleError(res, err); }
+          });
+        });
+      }
+    });
+    _.forEach(profile.waiting, function(waiting,i){
+      if(waiting===device){
+        profile.waiting.splice(i,1);
+      }
+    });
+  }else{
+
+      Device.findById(device,function(err,device){
+        if(!device) res.send(404);
+        Profile.findOne({user:device._owner},function(err,owner){
+          if(!owner) console.log("error");
+          _.forEach(owner.accepted, function(accepted,i){
+            if(accepted!=undefined && _.isEqual(accepted.user,currentUserId)){
+              owner.accepted.splice(i,1);
+            }
+          });
+          owner.save(function(err) {
+            console.log("check4");
+            if(err) { return handleError(res, err); }
+          });
+
+        });
+      });
+    }
+    profile.save(function(err) {
+      if(err) { return handleError(res, err); }
+      return res.send(204);
+    });
+  });
+
 };
 
 function handleError(res, err) {

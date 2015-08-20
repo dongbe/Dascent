@@ -60,7 +60,7 @@ exports.postJSON = function(data,device,onResult){
     host:'iotsandbox.cisco.com',
     port:8888,
     method:'POST',
-    path:'/stdacsent/stdtContainer3?ty=4',
+    path:'/stdacsent/stdtAE/stdtContainer2?ty=4',
     headers:{
       'Content-Type': 'application/json',
       'X-M2M-Origin': '//iotsandbox.cisco.com:10000',
@@ -94,6 +94,5 @@ exports.postJSON = function(data,device,onResult){
     console.log('problem with request: ' + err.message);
   });
   post_st_req.end();
-
 
 };

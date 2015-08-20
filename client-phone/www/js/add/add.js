@@ -11,7 +11,7 @@ angular.module('dascentApp')
         views: {
           'tab-add': {
             templateUrl: 'js/add/tab-add.html',
-            controller: 'AddCtrl',
+            controller: 'ProfilCtrl',
             authenticate: true
           }
         }

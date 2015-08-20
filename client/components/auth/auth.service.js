@@ -111,6 +111,21 @@ angular.module('dascentApp')
           return cb(err);
         }).$promise;
       },
+      updateProvider: function(user, callback) {
+        var cb = callback || angular.noop;
+
+        return User.patch({ id: currentUser._id }, {
+          name: user.name,
+          lastname: user.lastname,
+          email: user.email,
+          isskey:user.isskey,
+          idclient:user.idclient
+        }, function(user) {
+          return cb(user);
+        }, function(err) {
+          return cb(err);
+        }).$promise;
+      },
 
       /**
        * Gets all available info on authenticated user

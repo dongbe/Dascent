@@ -8,7 +8,6 @@
         <div ng-if="watch.device.tracking"> {{watch.device.name}} : tracking mode activated</div>
       </div>
     </div>
-
     <div ng-if="notif()" >
         <ui-gmap-google-map center="map.center" zoom="map.zoom">
           <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
@@ -17,13 +16,12 @@
             <ui-gmap-windows show="'showWindow'" closeClick="'closeClick'" ng-cloak>
             </ui-gmap-windows>
           </ui-gmap-markers>
-          <ui-gmap-polyline ng-if="watch.device.tracking" ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
+          <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
                             fit="false" editable="p.editable">
           </ui-gmap-polyline>
         </ui-gmap-google-map>
     </div>
-
-    <div ng-if="!profile.watchs.length" ng-repeat="watch in profile.watchs" >
+    <div ng-if="notif()" ng-repeat="watch in profile.watchs" >
       <div ng-if="watch.device.group[0]!='GPS'">
         <div  ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
       || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'" >
@@ -36,7 +34,7 @@
               </a>
             </div>
             <div ng-if="watch.device.group=='LORA' && stream.name=='message'" lora-reader="stream.lastValue"></div>
-            <div ng-if="watch.device.group!='GPS' && device.device.group!='LORA'" ng-repeat="value in stream.values">
+            <div ng-repeat="value in stream.values">
               {{stream.name}} valeur : {{value.value}} le {{value.time | date:'dd.MM.yyyy à HH:mm:ss'}}
             </div>
 
