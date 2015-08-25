@@ -19,9 +19,7 @@ router.patch('/:id', auth.isAuthenticated(), controller.update);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
 router.get('/:id/profiles', auth.hasRole('user'), controller.profile);
 router.get('/:id/devices', auth.isAuthenticated(), controller.devices);
-
 router.post('/:id/devices', auth.hasRole('user'), controller.addDevice);
-
 router.post('/:id/avatar', auth.isAuthenticated(), controller.postImage);
 
 module.exports = router;

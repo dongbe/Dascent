@@ -32,7 +32,7 @@ beforeEach ->
       center:
         longitude: 47
         latitude: -27
-        
+
     @timeout = $timeout
     @compile = $compile
 
@@ -41,7 +41,7 @@ beforeEach ->
 
     fn() if fn? and _.isFunction fn
     while @timeout.hasPendingTasks()
-        @timeout.flush()
+      @timeout.flush()
     @rootScope.$digest()
 
 afterEach ->

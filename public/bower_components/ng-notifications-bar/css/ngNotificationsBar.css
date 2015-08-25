@@ -13,6 +13,7 @@ body {
   width: 100%;
   z-index: 1000;
 }
+
 /* line 14, ../sass/ngNotificationsBar.scss */
 .notifications .notification, .notifications .error, .notifications .success, .notifications .warning {
   position: relative;
@@ -28,6 +29,7 @@ body {
   font-size: 18px;
   color: #fff;
 }
+
 @-webkit-keyframes fadeInDown {
   0% {
     opacity: 0;
@@ -38,6 +40,7 @@ body {
     -webkit-transform: translateY(0);
   }
 }
+
 @-moz-keyframes fadeInDown {
   0% {
     opacity: 0;
@@ -48,6 +51,7 @@ body {
     -moz-transform: translateY(0);
   }
 }
+
 @-o-keyframes fadeInDown {
   0% {
     opacity: 0;
@@ -58,6 +62,7 @@ body {
     -o-transform: translateY(0);
   }
 }
+
 @keyframes fadeInDown {
   0% {
     opacity: 0;
@@ -70,25 +75,30 @@ body {
     transform: translateY(0);
   }
 }
+
 /* line 22, ../sass/ngNotificationsBar.scss */
 .notifications .message {
   padding: 0 12px;
 }
+
 /* line 26, ../sass/ngNotificationsBar.scss */
 .notifications .error {
   background-color: #F64747;
   border-bottom: 1px solid #f31515;
 }
+
 /* line 32, ../sass/ngNotificationsBar.scss */
 .notifications .success {
   background-color: #03C9A9;
   border-bottom: 1px solid #02aa8f;
 }
+
 /* line 38, ../sass/ngNotificationsBar.scss */
 .notifications .warning {
   background-color: #F7CA18;
   border-bottom: 1px solid #e7ba08;
 }
+
 /* line 44, ../sass/ngNotificationsBar.scss */
 .notifications .close-click {
   font-size: 12px;

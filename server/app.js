@@ -8,7 +8,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var express = require('express');
-var data=require('./api/device/device.controller').getData;
+var data = require('./api/device/device.controller').getData;
 var fs = require('fs');
 var mongoose = require('mongoose');
 var config = require('./config/environment');
@@ -38,10 +38,9 @@ server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
 
-setInterval(function(){
+setInterval(function () {
   console.log('polling mode ....');
   data();
-}, 1 * 500000 * 1000);
-
+}, 1 * 150000 * 1000);
 // Expose app
 exports = module.exports = app;

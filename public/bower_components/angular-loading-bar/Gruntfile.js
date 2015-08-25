@@ -1,15 +1,15 @@
 /*global module:false*/
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   grunt.initConfig({
 
     // Metadata.
     pkg: grunt.file.readJSON('package.json'),
     banner: '/*! \n * <%= pkg.title || pkg.name %> v<%= pkg.version %>\n' +
-      ' * <%= pkg.homepage %>\n' +
-      ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-      ' * License: <%= pkg.license %>\n' +
-      ' */\n',
+    ' * <%= pkg.homepage %>\n' +
+    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+    ' * License: <%= pkg.license %>\n' +
+    ' */\n',
 
     // Task configuration.
     uglify: {
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
         },
         files: {
           'build/loading-bar.css': 'src/loading-bar.css',
-          'build/loading-bar.js':  'src/loading-bar.js',
+          'build/loading-bar.js': 'src/loading-bar.js',
         }
       }
     }

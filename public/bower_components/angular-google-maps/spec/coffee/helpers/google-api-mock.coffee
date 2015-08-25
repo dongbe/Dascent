@@ -24,7 +24,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
       @visible
 
   class PositionObject extends MapObject
-    setPosition:(position) =>
+    setPosition: (position) =>
       @position
     getPosition: =>
       @position
@@ -55,7 +55,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
 
   getLatLng = ->
     class LatLng
-      constructor: (@y,@x, nowrap) ->
+      constructor: (@y, @x, nowrap) ->
       lat: =>
         @y
       lng: =>
@@ -76,7 +76,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         super()
         if opts?
           ['draggable', 'editable',
-          'map','visible', 'position'].forEach (o) =>
+           'map', 'visible', 'position'].forEach (o) =>
             @[o] = opts[o]
         Marker.instances += 1
         if window?.google?.maps?.event?
@@ -86,7 +86,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         super(o)
         if o?.position?
           @position = o.position
-      setAnimation:(obj) =>
+      setAnimation: (obj) =>
         @animation = obj
       getAnimation: =>
         @animation
@@ -98,7 +98,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         @clickable = bool
       getClickable: =>
         @clickable
-      setZIndex:(z) =>
+      setZIndex: (z) =>
         @zIndex = z
       getZIndex: =>
         @zIndex
@@ -124,7 +124,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
 
       constructor: (opts) ->
         super()
-        @props= ['draggable', 'editable', 'map','visible', 'radius', 'center']
+        @props = ['draggable', 'editable', 'map', 'visible', 'radius', 'center']
         @setOptions opts
 
         Circle.instances += 1
@@ -144,7 +144,6 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
       setOptions: (o)=>
         super(o)
         _.extend @, o
-
 
 
   getMap = ->
@@ -176,9 +175,9 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
     Map::getBounds = ->
       unless Map.getBounds?
         getNorthEast: ->
-          google.maps.LatLng(47,27)
+          google.maps.LatLng(47, 27)
         getSouthWest: ->
-          google.maps.LatLng(89,100)
+          google.maps.LatLng(89, 100)
     return Map
 
 
@@ -189,7 +188,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         @instances = 0
       constructor: (opts) ->
         if opts?
-          ['draggable', 'editable', 'map','path', 'visible'].forEach (o) =>
+          ['draggable', 'editable', 'map', 'path', 'visible'].forEach (o) =>
             @[o] = opts[o]
         @drawn = false
         MarkerWithLabel.instances += 1
@@ -202,11 +201,11 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         @mandatoryStyles = obj
       getMandatoryStyles: =>
         @mandatoryStyles
-      setStyles:(obj) =>
+      setStyles: (obj) =>
         @styles = obj
       getStyles: =>
         @styles
-      setContent:(content) =>
+      setContent: (content) =>
         @content = content
       getContent: =>
         @content
@@ -222,7 +221,7 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         @instances = 0
       constructor: (opts) ->
         if opts?
-          ['draggable', 'editable', 'map','path', 'visible'].forEach (o) =>
+          ['draggable', 'editable', 'map', 'path', 'visible'].forEach (o) =>
             @[o] = opts[o]
         Polyline.instances += 1
 
@@ -247,15 +246,15 @@ angular.module('uiGmapgoogle-maps.mocks', ['uiGmapgoogle-maps'])
         @length = 0
       getArray: =>
         @
-      getAt:(i) =>
+      getAt: (i) =>
         @[i]
       getLength: =>
         @length
-      insertAt:(i, elem) =>
+      insertAt: (i, elem) =>
         @splice(i, 0, elem)
-      removeAt:(i) ->
-        @splice(i,1)
-      setAt:(i, elem) ->
+      removeAt: (i) ->
+        @splice(i, 1)
+      setAt: (i, elem) ->
         @[i] = elem
 
   class GoogleApiMock

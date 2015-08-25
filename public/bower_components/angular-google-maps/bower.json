@@ -6,7 +6,7 @@
     "angular": ">=1.2.0",
     "lodash": "~2.4.1"
   },
-  "ignore":[
+  "ignore": [
     "*.json",
     ".gitignore",
     "travis.yml",

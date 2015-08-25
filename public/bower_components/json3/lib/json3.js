@@ -1,5 +1,6 @@
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
-;(function () {
+;
+(function () {
   // Detect the `define` function exposed by asynchronous module loaders. The
   // strict `define` check is necessary for compatibility with `r.js`.
   var isLoader = typeof define === "function" && define.amd;
@@ -18,7 +19,7 @@
   // and the `window` object in browsers. Rhino exports a `global` function
   // instead.
   var root = objectTypes[typeof window] && window || this,
-      freeGlobal = freeExports && objectTypes[typeof module] && module && !module.nodeType && typeof global == "object" && global;
+    freeGlobal = freeExports && objectTypes[typeof module] && module && !module.nodeType && typeof global == "object" && global;
 
   if (freeGlobal && (freeGlobal["global"] === freeGlobal || freeGlobal["window"] === freeGlobal || freeGlobal["self"] === freeGlobal)) {
     root = freeGlobal;
@@ -32,13 +33,13 @@
 
     // Native constructor aliases.
     var Number = context["Number"] || root["Number"],
-        String = context["String"] || root["String"],
-        Object = context["Object"] || root["Object"],
-        Date = context["Date"] || root["Date"],
-        SyntaxError = context["SyntaxError"] || root["SyntaxError"],
-        TypeError = context["TypeError"] || root["TypeError"],
-        Math = context["Math"] || root["Math"],
-        nativeJSON = context["JSON"] || root["JSON"];
+      String = context["String"] || root["String"],
+      Object = context["Object"] || root["Object"],
+      Date = context["Date"] || root["Date"],
+      SyntaxError = context["SyntaxError"] || root["SyntaxError"],
+      TypeError = context["TypeError"] || root["TypeError"],
+      Math = context["Math"] || root["Math"],
+      nativeJSON = context["JSON"] || root["JSON"];
 
     // Delegate to the native `stringify` and `parse` implementations.
     if (typeof nativeJSON == "object" && nativeJSON) {
@@ -48,8 +49,8 @@
 
     // Convenience aliases.
     var objectProto = Object.prototype,
-        getClass = objectProto.toString,
-        isProperty, forEach, undef;
+      getClass = objectProto.toString,
+      isProperty, forEach, undef;
 
     // Test the `Date#getUTC*` methods. Based on work by @Yaffle.
     var isExtended = new Date(-3509827334573292);
@@ -60,8 +61,9 @@
         // Safari < 2.0.2 stores the internal millisecond time value correctly,
         // but clips the values returned by the date methods to the range of
         // signed 32-bit integers ([-2 ** 31, 2 ** 31 - 1]).
-        isExtended.getUTCHours() == 10 && isExtended.getUTCMinutes() == 37 && isExtended.getUTCSeconds() == 6 && isExtended.getUTCMilliseconds() == 708;
-    } catch (exception) {}
+      isExtended.getUTCHours() == 10 && isExtended.getUTCMinutes() == 37 && isExtended.getUTCSeconds() == 6 && isExtended.getUTCMilliseconds() == 708;
+    } catch (exception) {
+    }
 
     // Internal: Determines whether the native `JSON.stringify` and `parse`
     // implementations are spec-compliant. Based on work by Ken Snyder.
@@ -94,54 +96,54 @@
                 // Firefox 3.1b1 and b2 serialize string, number, and boolean
                 // primitives as object literals.
                 stringify(0) === "0" &&
-                // FF 3.1b1, b2, and JSON 2 serialize wrapped primitives as object
-                // literals.
+                  // FF 3.1b1, b2, and JSON 2 serialize wrapped primitives as object
+                  // literals.
                 stringify(new Number()) === "0" &&
                 stringify(new String()) == '""' &&
-                // FF 3.1b1, 2 throw an error if the value is `null`, `undefined`, or
-                // does not define a canonical JSON representation (this applies to
-                // objects with `toJSON` properties as well, *unless* they are nested
-                // within an object or array).
+                  // FF 3.1b1, 2 throw an error if the value is `null`, `undefined`, or
+                  // does not define a canonical JSON representation (this applies to
+                  // objects with `toJSON` properties as well, *unless* they are nested
+                  // within an object or array).
                 stringify(getClass) === undef &&
-                // IE 8 serializes `undefined` as `"undefined"`. Safari <= 5.1.7 and
-                // FF 3.1b3 pass this test.
+                  // IE 8 serializes `undefined` as `"undefined"`. Safari <= 5.1.7 and
+                  // FF 3.1b3 pass this test.
                 stringify(undef) === undef &&
-                // Safari <= 5.1.7 and FF 3.1b3 throw `Error`s and `TypeError`s,
-                // respectively, if the value is omitted entirely.
+                  // Safari <= 5.1.7 and FF 3.1b3 throw `Error`s and `TypeError`s,
+                  // respectively, if the value is omitted entirely.
                 stringify() === undef &&
-                // FF 3.1b1, 2 throw an error if the given value is not a number,
-                // string, array, object, Boolean, or `null` literal. This applies to
-                // objects with custom `toJSON` methods as well, unless they are nested
-                // inside object or array literals. YUI 3.0.0b1 ignores custom `toJSON`
-                // methods entirely.
+                  // FF 3.1b1, 2 throw an error if the given value is not a number,
+                  // string, array, object, Boolean, or `null` literal. This applies to
+                  // objects with custom `toJSON` methods as well, unless they are nested
+                  // inside object or array literals. YUI 3.0.0b1 ignores custom `toJSON`
+                  // methods entirely.
                 stringify(value) === "1" &&
                 stringify([value]) == "[1]" &&
-                // Prototype <= 1.6.1 serializes `[undefined]` as `"[]"` instead of
-                // `"[null]"`.
+                  // Prototype <= 1.6.1 serializes `[undefined]` as `"[]"` instead of
+                  // `"[null]"`.
                 stringify([undef]) == "[null]" &&
-                // YUI 3.0.0b1 fails to serialize `null` literals.
+                  // YUI 3.0.0b1 fails to serialize `null` literals.
                 stringify(null) == "null" &&
-                // FF 3.1b1, 2 halts serialization if an array contains a function:
-                // `[1, true, getClass, 1]` serializes as "[1,true,],". FF 3.1b3
-                // elides non-JSON values from objects and arrays, unless they
-                // define custom `toJSON` methods.
+                  // FF 3.1b1, 2 halts serialization if an array contains a function:
+                  // `[1, true, getClass, 1]` serializes as "[1,true,],". FF 3.1b3
+                  // elides non-JSON values from objects and arrays, unless they
+                  // define custom `toJSON` methods.
                 stringify([undef, getClass, null]) == "[null,null,null]" &&
-                // Simple serialization test. FF 3.1b1 uses Unicode escape sequences
-                // where character escape codes are expected (e.g., `\b` => `\u0008`).
-                stringify({ "a": [value, true, false, null, "\x00\b\n\f\r\t"] }) == serialized &&
-                // FF 3.1b1 and b2 ignore the `filter` and `width` arguments.
+                  // Simple serialization test. FF 3.1b1 uses Unicode escape sequences
+                  // where character escape codes are expected (e.g., `\b` => `\u0008`).
+                stringify({"a": [value, true, false, null, "\x00\b\n\f\r\t"]}) == serialized &&
+                  // FF 3.1b1 and b2 ignore the `filter` and `width` arguments.
                 stringify(null, value) === "1" &&
                 stringify([1, 2], null, 1) == "[\n 1,\n 2\n]" &&
-                // JSON 2, Prototype <= 1.7, and older WebKit builds incorrectly
-                // serialize extended years.
+                  // JSON 2, Prototype <= 1.7, and older WebKit builds incorrectly
+                  // serialize extended years.
                 stringify(new Date(-8.64e15)) == '"-271821-04-20T00:00:00.000Z"' &&
-                // The milliseconds are optional in ES 5, but required in 5.1.
+                  // The milliseconds are optional in ES 5, but required in 5.1.
                 stringify(new Date(8.64e15)) == '"+275760-09-13T00:00:00.000Z"' &&
-                // Firefox <= 11.0 incorrectly serializes years prior to 0 as negative
-                // four-digit years instead of six-digit years. Credits: @Yaffle.
+                  // Firefox <= 11.0 incorrectly serializes years prior to 0 as negative
+                  // four-digit years instead of six-digit years. Credits: @Yaffle.
                 stringify(new Date(-621987552e5)) == '"-000001-01-01T00:00:00.000Z"' &&
-                // Safari <= 5.1.5 and Opera >= 10.53 incorrectly serialize millisecond
-                // values less than 1000. Credits: @Yaffle.
+                  // Safari <= 5.1.5 and Opera >= 10.53 incorrectly serialize millisecond
+                  // values less than 1000. Credits: @Yaffle.
                 stringify(new Date(-1)) == '"1969-12-31T23:59:59.999Z"';
             } catch (exception) {
               stringifySupported = false;
@@ -165,14 +167,16 @@
                   try {
                     // Safari <= 5.1.2 and FF 3.1b1 allow unescaped tabs in strings.
                     parseSupported = !parse('"\t"');
-                  } catch (exception) {}
+                  } catch (exception) {
+                  }
                   if (parseSupported) {
                     try {
                       // FF 4.0 and 4.0.1 allow leading `+` signs and leading
                       // decimal points. FF 4.0, 4.0.1, and IE 9-10 also allow
                       // certain octal literals.
                       parseSupported = parse("01") !== 1;
-                    } catch (exception) {}
+                    } catch (exception) {
+                    }
                   }
                   if (parseSupported) {
                     try {
@@ -180,7 +184,8 @@
                       // points. These environments, along with FF 3.1b1 and 2,
                       // also allow trailing commas in JSON objects and arrays.
                       parseSupported = parse("1.") !== 1;
-                    } catch (exception) {}
+                    } catch (exception) {
+                    }
                   }
                 }
               }
@@ -197,11 +202,11 @@
     if (!has("json")) {
       // Common `[[Class]]` name aliases.
       var functionClass = "[object Function]",
-          dateClass = "[object Date]",
-          numberClass = "[object Number]",
-          stringClass = "[object String]",
-          arrayClass = "[object Array]",
-          booleanClass = "[object Boolean]";
+        dateClass = "[object Date]",
+        numberClass = "[object Number]",
+        stringClass = "[object String]",
+        arrayClass = "[object Array]",
+        booleanClass = "[object Boolean]";
 
       // Detect incomplete support for accessing string characters by index.
       var charIndexBuggy = has("bug-string-char-index");
@@ -225,10 +230,10 @@
         isProperty = function (property) {
           var members = {}, constructor;
           if ((members.__proto__ = null, members.__proto__ = {
-            // The *proto* property cannot be set multiple times in recent
-            // versions of Firefox and SeaMonkey.
-            "toString": 1
-          }, members).toString != getClass) {
+              // The *proto* property cannot be set multiple times in recent
+              // versions of Firefox and SeaMonkey.
+              "toString": 1
+            }, members).toString != getClass) {
             // Safari <= 2.0.3 doesn't implement `Object#hasOwnProperty`, but
             // supports the mutable *proto* property.
             isProperty = function (property) {
@@ -369,7 +374,13 @@
             // If the character is a control character, append its Unicode or
             // shorthand escape sequence; otherwise, append the character as-is.
             switch (charCode) {
-              case 8: case 9: case 10: case 12: case 13: case 34: case 92:
+              case 8:
+              case 9:
+              case 10:
+              case 12:
+              case 13:
+              case 34:
+              case 92:
                 result += Escapes[charCode];
                 break;
               default:
@@ -390,7 +401,8 @@
           try {
             // Necessary for host object support.
             value = object[property];
-          } catch (exception) {}
+          } catch (exception) {
+          }
           if (typeof value == "object" && value) {
             className = getClass.call(value);
             if (className == dateClass && !isProperty.call(value, "toJSON")) {
@@ -428,12 +440,12 @@
                 }
                 // Serialize extended years correctly.
                 value = (year <= 0 || year >= 1e4 ? (year < 0 ? "-" : "+") + toPaddedString(6, year < 0 ? -year : year) : toPaddedString(4, year)) +
-                  "-" + toPaddedString(2, month + 1) + "-" + toPaddedString(2, date) +
+                "-" + toPaddedString(2, month + 1) + "-" + toPaddedString(2, date) +
                   // Months, dates, hours, minutes, and seconds should have two
                   // digits; milliseconds should have three.
-                  "T" + toPaddedString(2, hours) + ":" + toPaddedString(2, minutes) + ":" + toPaddedString(2, seconds) +
+                "T" + toPaddedString(2, hours) + ":" + toPaddedString(2, minutes) + ":" + toPaddedString(2, seconds) +
                   // Milliseconds are optional in ES 5.0, but required in 5.1.
-                  "." + toPaddedString(3, milliseconds) + "Z";
+                "." + toPaddedString(3, milliseconds) + "Z";
               } else {
                 value = null;
               }
@@ -576,12 +588,20 @@
           while (Index < length) {
             charCode = source.charCodeAt(Index);
             switch (charCode) {
-              case 9: case 10: case 13: case 32:
+              case 9:
+              case 10:
+              case 13:
+              case 32:
                 // Skip whitespace tokens, including tabs, carriage returns, line
                 // feeds, and space characters.
                 Index++;
                 break;
-              case 123: case 125: case 91: case 93: case 58: case 44:
+              case 123:
+              case 125:
+              case 91:
+              case 93:
+              case 58:
+              case 44:
                 // Parse a punctuator token (`{`, `}`, `[`, `]`, `:`, or `,`) at
                 // the current position.
                 value = charIndexBuggy ? source.charAt(Index) : source[Index];
@@ -604,7 +624,14 @@
                     // escape sequence.
                     charCode = source.charCodeAt(++Index);
                     switch (charCode) {
-                      case 92: case 34: case 47: case 98: case 116: case 110: case 102: case 114:
+                      case 92:
+                      case 34:
+                      case 47:
+                      case 98:
+                      case 116:
+                      case 110:
+                      case 102:
+                      case 114:
                         // Revive escaped control characters.
                         value += Unescapes[charCode];
                         Index++;
@@ -744,7 +771,7 @@
             if (value == "[") {
               // Parses a JSON array, returning a new JavaScript array.
               results = [];
-              for (;; hasMembers || (hasMembers = true)) {
+              for (; ; hasMembers || (hasMembers = true)) {
                 value = lex();
                 // A closing square bracket marks the end of the array literal.
                 if (value == "]") {
@@ -775,7 +802,7 @@
             } else if (value == "{") {
               // Parses a JSON object, returning a new JavaScript object.
               results = {};
-              for (;; hasMembers || (hasMembers = true)) {
+              for (; ; hasMembers || (hasMembers = true)) {
                 value = lex();
                 // A closing curly brace marks the end of the object literal.
                 if (value == "}") {
@@ -870,8 +897,8 @@
   } else {
     // Export for web browsers and JavaScript engines.
     var nativeJSON = root.JSON,
-        previousJSON = root["JSON3"],
-        isRestored = false;
+      previousJSON = root["JSON3"],
+      isRestored = false;
 
     var JSON3 = runInContext(root, (root["JSON3"] = {
       // Public: Restores the original value of the global `JSON` object and

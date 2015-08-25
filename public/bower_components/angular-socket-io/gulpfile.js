@@ -4,7 +4,7 @@ var gulp = require('gulp'),
   rename = require("gulp-rename"),
   ngmin = require('gulp-ngmin');
 
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
   return gulp.src('socket.js')
     .pipe(rename('socket.min.js'))
     .pipe(ngmin())

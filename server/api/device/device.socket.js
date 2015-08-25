@@ -6,7 +6,7 @@
 
 var Device = require('./device.model');
 
-exports.register = function(socket) {
+exports.register = function (socket) {
   Device.schema.post('save', function (doc) {
     onSave(socket, doc);
   });

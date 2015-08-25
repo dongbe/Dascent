@@ -25,8 +25,8 @@ module.exports = (grunt) ->
     'grunt-verbosity'
     'grunt-release'
     'grunt-webpack'
-    ].forEach (gruntLib) ->
-      grunt.loadNpmTasks gruntLib
+  ].forEach (gruntLib) ->
+    grunt.loadNpmTasks gruntLib
 
   #squishing this file done by moving grunt options out to its own file. This way we can focus on tasks!
   options = require('./grunt/options')(grunt)
@@ -41,7 +41,7 @@ module.exports = (grunt) ->
     allExamplesOpen[root] =
       path: pathValue
 
-#  console.log allExamplesOpen, true
+  #  console.log allExamplesOpen, true
 
   showOpenType = (toIterate = allExamplesOpen) ->
     _(toIterate).each (v, k) ->
@@ -85,8 +85,9 @@ module.exports = (grunt) ->
     "clean:dist", "jshint", "mkdir", "coffee", "concat:libs", "replace", "webpack", "concat", "uglify"
     "copy", "jasmine:spec"]
 
-  grunt.registerTask "build-street-view", ['clean:streetview','mkdir','coffee', 'concat:libs', 'replace',
-    'concat:streetview', 'concat:streetviewMapped', 'uglify:streetview', 'uglify:streetviewMapped']
+  grunt.registerTask "build-street-view", ['clean:streetview', 'mkdir', 'coffee', 'concat:libs', 'replace',
+                                           'concat:streetview', 'concat:streetviewMapped', 'uglify:streetview',
+                                           'uglify:streetviewMapped']
 
   grunt.registerTask "buildAll", "mappAll"
 
