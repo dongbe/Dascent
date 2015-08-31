@@ -7,6 +7,6 @@ angular.module('dascentApp')
         url: '/device',
         templateUrl: 'app/profil/device/device.html',
         controller: 'SideBarCtrl',
-        access :'user'
+        access: 'user'
       });
   });

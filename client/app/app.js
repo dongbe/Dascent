@@ -13,7 +13,7 @@ angular.module('dascentApp', [
   'vcRecaptcha',
   'ngFileUpload'
 ])
-  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,uiGmapGoogleMapApiProvider,cfpLoadingBarProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, uiGmapGoogleMapApiProvider, cfpLoadingBarProvider) {
     $urlRouterProvider
       .otherwise('/');
 
@@ -24,7 +24,7 @@ angular.module('dascentApp', [
       v: '3.17',
       libraries: 'weather,geometry,visualization'
     });
-    cfpLoadingBarProvider.includeSpinner=true;
+    cfpLoadingBarProvider.includeSpinner = true;
   })
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
     return {
@@ -38,14 +38,14 @@ angular.module('dascentApp', [
       },
 
       // Intercept 401s and redirect you to login
-      responseError: function(response) {
-        if(response.status === 401) {
-          if(response.data.code===901){
+      responseError: function (response) {
+        if (response.status === 401) {
+          if (response.data.code === 901) {
             console.log("datavenue access denied");
-          }else {
-            if ($location.path()==='/'){
+          } else {
+            if ($location.path() === '/') {
               $location.path('/');
-            }else{
+            } else {
               $location.path('/login');
             }
             // remove any stale tokens
@@ -63,27 +63,27 @@ angular.module('dascentApp', [
   .run(function ($rootScope, $location, Auth) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      Auth.isLoggedInAsync(function(loggedIn) {
+      Auth.isLoggedInAsync(function (loggedIn) {
 
-        if ($location.path()==='/' && loggedIn){
+        if ($location.path() === '/' && loggedIn) {
           $location.path('/moncompte');
         }
-        else if (next.authenticate && !loggedIn){
+        else if (next.authenticate && !loggedIn) {
           $location.path('/');
         }
-        else if (!next.access && loggedIn){
+        else if (!next.access && loggedIn) {
           $location.path(next.url);
         }
-        else if(Auth.isAuthorized('admin') && loggedIn){
+        else if (Auth.isAuthorized('admin') && loggedIn) {
           $location.path('/admin');
         }
-        else if(Auth.isAuthorized('constructor') && loggedIn){
+        else if (Auth.isAuthorized('constructor') && loggedIn) {
           $location.path('/constructor');
         }
-        else if(next.access==='user' && Auth.isAuthorized('user')){
+        else if (next.access === 'user' && Auth.isAuthorized('user')) {
           $location.path(next.url);
         }
-        else if(!Auth.isAuthorized(next.access)){
+        else if (!Auth.isAuthorized(next.access)) {
           $location.path('/login');
         }
 

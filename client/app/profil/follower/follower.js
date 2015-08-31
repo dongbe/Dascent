@@ -7,7 +7,7 @@ angular.module('dascentApp')
         url: '/follower',
         templateUrl: 'app/profil/follower/follower.html',
         controller: 'SideBarCtrl',
-        access:'user',
-        authenticate:true
+        access: 'user',
+        authenticate: true
       });
   });

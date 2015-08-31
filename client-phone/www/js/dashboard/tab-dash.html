@@ -6,8 +6,8 @@
 
   <ion-content class="padding">
     <ion-refresher pulling-text="Pull to refresh.." on-refresh="doRefresh()"></ion-refresher>
-      <ion-list>
-      </ion-list>
+    <ion-list>
+    </ion-list>
     <div ng-if="!notif()">Vous n'avez pas de notifications</div>
     <div ng-if="notif()" id="map-canvas">
       <ui-gmap-google-map center="map.center" zoom="map.zoom">
@@ -18,16 +18,17 @@
         </ui-gmap-polyline>
       </ui-gmap-google-map>
     </div>
-    <div ng-show="notif()" ng-repeat="watch in profile.watchs" >
+    <div ng-show="notif()" ng-repeat="watch in profile.watchs">
 
       <div ng-if="watch.device.group[0]!='GPS'">
-        <div  ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
-      || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'" >
+        <div ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
+      || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'">
 
           <div class="panel panel-default">
             <div class="panel-body">
               <a href="#">
                 <img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt">
+
                 <h2 class="panel-title">Device :{{watch.device.name}}</h2>
               </a>
             </div>

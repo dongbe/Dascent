@@ -1,19 +1,23 @@
 .pullframe {
   background: none repeat scroll 0% 0% #f5f5f5;
 }
-.sidebar{
+
+.sidebar {
   position: relative;
   padding: 18px;
   margin-bottom: 24px;
   background: none repeat scroll 0% 0% #2d3d77;
 }
-.ff{
+
+.ff {
   margin-top: 4px;
   background: none repeat scroll 0% 0% #fff;
 }
 
-.tt{
-  float:left;
+.tt {
+  float: left;
 }
 
-.angular-google-map-container { height: 500px; }
+.angular-google-map-container {
+  height: 500px;
+}

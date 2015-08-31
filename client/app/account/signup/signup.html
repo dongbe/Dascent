@@ -1,99 +1,111 @@
-<div class="row"  ng-controller="SignupCtrl">
+<div class="row" ng-controller="SignupCtrl">
 
-    <div class="col-sm-12">
+  <div class="col-sm-12">
 
-      <form class="form" name="form" ng-submit="register(form)" novalidate>
-        <div class="row">
-          <div class="form-group col-md-3" ng-class="{ 'has-success': form.name.$valid && submitted,
+    <form class="form" name="form" ng-submit="register(form)" novalidate>
+      <div class="row">
+        <div class="form-group col-md-3" ng-class="{ 'has-success': form.name.$valid && submitted,
                                             'has-error': form.name.$invalid && submitted }">
 
-            <label>Firstname</label>
-            <input type="text" name="name" class="form-control" ng-model="user.name" placeholder="Name" required/>
-            <p class="help-block" ng-show="form.name.$error.required && submitted">
-              A name is required
-            </p>
-          </div>
-          <div class="form-group col-md-3" ng-class="{ 'has-success': form.lastname.$valid && submitted,
+          <label>Firstname</label>
+          <input type="text" name="name" class="form-control" ng-model="user.name" placeholder="Name" required/>
+
+          <p class="help-block" ng-show="form.name.$error.required && submitted">
+            A name is required
+          </p>
+        </div>
+        <div class="form-group col-md-3" ng-class="{ 'has-success': form.lastname.$valid && submitted,
                                             'has-error': form.lastname.$invalid && submitted }">
-            <label>Lastname</label>
-            <input type="text" name="lastname" class="form-control" ng-model="user.lastname" placeholder="Lastname" required/>
-            <p class="help-block" ng-show="form.lastname.$error.required && submitted">
-              A lastname is required
-            </p>
-          </div>
+          <label>Lastname</label>
+          <input type="text" name="lastname" class="form-control" ng-model="user.lastname" placeholder="Lastname"
+                 required/>
+
+          <p class="help-block" ng-show="form.lastname.$error.required && submitted">
+            A lastname is required
+          </p>
         </div>
-        <div class="row">
-          <div class="form-group col-md-6" ng-class="{ 'has-success': form.email.$valid && submitted,
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6" ng-class="{ 'has-success': form.email.$valid && submitted,
                                             'has-error': form.email.$invalid && submitted }">
-            <label>Email</label>
+          <label>Email</label>
 
-            <input type="email" name="email" class="form-control" ng-model="user.email"
-                   required
-                   mongoose-error/>
-            <p class="help-block" ng-show="form.email.$error.email && submitted">
-              Doesn't look like a valid email.
-            </p>
-            <p class="help-block" ng-show="form.email.$error.required && submitted">
-              What's your email address?
-            </p>
-            <p class="help-block" ng-show="form.email.$error.mongoose">
-              {{ errors.email }}
-            </p>
-          </div>
+          <input type="email" name="email" class="form-control" ng-model="user.email"
+                 required
+                 mongoose-error/>
+
+          <p class="help-block" ng-show="form.email.$error.email && submitted">
+            Doesn't look like a valid email.
+          </p>
+
+          <p class="help-block" ng-show="form.email.$error.required && submitted">
+            What's your email address?
+          </p>
+
+          <p class="help-block" ng-show="form.email.$error.mongoose">
+            {{ errors.email }}
+          </p>
         </div>
-        <div class="row">
-          <div class="form-group col-md-3" ng-class="{ 'has-success': form.password1.$valid && submitted,
+      </div>
+      <div class="row">
+        <div class="form-group col-md-3" ng-class="{ 'has-success': form.password1.$valid && submitted,
                                             'has-error': form.password1.$invalid && submitted }">
-            <label>Password</label>
+          <label>Password</label>
 
-            <input type="password" name="password1" class="form-control" ng-model="user.password1"
-                   ng-minlength="3"
-                   required
-                   mongoose-error/>
-            <p class="help-block"
-               ng-show="(form.password1.$error.minlength || form.password1.$error.required) && submitted">
-              Password must be at least 3 characters.
-            </p>
-            <p class="help-block" ng-show="form.password1.$error.mongoose">
-              {{ errors.password }}
-            </p>
-          </div>
-          <div class="form-group col-md-3" ng-class="{ 'has-success': form.password2.$valid && submitted,
+          <input type="password" name="password1" class="form-control" ng-model="user.password1"
+                 ng-minlength="3"
+                 required
+                 mongoose-error/>
+
+          <p class="help-block"
+             ng-show="(form.password1.$error.minlength || form.password1.$error.required) && submitted">
+            Password must be at least 3 characters.
+          </p>
+
+          <p class="help-block" ng-show="form.password1.$error.mongoose">
+            {{ errors.password }}
+          </p>
+        </div>
+        <div class="form-group col-md-3" ng-class="{ 'has-success': form.password2.$valid && submitted,
                                             'has-error': form.password2.$invalid && submitted }">
-            <label>Confirm password</label>
+          <label>Confirm password</label>
 
-            <input type="password" name="password2" class="form-control" ng-model="user.password2"
-                   ng-minlength="3"
-                   required
-                   mongoose-error/>
-            <p class="help-block"
-               ng-show="(form.password2.$error.minlength || form.password2.$error.required) && submitted">
-              Password must be at least 3 characters.
-            </p>
-            <p class="help-block" ng-show="form.password2.$error.mongoose">
-              {{ errors.password }}
-            </p>
-          </div>
+          <input type="password" name="password2" class="form-control" ng-model="user.password2"
+                 ng-minlength="3"
+                 required
+                 mongoose-error/>
+
+          <p class="help-block"
+             ng-show="(form.password2.$error.minlength || form.password2.$error.required) && submitted">
+            Password must be at least 3 characters.
+          </p>
+
+          <p class="help-block" ng-show="form.password2.$error.mongoose">
+            {{ errors.password }}
+          </p>
         </div>
-        <div class="row">
-          <div vc-recaptcha name="captcha" class="form-group col-md-4" ng-class="has-success" on-create="setWidgetId(widgetId)" on-success="setResponse(response)" theme="light" key="key" required ></div>
-          <div class="form-group col-md-2" ng-class="{ 'has-error': !response && submitted }">
-            <p class="help-block" ng-hide="response">
-              Captcha required
-            </p>
-          </div>
+      </div>
+      <div class="row">
+        <div vc-recaptcha name="captcha" class="form-group col-md-4" ng-class="has-success"
+             on-create="setWidgetId(widgetId)" on-success="setResponse(response)" theme="light" key="key"
+             required></div>
+        <div class="form-group col-md-2" ng-class="{ 'has-error': !response && submitted }">
+          <p class="help-block" ng-hide="response">
+            Captcha required
+          </p>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col-md-2">
+      <div class="row">
+        <div class="col-md-2">
 
-            <button class="btn btn-login btn-success btn-block" type="submit">
-              Sign up
-            </button>
-          </div>
+          <button class="btn btn-login btn-success btn-block" type="submit">
+            Sign up
+          </button>
         </div>
+      </div>
 
-      </form>
-    </div>
+    </form>
+  </div>
   <hr>
 </div>

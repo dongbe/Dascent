@@ -2,7 +2,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .factory('socket', function(socketFactory) {
+  .factory('socket', function (socketFactory) {
 
     // socket.io now auto-configures its connection when we ommit a connection url
     var ioSocket = io('', {
@@ -28,7 +28,7 @@ angular.module('dascentApp')
        * @param {Array} array
        * @param {Function} cb
        */
-      syncUpdates: function (modelName, array, cb) {
+      syncUpdates: function (modelName, array,id, cb) {
         cb = cb || angular.noop;
 
         /**
@@ -45,13 +45,16 @@ angular.module('dascentApp')
             array.splice(index, 1, item);
             event = 'updated';
           } else {
-            array.push(item);
+            //check if it the same contructor
+                if(item._constructor==id){
+                  array.push(item);
+                }
           }
 
           cb(event, item, array);
         });
 
-          /**
+        /**
          * Syncs removed items on 'model:remove'
          */
         socket.on(modelName + ':remove', function (item) {
@@ -62,30 +65,30 @@ angular.module('dascentApp')
       },
 
       syncProfileUpdates: function (modelName, array, cb) {
-      cb = cb || angular.noop;
+        cb = cb || angular.noop;
 
-      /**
-       * Syncs item creation/updates on 'model:save'
-       */
-      socket.on(modelName + ':save', function (item) {
-        var event = 'created';
-        if(array.user===item.user){
-          for (var i in array){
-            if(array[i].length!==item[i].length){
-              array[i].splice(0,array[i].length);
+        /**
+         * Syncs item creation/updates on 'model:save'
+         */
+        socket.on(modelName + ':save', function (item) {
+          var event = 'created';
+          if (array.user === item.user) {
+            for (var i in array) {
+              if (array[i].length !== item[i].length) {
+                array[i].splice(0, array[i].length);
 
-              if(item[i].length!==0){
-                for (var y in item[i]){
-                  array[i].push(item[i][y]);
+                if (item[i].length !== 0) {
+                  for (var y in item[i]) {
+                    array[i].push(item[i][y]);
+                  }
                 }
               }
             }
           }
-        }
-        event='updated';
+          event = 'updated';
 
-        cb(event, item, array);
-      });
+          cb(event, item, array);
+        });
 
         //TO-DO
         socket.on(modelName + ':remove', function (item) {
@@ -102,13 +105,12 @@ angular.module('dascentApp')
          */
         socket.on(modelName + ':save', function (item) {
           var event = 'created';
-
-          for (var i in array){
-            if(array[i].device.ds_id===item.ds_id){
-              array[i].device=item;
+          for (var i in array) {
+            if (array[i].device.ds_id === item.ds_id) {
+              array[i].device = item;
             }
           }
-          event='updated';
+          event = 'updated';
 
           cb(event, item, array);
         });

@@ -6,7 +6,7 @@
 
 var Notification = require('./notification.model');
 
-exports.register = function(socket) {
+exports.register = function (socket) {
   Notification.schema.post('save', function (doc) {
     onSave(socket, doc);
   });

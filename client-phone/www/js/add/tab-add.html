@@ -23,7 +23,7 @@
     </div>
 
     <div ng-if="!checked">
-      <form class="navbar-form" name="addDevice"  ng-submit="register()">
+      <form class="navbar-form" name="addDevice" ng-submit="register()">
         <label>Serial Number :</label>
         <button type="submit" class="btn btn-success">
           Subscribe
@@ -43,7 +43,8 @@
     </div>
     <ion-list>
       <div ng-show="!profile.watchs.length">Vous n'avez pas de devices</div>
-      <ion-item class="list card item-remove-animate item-icon-right" ng-hide="!profile.watchs.length" class="panel panel-default" ng-repeat="device in profile.watchs" >
+      <ion-item class="list card item-remove-animate item-icon-right" ng-hide="!profile.watchs.length"
+                class="panel panel-default" ng-repeat="device in profile.watchs">
         <div class="item">
           <h3 class="panel-title">Capteur :{{device.device.name}} </h3>
           SN: {{device.device.serial}} - Description: {{device.device.description}}
@@ -52,9 +53,12 @@
           <i class="icon ion-chevron-right icon-accessory"></i>
         </div>
       </ion-item>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in chats" type="item-text-wrap"
+                href="#/tab/chats/{{chat.id}}">
         <img ng-src="{{chat.face}}">
+
         <h2>{{chat.name}}</h2>
+
         <p>{{chat.lastText}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
 

@@ -1,4 +1,3 @@
-
 /**
  * Created by donatien-gbe on 31/03/15.
  */
@@ -11,16 +10,15 @@ angular.module('dascentApp')
     var config = {};
 
     return {
-      updateDevice: function(device,callback)
-      {
+      updateDevice: function (device, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.patch('/api/devices/'+device._id, device).
-          success(function(data) {
+        $http.patch('/api/devices/' + device._id, device).
+          success(function (data) {
             deferred.resolve(data);
             return cb();
           }).
-          error(function(err) {
+          error(function (err) {
             deferred.reject(err);
             return cb(err);
           }.bind(this));
@@ -28,8 +26,8 @@ angular.module('dascentApp')
         return deferred.promise;
 
       },
-      config: function(){
-        if(Auth.isLoggedIn() && !Auth.isAdmin()) {
+      config: function () {
+        if (Auth.isLoggedIn() && !Auth.isAdmin()) {
           currentUser = Auth.getCurrentUser();
         }
 
@@ -50,7 +48,10 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('http://dascent-dascent.rhcloud.com/api/followers/'+profile.id+'/confirm', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('http://dascent-dascent.rhcloud.com/api/followers/' + profile.id + '/confirm', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb(data);
@@ -65,7 +66,10 @@ angular.module('dascentApp')
       cancel: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('http://dascent-dascent.rhcloud.com/api/followers/'+profile.id+'/cancel', {user:profile.demand._owner,device:profile.demand._id})
+        $http.post('http://dascent-dascent.rhcloud.com/api/followers/' + profile.id + '/cancel', {
+          user: profile.demand._owner,
+          device: profile.demand._id
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -79,7 +83,11 @@ angular.module('dascentApp')
       cancelRequest: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('http://dascent-dascent.rhcloud.com/api/followers/'+profile.id+'/cancel', {user:profile.demand.user._id,device:profile.demand.device._id, options:'request'})
+        $http.post('http://dascent-dascent.rhcloud.com/api/followers/' + profile.id + '/cancel', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id,
+          options: 'request'
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -95,7 +103,10 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('http://dascent-dascent.rhcloud.com/api/followers/'+profile.id+'/discard', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('http://dascent-dascent.rhcloud.com/api/followers/' + profile.id + '/discard', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -140,42 +151,45 @@ angular.module('dascentApp')
             device.apikeys = [];
             var def = $q.defer();
             $q.all([
-              $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/streams',config).success(function(data){def.resolve(data);}),
-              $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/keys',config).success(function(data){def.resolve(data);})])
+              $http.get('https://api.orange.com/datavenue/v1/datasources/' + device.ds_id + '/streams', config).success(function (data) {
+                def.resolve(data);
+              }),
+              $http.get('https://api.orange.com/datavenue/v1/datasources/' + device.ds_id + '/keys', config).success(function (data) {
+                def.resolve(data);
+              })])
               .then(function (ret) {
-                var streams=[];
-                var apikeys=[];
+                var streams = [];
+                var apikeys = [];
 
                 for (var y in ret[1].data) {
-                  for(var x in ret[1].data[y].rights) {
-                    if (ret[1].data[y].rights[x]==='GET') {
+                  for (var x in ret[1].data[y].rights) {
+                    if (ret[1].data[y].rights[x] === 'GET') {
                       apikeys.push(ret[1].data[y].value);
                     }
                   }
                 }
 
-                angular.forEach(ret[0].data, function(st) {
+                angular.forEach(ret[0].data, function (st) {
                   streams.push({
                     id: st.id,
                     name: st.name,
-                    lastValue: st.lastValue?st.lastValue:{},
+                    lastValue: st.lastValue ? st.lastValue : {},
                     values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
                     lastPost: new Date()
                   });
                 });
-                device.streams=streams;
-                device.apikeys=apikeys;
-                $http.post('http://dascent-dascent.rhcloud.com/api/devices/phone',device)
-                  .success(function(data)
-                  {
+                device.streams = streams;
+                device.apikeys = apikeys;
+                $http.post('http://dascent-dascent.rhcloud.com/api/devices/phone', device)
+                  .success(function (data) {
                     console.log("success");
-                  deferred.resolve(data);
-                  return cb(data);
-                }).error(function(err){
+                    deferred.resolve(data);
+                    return cb(data);
+                  }).error(function (err) {
                     console.log("error");
-                  deferred.reject(err);
-                  return cb(err);
-                });
+                    deferred.reject(err);
+                    return cb(err);
+                  });
               });
           })
           .error(function (err) {
@@ -197,7 +211,7 @@ angular.module('dascentApp')
       getCurrentDevices: function () {
         return currentDevices;
       },
-      clear: function() {
+      clear: function () {
 
         currentDevices = [];
         config = {};

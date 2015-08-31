@@ -1,26 +1,29 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="container">
-<div class="col-md-12">
-  <div class="row">
-    <div class="col-md-6">
-      Choose Backend - Default is Datavenue -> Standard IOTDM: <input type="checkbox" ng-model="checked" ng-init="checked=false"/>
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-6">
+        Choose Backend - Default is Datavenue -> Standard IOTDM: <input type="checkbox" ng-model="checked"
+                                                                        ng-init="checked=false"/>
+      </div>
+      <div ng-if="checked" class="col-md-6">
+        This is an implementation of OneM2M, please contact Fatima for more information
+      </div>
     </div>
-    <div ng-if="checked" class="col-md-6" >
-            This is an implementation of OneM2M, please contact Fatima for more information
+    <br>
+
+    <div class="col-md-3">
+      <ul id="link" class="nav nav-pills nav-stacked">
+        <li id="link1" role="presentation" class="active" ng-model="toggle" ng-click="toggle = true">
+          <a href="#" onclick="$('#link li').removeClass('active');$('#link1').addClass('active');">Dashboard</a>
+        </li>
+        <li id="link2" role="presentation" class="" ng-model="toggle" ng-click="toggle = false">
+          <a href="#" onclick="$('#link li').removeClass('active');$('#link2').addClass('active');">Liste des
+            devices</a>
+        </li>
+      </ul>
     </div>
-  </div>
-  <br>
-  <div class="col-md-3">
-    <ul id="link" class="nav nav-pills nav-stacked">
-      <li id="link1" role="presentation" class="active" ng-model="toggle" ng-click="toggle = true">
-        <a href="#" onclick="$('#link li').removeClass('active');$('#link1').addClass('active');">Dashboard</a>
-      </li>
-      <li id="link2" role="presentation" class="" ng-model="toggle" ng-click="toggle = false">
-        <a href="#" onclick="$('#link li').removeClass('active');$('#link2').addClass('active');" >Liste des devices</a>
-      </li>
-    </ul>
-  </div>
-  <div class="col-md-9">
+    <div class="col-md-9">
 
       <div class="row info">
         <!-- champ de sauvergarde et de mise à jour de l'apikey-->
@@ -29,13 +32,13 @@
             <label>Orange Partner Key : {{constructor().idclient}}</label>
           </div>
 
-        <!-- champ de sauvergarde et de mise à jour de l'isskey-->
+          <!-- champ de sauvergarde et de mise à jour de l'isskey-->
           <div class="input-group">
             <label>ISS Key : {{constructor().isskey}}</label>
           </div>
         </div>
       </div>
-    <!-- boutons de sauvergarde et de mise à jour des datasources-->
+      <!-- boutons de sauvergarde et de mise à jour des datasources-->
       <div class="row">
         <div class="col-md-8">
           <form name="upload" class="form" ng-submit="createDevice(fileContent)" ng-if="!checked">
@@ -45,6 +48,7 @@
             <p class="help-block" ng-show="file">
               A file is required
             </p>
+
             <div class="col-md-6">
               <button class="btn btn-success" type="submit">Create devices</button>
             </div>
@@ -62,45 +66,48 @@
         </div>
       </div>
 
-    <div id="dashboard" class="row" ng-if="toggle">
-      <h2>Graphe d'utilisation des devices</h2>
-      <div ng-show="!devices.length">  Aucun device declaré </div>
-      <chart ng-if="devices.length" chart-data="devices" ></chart>
-    </div>
-    <div id="list" ng-show="!toggle">
-      <h2>Liste des devices</h2>
-      <div ng-show="!devices.length">  Aucun device declaré </div>
-      <div ng-hide="!devices.length">
-        <div id="chart"></div>
-        <table class="table table-striped table-bordered" data-cache="false" data-height="299">
-          <thead>
-          <tr>
-            <th></th>
-            <th>Serial</th>
-            <th>Datasource ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>State</th>
-            <th>Group</th>
-            <th></th>
-          </tr>
-          </thead>
-          <tr ng-repeat="device in devices">
-            <td>{{$index+1}}</td>
-            <td>{{device.serial}}</td>
-            <td>{{device.ds_id}}</td>
-            <td>{{device.name}}</td>
-            <td>{{device.description}}</td>
-            <td>
-              <div ng-if="!device.hasOwnProperty('_owner')" class="red"></div>
-              <div ng-if="device.hasOwnProperty('_owner')" class="green"></div>
-            </td>
-            <td>{{device.group[0]}}</td>
-            <td><a ng-click="delete(device)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a></td>
-          </tr>
-        </table>
+      <div id="dashboard" class="row" ng-if="toggle">
+        <h2>Graphe d'utilisation des devices</h2>
+
+        <div ng-show="!devices.length"> Aucun device declaré</div>
+        <chart ng-if="devices.length" chart-data="devices"></chart>
+      </div>
+      <div id="list" ng-show="!toggle">
+        <h2>Liste des devices</h2>
+
+        <div ng-show="!devices.length"> Aucun device declaré</div>
+        <div ng-hide="!devices.length">
+          <div id="chart"></div>
+          <table class="table table-striped table-bordered" data-cache="false" data-height="299">
+            <thead>
+            <tr>
+              <th></th>
+              <th>Serial</th>
+              <th>Datasource ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>State</th>
+              <th>Group</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="device in devices">
+              <td>{{$index+1}}</td>
+              <td>{{device.serial}}</td>
+              <td>{{device.ds_id}}</td>
+              <td>{{device.name}}</td>
+              <td>{{device.description}}</td>
+              <td>
+                <div ng-if="!device.hasOwnProperty('_owner')" class="red"></div>
+                <div ng-if="device.hasOwnProperty('_owner')" class="green"></div>
+              </td>
+              <td>{{device.group[0]}}</td>
+              <td><a ng-click="delete(device)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>

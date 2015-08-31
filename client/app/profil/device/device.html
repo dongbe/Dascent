@@ -3,56 +3,65 @@
   <div ng-include="'components/sidebar/sidebar.html'"></div>
   <div class="col-md-8">
     <div>
-    Ajouter un device (Propriétaire): <input type="checkbox" ng-model="checked" ng-init="checked=false"/><br/>
+      Ajouter un device (Propriétaire): <input type="checkbox" ng-model="checked" ng-init="checked=false"/><br/>
         <span ng-if="checked">
             This is reserved to the device owner, please contact orange partner for more information
        </span>
-    <div ng-if="!checked">
-      <form class="navbar-form" name="addDevice" class="form" ng-submit="register()">
-        <label>Serial Number :</label>
-        <input name="serial" type="text" ng-model="device.serial" required>
-        <button type="submit" class="btn btn-success">
-          Subscribe
-        </button>
-      </form>
+
+      <div ng-if="!checked">
+        <form class="navbar-form" name="addDevice" class="form" ng-submit="register()">
+          <label>Serial Number :</label>
+          <input name="serial" type="text" ng-model="device.serial" required>
+          <button type="submit" class="btn btn-success">
+            Subscribe
+          </button>
+        </form>
+      </div>
+      <div ng-if="checked">
+        <form class="navbar-form" name="addDevice" class="form" ng-submit="registerO()">
+          <label>Serial Number :</label>
+          <input name="serial" type="text" ng-model="device.serial" required>
+          <label>PIN Code:</label>
+          <input name="serial" type="password" ng-model="device.pass" required>
+          <button type="submit" class="btn btn-success">
+            Ajouter
+          </button>
+        </form>
+      </div>
     </div>
-    <div ng-if="checked">
-    <form class="navbar-form" name="addDevice" class="form" ng-submit="registerO()">
-      <label>Serial Number :</label>
-      <input name="serial" type="text" ng-model="device.serial" required>
-      <label>PIN Code:</label>
-      <input name="serial" type="password" ng-model="device.pass" required>
-      <button type="submit" class="btn btn-success">
-        Ajouter
-      </button>
-    </form>
-  </div>
-  </div>
     <div>
       <h4>Subscribed sensors</h4>
+
       <div ng-show="!profile.watchs.length">Vous n'avez pas de devices</div>
-      <div ng-hide="!profile.watchs.length" class="list-group" ng-repeat="watch in profile.watchs" >
+      <div ng-hide="!profile.watchs.length" class="list-group" ng-repeat="watch in profile.watchs">
 
         <div class="list-group-item">
-            <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
-            <a class="close" ng-click="deleteDevice(watch)">×</a>
-            <h3 class="panel-title">Capteur :{{watch.device.name}} </h3>
+          <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
+          <a class="close" ng-click="deleteDevice(watch)">×</a>
+
+          <h3 class="panel-title">Capteur :{{watch.device.name}} </h3>
 
           SN: {{watch.device.serial}} - Description: {{watch.device.description}}
           <h4 ng-if="type(watch)" class="text-danger pull-right">Owner</h4>
           <h4 ng-if="!type(watch)" class="text-danger pull-right">subscribe</h4>
-          <button ng-if="isGPS(watch) && !watch.device.tracking"type="button" ng-click="activateTracking(watch.device)" class="btn-default pull-right">Activate Tracking</button>
-          <button ng-if="isGPS(watch) && watch.device.tracking"type="button" ng-click="deactivateTracking(watch.device)" class="btn-default pull-right">Cancel Tracking</button>
+          <button ng-if="isGPS(watch) && !watch.device.tracking" type="button" ng-click="activateTracking(watch.device)"
+                  class="btn-default pull-right">Activate Tracking
+          </button>
+          <button ng-if="isGPS(watch) && watch.device.tracking" type="button"
+                  ng-click="deactivateTracking(watch.device)" class="btn-default pull-right">Cancel Tracking
+          </button>
         </div>
 
       </div>
 
       <h4>Pending requests</h4>
+
       <div ng-show="!profile.waiting.length">Vous n'avez pas de demandes</div>
-      <div ng-hide="!profile.waiting.length" class="panel panel-default" ng-repeat="device in profile.waiting" >
+      <div ng-hide="!profile.waiting.length" class="panel panel-default" ng-repeat="device in profile.waiting">
         <div class="panel-body">
           <div>
             <a href="#"><img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt"></a>
+
             <h3 class="panel-title">Capteur :{{device.name}} </h3>
           </div>
           SN: {{device.serial}} - Description: {{device.description}}

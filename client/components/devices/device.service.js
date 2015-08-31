@@ -13,21 +13,21 @@ angular.module('dascentApp')
     var config = {};
 
     return {
-      config: function(standard){
-          if(Auth.isLoggedIn() && !Auth.isAdmin()) {
-            currentUser = Auth.getCurrentUser();
-          }
+      config: function (standard) {
+        if (Auth.isLoggedIn() && !Auth.isAdmin()) {
+          currentUser = Auth.getCurrentUser();
+        }
 
-          if (currentUser && Auth.isLoggedIn()) {
-            //currentDevices = User.getDevices({id: currentUser._id});
-            config = {
-              headers: {
-                'X-ISS-Key': currentUser.isskey,
-                'X-OAPI-Key': currentUser.idclient,
-                'Content-Type': 'application/json'
-              }
-            };
-          }
+        if (currentUser && Auth.isLoggedIn()) {
+          //currentDevices = User.getDevices({id: currentUser._id});
+          config = {
+            headers: {
+              'X-ISS-Key': currentUser.isskey,
+              'X-OAPI-Key': currentUser.idclient,
+              'Content-Type': 'application/json'
+            }
+          };
+        }
 
       },
       confirm: function (profile, callback) {
@@ -35,7 +35,10 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('/api/profiles/'+profile.id+'/confirm', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('/api/profiles/' + profile.id + '/confirm', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb(data);
@@ -50,7 +53,7 @@ angular.module('dascentApp')
       cancel: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('/api/profiles/'+profile.id+'/cancel', {user:profile.demand._owner,device:profile.demand._id})
+        $http.post('/api/profiles/' + profile.id + '/cancel', {user: profile.demand._owner, device: profile.demand._id})
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -64,7 +67,11 @@ angular.module('dascentApp')
       cancelRequest: function (profile, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.post('/api/profiles/'+profile.id+'/cancel', {user:profile.demand.user._id,device:profile.demand.device._id, options:'request'})
+        $http.post('/api/profiles/' + profile.id + '/cancel', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id,
+          options: 'request'
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -80,7 +87,10 @@ angular.module('dascentApp')
         var deferred = $q.defer();
         console.log('ici');
 
-        $http.post('/api/profiles/'+profile.id+'/discard', {user:profile.demand.user._id,device:profile.demand.device._id})
+        $http.post('/api/profiles/' + profile.id + '/discard', {
+          user: profile.demand.user._id,
+          device: profile.demand.device._id
+        })
           .success(function (data) {
             deferred.resolve(data);
             return cb();
@@ -139,16 +149,15 @@ angular.module('dascentApp')
           }.bind(this)).$promise;
 
       },
-      updateDevice: function(device,callback)
-      {
+      updateDevice: function (device, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
-        $http.patch('/api/devices/'+device._id, device).
-          success(function(data) {
+        $http.patch('/api/devices/' + device._id, device).
+          success(function (data) {
             deferred.resolve(data);
             return cb();
           }).
-          error(function(err) {
+          error(function (err) {
             deferred.reject(err);
             return cb(err);
           }.bind(this));
@@ -161,77 +170,81 @@ angular.module('dascentApp')
       importDevice: function (callback) {
 
         var cb = callback || angular.noop;
-        var def=$q.defer();
-          this.config();
-          $http.get('https://api.orange.com/datavenue/v1/datasources', config)
-            .success(function (data) {
+        var def = $q.defer();
+        this.config();
+        $http.get('https://api.orange.com/datavenue/v1/datasources', config)
+          .success(function (data) {
 
-              angular.forEach(data, function(d){
-                var deferred = $q.defer();
-                var device = {};
-                device.ds_id = d.id;
-                device.name = d.name;
-                device.description = d.description;
-                device.serial = d.serial;
-                device._constructor = currentUser._id;
-                device.group = d.group;
-                device.streams = [];
-                device.apikeys = [];
+            angular.forEach(data, function (d) {
+              var deferred = $q.defer();
+              var device = {};
+              device.ds_id = d.id;
+              device.name = d.name;
+              device.description = d.description;
+              device.serial = d.serial;
+              device._constructor = currentUser._id;
+              device.group = d.group;
+              device.streams = [];
+              device.apikeys = [];
 
-                $q.all([
-                  $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/streams',config).success(function(data){deferred.resolve(data);}),
-                  $http.get('https://api.orange.com/datavenue/v1/datasources/'+device.ds_id+'/keys',config).success(function(data){deferred.resolve(data);})])
-                  .then(function (ret) {
-                    var streams=[];
-                    var apikeys=[];
-                    if (ret[1].data){
-                      for (var y in ret[1].data) {
-                        for(var x in ret[1].data[y].rights) {
-                          if (ret[1].data[y].rights[x]==='GET') {
-                            apikeys.push(ret[1].data[y].value);
-                          }
+              $q.all([
+                $http.get('https://api.orange.com/datavenue/v1/datasources/' + device.ds_id + '/streams', config).success(function (data) {
+                  deferred.resolve(data);
+                }),
+                $http.get('https://api.orange.com/datavenue/v1/datasources/' + device.ds_id + '/keys', config).success(function (data) {
+                  deferred.resolve(data);
+                })])
+                .then(function (ret) {
+                  var streams = [];
+                  var apikeys = [];
+                  if (ret[1].data) {
+                    for (var y in ret[1].data) {
+                      for (var x in ret[1].data[y].rights) {
+                        if (ret[1].data[y].rights[x] === 'GET') {
+                          apikeys.push(ret[1].data[y].value);
                         }
                       }
                     }
+                  }
 
-                    if (ret[0].data){
-                      angular.forEach(ret[0].data, function(st) {
-                        streams.push({
-                          id: st.id,
-                          name: st.name,
-                          lastValue: st.lastValue?st.lastValue:{},
-                          values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
-                          lastPost: new Date()
-                        });
+                  if (ret[0].data) {
+                    angular.forEach(ret[0].data, function (st) {
+                      streams.push({
+                        id: st.id,
+                        name: st.name,
+                        lastValue: st.lastValue ? st.lastValue : {},
+                        values: st.lastValue ? [{value: st.lastValue, time: new Date()}] : [],
+                        lastPost: new Date()
                       });
-                    }
-
-                    device.streams=streams;
-                    device.apikeys=apikeys;
-                    $http.post('/api/devices',device).success(function(data){
-                      def.resolve(data);
-                    }).error(function(error){
-                      def.reject(error);
                     });
+                  }
+
+                  device.streams = streams;
+                  device.apikeys = apikeys;
+                  $http.post('/api/devices', device).success(function (data) {
+                    def.resolve(data);
+                  }).error(function (error) {
+                    def.reject(error);
                   });
-              });
-            })
-            .error(function (error) {
-              console.log(error);
-              def.reject(error);
+                });
             });
+          })
+          .error(function (error) {
+            console.log(error);
+            def.reject(error);
+          });
         return def.promise;
       },
       importStDevice: function (callback) {
         this.config();
         var cb = callback || angular.noop;
-        var def=$q.defer();
+        var def = $q.defer();
         console.log(currentUser._id);
-        $http.get('/api/users/'+currentUser._id+'/des')
+        $http.get('/api/users/' + currentUser._id + '/des')
           .success(function (data) {
             def.resolve(data);
           })
-          .error(function(error){
+          .error(function (error) {
             def.reject(error);
           });
         return def.promise;
@@ -247,7 +260,7 @@ angular.module('dascentApp')
       getCurrentDevices: function () {
         return currentDevices;
       },
-      clear: function() {
+      clear: function () {
 
         currentDevices = [];
         config = {};

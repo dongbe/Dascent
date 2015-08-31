@@ -26,10 +26,10 @@ angular.module('btford.socket-io', []).
         } : angular.noop;
       };
 
-      return function socketFactory (options) {
+      return function socketFactory(options) {
         options = options || {};
         var socket = options.ioSocket || io.connect();
-        var prefix = options.prefix === undefined ? defaultPrefix : options.prefix ;
+        var prefix = options.prefix === undefined ? defaultPrefix : options.prefix;
         var defaultScope = options.scope || $rootScope;
 
         var addListener = function (eventName, callback) {
@@ -48,7 +48,7 @@ angular.module('btford.socket-io', []).
           emit: function (eventName, data, callback) {
             var lastIndex = arguments.length - 1;
             var callback = arguments[lastIndex];
-            if(typeof callback == 'function') {
+            if (typeof callback == 'function') {
               callback = asyncAngularify(socket, callback);
               arguments[lastIndex] = callback;
             }
@@ -62,7 +62,7 @@ angular.module('btford.socket-io', []).
             return socket.removeListener.apply(socket, arguments);
           },
 
-          removeAllListeners: function() {
+          removeAllListeners: function () {
             return socket.removeAllListeners.apply(socket, arguments);
           },
 
@@ -70,7 +70,7 @@ angular.module('btford.socket-io', []).
             return socket.disconnect(close);
           },
 
-          connect: function() {
+          connect: function () {
             return socket.connect();
           },
 

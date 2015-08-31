@@ -5,8 +5,9 @@
   </ion-nav-buttons>
   <ion-content class="padding">
     <h4>Pending requests</h4>
+
     <div ng-show="!profile.waiting.length">Vous n'avez pas de demandes</div>
-    <div class="list card" ng-hide="!profile.waiting.length"  ng-repeat="device in profile.waiting" >
+    <div class="list card" ng-hide="!profile.waiting.length" ng-repeat="device in profile.waiting">
       <div class="item">
         <h3 class="panel-title">Capteur :{{device.name}} </h3>
         SN: {{device.serial}} - Description: {{device.description}}
@@ -15,8 +16,9 @@
     </div>
 
     <h4>Requests</h4>
+
     <div ng-show="!profile.waitlist.length">Vous n'avez pas de demandes en cours</div>
-    <div class="list card" ng-hide="!profile.waitlist.length"  ng-repeat="device in profile.waitlist">
+    <div class="list card" ng-hide="!profile.waitlist.length" ng-repeat="device in profile.waitlist">
       <div class="item">
         <h3 class="panel-title">Ajouter un follower :{{device.user.name}}</h3>
         {{device.device.name}} / {{device.device.serial}} / {{device.device.description}}

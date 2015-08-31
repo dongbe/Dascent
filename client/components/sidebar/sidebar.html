@@ -1,11 +1,13 @@
 <div class="col-md-3 col-md-offset-1">
   <div class="list-group">
     <a class="list-group-item active" href="#"><span class="badge">{{currentUser().name}}</span>
-      <img ng-src="/api/users/avatar/{{currentUser().avatar}}" width="50" height="50" alt="..." class="img-circle thumbnail"></a>
+      <img ng-src="/api/users/avatar/{{currentUser().avatar}}" width="50" height="50" alt="..."
+           class="img-circle thumbnail"></a>
     <a class="list-group-item" href="/device"><span class="badge">{{profile.watchs.length}}</span>
       <span ng-if="profile.waiting.length" class="badge badge-important">{{profile.waiting.length}}</span>Devices</a>
     <a class="list-group-item" href="/follower"><span class="badge">{{profile.accepted.length}}</span>
-      <span ng-if="profile.waitlist.length" class="badge badge-important">{{profile.waitlist.length}}</span>Followers</a>
+      <span ng-if="profile.waitlist.length"
+            class="badge badge-important">{{profile.waitlist.length}}</span>Followers</a>
     <a class="list-group-item" href="/follower"><span class="badge">{{followings.length}}</span>Following</a>
   </div>
 </div>

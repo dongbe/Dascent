@@ -3,7 +3,7 @@
 angular.module('dascentApp')
   .factory('Auth', function Auth($location, $http, User, $cookieStore, $q) {
     var currentUser = {};
-    if($cookieStore.get('token')) {
+    if ($cookieStore.get('token')) {
       currentUser = User.get();
     }
 
@@ -16,7 +16,7 @@ angular.module('dascentApp')
        * @param  {Function} callback - optional
        * @return {Promise}
        */
-      login: function(user, callback) {
+      login: function (user, callback) {
         var cb = callback || angular.noop;
         var deferred = $q.defer();
 
@@ -24,17 +24,17 @@ angular.module('dascentApp')
           email: user.email,
           password: user.password
         }).
-        success(function(data) {
-          $cookieStore.put('token', data.token);
-          currentUser = User.get();
-          deferred.resolve(data);
-          return cb();
-        }).
-        error(function(err) {
-          this.logout();
-          deferred.reject(err);
-          return cb(err);
-        }.bind(this));
+          success(function (data) {
+            $cookieStore.put('token', data.token);
+            currentUser = User.get();
+            deferred.resolve(data);
+            return cb();
+          }).
+          error(function (err) {
+            this.logout();
+            deferred.reject(err);
+            return cb(err);
+          }.bind(this));
 
         return deferred.promise;
       },
@@ -44,7 +44,7 @@ angular.module('dascentApp')
        *
        * @param  {Function}
        */
-      logout: function() {
+      logout: function () {
         $cookieStore.remove('token');
         currentUser = {};
 
@@ -57,15 +57,15 @@ angular.module('dascentApp')
        * @param  {Function} callback - optional
        * @return {Promise}
        */
-      createUser: function(user, callback) {
+      createUser: function (user, callback) {
         var cb = callback || angular.noop;
 
         return User.save(user,
-          function() {
+          function () {
             //this.logout();
             return cb(user);
           },
-          function(err) {
+          function (err) {
             this.logout();
             return cb(err);
           }.bind(this)).$promise;
@@ -79,15 +79,15 @@ angular.module('dascentApp')
        * @param  {Function} callback    - optional
        * @return {Promise}
        */
-      changePassword: function(oldPassword, newPassword, callback) {
+      changePassword: function (oldPassword, newPassword, callback) {
         var cb = callback || angular.noop;
 
-        return User.changePassword({ id: currentUser._id }, {
+        return User.changePassword({id: currentUser._id}, {
           oldPassword: oldPassword,
           newPassword: newPassword
-        }, function(user) {
+        }, function (user) {
           return cb(user);
-        }, function(err) {
+        }, function (err) {
           return cb(err);
         }).$promise;
       },
@@ -98,31 +98,31 @@ angular.module('dascentApp')
        * @param callback
        * @returns {$promise|*|B.$promise}
        */
-      update: function(user, callback) {
+      update: function (user, callback) {
         var cb = callback || angular.noop;
 
-        return User.patch({ id: currentUser._id }, {
+        return User.patch({id: currentUser._id}, {
           name: user.name,
           lastname: user.lastname,
           email: user.email
-        }, function(user) {
+        }, function (user) {
           return cb(user);
-        }, function(err) {
+        }, function (err) {
           return cb(err);
         }).$promise;
       },
-      updateProvider: function(user, callback) {
+      updateProvider: function (user, callback) {
         var cb = callback || angular.noop;
 
-        return User.patch({ id: currentUser._id }, {
+        return User.patch({id: currentUser._id}, {
           name: user.name,
           lastname: user.lastname,
           email: user.email,
-          isskey:user.isskey,
-          idclient:user.idclient
-        }, function(user) {
+          isskey: user.isskey,
+          idclient: user.idclient
+        }, function (user) {
           return cb(user);
-        }, function(err) {
+        }, function (err) {
           return cb(err);
         }).$promise;
       },
@@ -132,7 +132,7 @@ angular.module('dascentApp')
        *
        * @return {Object} user
        */
-      getCurrentUser: function() {
+      getCurrentUser: function () {
         return currentUser;
       },
 
@@ -141,7 +141,7 @@ angular.module('dascentApp')
        *
        * @return {Boolean}
        */
-      isLoggedIn: function() {
+      isLoggedIn: function () {
         //console.log(currentUser);
         return currentUser.hasOwnProperty('role');
       },
@@ -149,14 +149,14 @@ angular.module('dascentApp')
       /**
        * Waits for currentUser to resolve before checking if user is logged in
        */
-      isLoggedInAsync: function(cb) {
-        if(currentUser.hasOwnProperty('$promise')) {
-          currentUser.$promise.then(function() {
+      isLoggedInAsync: function (cb) {
+        if (currentUser.hasOwnProperty('$promise')) {
+          currentUser.$promise.then(function () {
             cb(true);
-          }).catch(function() {
+          }).catch(function () {
             cb(false);
           });
-        } else if(currentUser.hasOwnProperty('role')) {
+        } else if (currentUser.hasOwnProperty('role')) {
           cb(true);
         } else {
           cb(false);
@@ -168,7 +168,7 @@ angular.module('dascentApp')
        *
        * @return {Boolean}
        */
-      isAdmin: function() {
+      isAdmin: function () {
         return currentUser.role === 'admin';
       },
 
@@ -176,17 +176,17 @@ angular.module('dascentApp')
        * check if a user is a constructor
        * @returns {boolean}
        */
-      isConstructor: function(){
+      isConstructor: function () {
         return currentUser.role === 'constructor';
       },
       /**
        * Get auth token
        */
-      getToken: function() {
+      getToken: function () {
         return $cookieStore.get('token');
       },
 
-      isAuthorized: function(required){
+      isAuthorized: function (required) {
         return currentUser.role === required;
       }
     };

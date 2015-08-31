@@ -5,22 +5,22 @@
 // the 2nd parameter is an array of 'requires'
 // 'dascentApp.services' is found in services.js
 // 'dascentApp.controllers' is found in controllers.js
-angular.module('dascentApp', ['ionic','ngResource','btford.socket-io','ngCordova','uiGmapgoogle-maps'])
+angular.module('dascentApp', ['ionic', 'ngResource', 'btford.socket-io', 'ngCordova', 'uiGmapgoogle-maps'])
 
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
-})
-  .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider, uiGmapGoogleMapApiProvider) {
+  .run(function ($ionicPlatform) {
+    $ionicPlatform.ready(function () {
+      // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+      // for form inputs)
+      if (window.cordova && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      }
+      if (window.StatusBar) {
+        // org.apache.cordova.statusbar required
+        StatusBar.styleDefault();
+      }
+    });
+  })
+  .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider, $httpProvider, uiGmapGoogleMapApiProvider) {
 
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/tab/dash');
@@ -43,36 +43,36 @@ angular.module('dascentApp', ['ionic','ngResource','btford.socket-io','ngCordova
   })
 
   .factory('authInterceptor', function ($localstorage, $q, $location) {
-  return {
-    // Add authorization token to headers
-    request: function (config) {
-      config.headers = config.headers || {};
-      if ($localstorage.get('token')) {
-        config.headers.Authorization = 'Bearer ' + $localstorage.get('token');
-      }
-      return config;
-    },
+    return {
+      // Add authorization token to headers
+      request: function (config) {
+        config.headers = config.headers || {};
+        if ($localstorage.get('token')) {
+          config.headers.Authorization = 'Bearer ' + $localstorage.get('token');
+        }
+        return config;
+      },
 
-    // Intercept 401s and redirect you to login
-    responseError: function(response) {
-      if(response.status === 401) {
-        $location.path('/login');
-        // remove any stale tokens
-        //$cookieStore.remove('token');
-        $localstorage.remove('token');
-        return $q.reject(response);
+      // Intercept 401s and redirect you to login
+      responseError: function (response) {
+        if (response.status === 401) {
+          $location.path('/login');
+          // remove any stale tokens
+          //$cookieStore.remove('token');
+          $localstorage.remove('token');
+          return $q.reject(response);
+        }
+        else {
+          return $q.reject(response);
+        }
       }
-      else {
-        return $q.reject(response);
-      }
-    }
-  };
-})
+    };
+  })
   .run(function ($rootScope, $location, Auth) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
-      Auth.isLoggedInAsync(function(loggedIn) {
-        if(!loggedIn){
+      Auth.isLoggedInAsync(function (loggedIn) {
+        if (!loggedIn) {
           $location.path('/login');
         }
       });

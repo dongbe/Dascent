@@ -12,11 +12,11 @@ describe('socketFactory', function () {
   beforeEach(module('btford.socket-io'));
 
   var socket,
-      scope,
-      $timeout,
-      $browser,
-      mockIoSocket,
-      spy;
+    scope,
+    $timeout,
+    $browser,
+    mockIoSocket,
+    spy;
 
   beforeEach(inject(function (socketFactory, _$browser_, $rootScope, _$timeout_) {
     $browser = _$browser_;

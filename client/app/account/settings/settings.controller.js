@@ -3,20 +3,20 @@
 angular.module('dascentApp')
   .controller('SettingsCtrl', function ($scope, User, Auth, notifications, Upload) {
     $scope.errors = {};
-    $scope.user=Auth.getCurrentUser();
+    $scope.user = Auth.getCurrentUser();
     $scope.isConstructor = Auth.isConstructor();
-    $scope.uploadedImage={};
-    $scope.new={};
+    $scope.uploadedImage = {};
+    $scope.new = {};
 
-    $scope.changePassword = function(form) {
+    $scope.changePassword = function (form) {
       $scope.submitted = true;
-      if(form.$valid) {
-        Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
-          .then( function() {
+      if (form.$valid) {
+        Auth.changePassword($scope.user.oldPassword, $scope.user.newPassword)
+          .then(function () {
             $scope.message = 'Password successfully changed.';
-            $scope.pwd=false;
+            $scope.pwd = false;
           })
-          .catch( function() {
+          .catch(function () {
             form.password.$setValidity('mongoose', false);
             $scope.errors.other = 'Incorrect password';
             $scope.message = '';
@@ -24,50 +24,50 @@ angular.module('dascentApp')
       }
     };
 
-    $scope.update = function(form) {
+    $scope.update = function (form) {
       $scope.submitted = true;
-      if(form.$valid) {
+      if (form.$valid) {
 
-        if($scope.isConstructor){
+        if ($scope.isConstructor) {
           Auth.updateProvider({
             name: $scope.user.name,
             lastname: $scope.user.lastname,
             email: $scope.user.email
           })
-            .then( function() {
+            .then(function () {
               // Account created, redirect to home
               notifications.showSuccess('Account successfully updated!!');
             })
-            .catch( function(err) {
+            .catch(function (err) {
               err = err.data;
               $scope.errors = {};
-              $scope.response=false;
+              $scope.response = false;
 
               // Update validity of form fields that match the mongoose errors
-              angular.forEach(err.errors, function(error, field) {
+              angular.forEach(err.errors, function (error, field) {
                 form[field].$setValidity('mongoose', false);
                 $scope.errors[field] = error.message;
               });
             });
-        }else{
+        } else {
           Auth.update({
             name: $scope.user.name,
             lastname: $scope.user.lastname,
             email: $scope.user.email,
-            isskey:user.isskey,
-            idclient:user.idclient
+            isskey: $scope.user.isskey,
+            idclient: $scope.user.idclient
           })
-            .then( function() {
+            .then(function () {
               // Account created, redirect to home
               notifications.showSuccess('Account successfully updated!!');
             })
-            .catch( function(err) {
+            .catch(function (err) {
               err = err.data;
               $scope.errors = {};
-              $scope.response=false;
+              $scope.response = false;
 
               // Update validity of form fields that match the mongoose errors
-              angular.forEach(err.errors, function(error, field) {
+              angular.forEach(err.errors, function (error, field) {
                 form[field].$setValidity('mongoose', false);
                 $scope.errors[field] = error.message;
               });
@@ -76,7 +76,7 @@ angular.module('dascentApp')
       }
     };
 
-    $scope.onFileSelect = function(image) {
+    $scope.onFileSelect = function (image) {
       // This is how I handle file types in client side
       if (image.type !== 'image/png' && image.type !== 'image/jpeg') {
         notifications.showError('Only PNG and JPEG are accepted.');
@@ -86,34 +86,34 @@ angular.module('dascentApp')
       $scope.uploadProgress = 0;
 
       $scope.upload = Upload.upload({
-        url: '/api/users/'+$scope.user._id+'/avatar',
+        url: '/api/users/' + $scope.user._id + '/avatar',
         method: 'POST',
         file: image
-      }).progress(function(event) {
+      }).progress(function (event) {
         $scope.uploadProgress = Math.floor(event.loaded / event.total);
-      }).success(function(data) {
+      }).success(function (data) {
         $scope.uploadInProgress = false;
         // If you need uploaded file immediately
         $scope.user.avatar = data;
-        $scope.imageSrc=null;
+        $scope.imageSrc = null;
 
-      }).error(function(err) {
+      }).error(function (err) {
         $scope.uploadInProgress = false;
         console.log('Error uploading file: ' + err.message || err);
       });
     };
   })
-  .directive('ngFileSelect',function(){
+  .directive('ngFileSelect', function () {
     return {
-      link: function($scope,el){
-        el.bind('change', function(e){
+      link: function ($scope, el) {
+        el.bind('change', function (e) {
           var reader = new FileReader();
           reader.onload = function (loadEvent) {
             $scope.$apply(function () {
               $scope.imageSrc = loadEvent.target.result;
             });
           };
-          $scope.files= e.target.files[0];
+          $scope.files = e.target.files[0];
           reader.readAsDataURL(e.target.files[0]);
         });
       }

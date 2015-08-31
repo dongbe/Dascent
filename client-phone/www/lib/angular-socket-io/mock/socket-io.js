@@ -2,7 +2,7 @@ var io = {
   connect: createMockSocketObject
 };
 
-function createMockSocketObject () {
+function createMockSocketObject() {
 
   var socket = {
     on: function (ev, fn) {
@@ -41,8 +41,10 @@ function createMockSocketObject () {
         this._listeners = {};
       }
     },
-    disconnect: function () {},
-    connect: function () {}
+    disconnect: function () {
+    },
+    connect: function () {
+    }
   };
 
   return socket;

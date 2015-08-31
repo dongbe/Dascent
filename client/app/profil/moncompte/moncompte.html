@@ -3,33 +3,35 @@
   <div ng-include="'components/sidebar/sidebar.html'"></div>
   <div class="pullframe col-md-8">
     <div ng-if="!notif()">Vous n'avez pas de notifications</div>
-    <div ng-if="notif()" >
+    <div ng-if="notif()">
       <div ng-repeat="watch in profile.watchs">
         <div ng-if="watch.device.tracking"> {{watch.device.name}} : tracking mode activated</div>
       </div>
     </div>
-    <div ng-if="notif()" >
-        <ui-gmap-google-map center="map.center" zoom="map.zoom">
-          <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
-          </ui-gmap-markers>
-          <ui-gmap-markers models="markers2" coords="'self'" icon="'icon'" click="onMarkerClicked" options="'options'" events="map.markers2Events">
-            <ui-gmap-windows show="'showWindow'" closeClick="'closeClick'" ng-cloak>
-            </ui-gmap-windows>
-          </ui-gmap-markers>
-          <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
-                            fit="false" editable="p.editable">
-          </ui-gmap-polyline>
-        </ui-gmap-google-map>
+    <div ng-if="notif() && gps">
+      <ui-gmap-google-map center="map.center" zoom="map.zoom" control="control">
+        <ui-gmap-markers models="points" coords="'coords'" options="'options'" events="'events'">
+        </ui-gmap-markers>
+        <ui-gmap-markers models="markers2" coords="'self'" icon="'icon'" click="onMarkerClicked" options="'options'"
+                         events="map.markers2Events">
+          <ui-gmap-windows show="'showWindow'" closeClick="'closeClick'" ng-cloak>
+          </ui-gmap-windows>
+        </ui-gmap-markers>
+        <ui-gmap-polyline ng-repeat="p in polylines" path="p.path" stroke="p.stroke" visible='p.visible'
+                          fit="false" editable="p.editable">
+        </ui-gmap-polyline>
+      </ui-gmap-google-map>
     </div>
-    <div ng-if="notif()" ng-repeat="watch in profile.watchs" >
+    <div ng-if="notif()" ng-repeat="watch in profile.watchs">
       <div ng-if="watch.device.group[0]!='GPS'">
-        <div  ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
-      || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'" >
+        <div ng-repeat="stream in watch.device.streams" ng-hide="stream.lastValue == null
+      || stream.name=='Latitude' || stream.name=='command' || stream.name=='downlinkFcnt' || stream.name=='battery'">
 
           <div class="panel panel-default">
             <div class="panel-body">
               <a href="#">
                 <img src="assets/images/iot.jpg" width="50" height="50" class="img-circle tt">
+
                 <h2 class="panel-title">Device :{{watch.device.name}}</h2>
               </a>
             </div>

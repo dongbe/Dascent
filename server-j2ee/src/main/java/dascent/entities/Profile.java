@@ -1,8 +1,9 @@
 package dascent.entities;
 
-public class Profile{
-	
-	public Profile(){}
-	
+public class Profile {
+
+  public Profile() {
+  }
+
 
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .controller('ConstructorCtrl', function ($scope, Auth, $timeout, ManDev, $state, $http, socket, Modal, cfpLoadingBar,notifications) {
+  .controller('ConstructorCtrl', function ($scope, Auth, $timeout, ManDev, $state, $http, socket, Modal, cfpLoadingBar, notifications) {
 
     $scope.constructor = Auth.getCurrentUser; // information provider
     $scope.importDevice = false;
@@ -9,16 +9,16 @@ angular.module('dascentApp')
     $scope.disable = false;
     $scope.devices = [];
 
-    $http.get('/api/users/'+$scope.constructor()._id+'/devices').success(function(data){
-      $scope.devices=data;
-      socket.syncUpdates('device', $scope.devices);
+    $http.get('/api/users/' + $scope.constructor()._id + '/devices').success(function (data) {
+      $scope.devices = data;
+      socket.syncUpdates('device', $scope.devices,$scope.constructor()._id);
     }).error();
 
     if ($scope.devices.length) {
       $scope.disable = true;
     }
-    $scope.createDevice = function(fileContent){
-      if(fileContent) {
+    $scope.createDevice = function (fileContent) {
+      if (fileContent) {
         Modal.confirm.browse(function (fileContent) {
           var lines;
           lines = fileContent.split('\n');
@@ -34,23 +34,22 @@ angular.module('dascentApp')
           }
           $state.go('construct');
         });
-      }else{
-        $scope.error.message="veuillez choisir un fichier!!";
+      } else {
+        $scope.error.message = "veuillez choisir un fichier!!";
       }
     };
 
     $scope.getDevices = function () {
-      $scope.importDevice=true;
+      $scope.importDevice = true;
       ManDev.importDevice().then(function () {
         $state.go('construct');
-        $scope.importDevice=false;
         //$scope.$broadcast("import:completed");
       })
         .catch(function (err) {
-          if(err){
+          if (err) {
             var error = err.message;
-            notifications.showError('Datavenue: '+error);
-          }else{
+            notifications.showError('Datavenue: ' + error);
+          } else {
             notifications.showError("No internet connection");
           }
         });
@@ -58,17 +57,17 @@ angular.module('dascentApp')
 
 
     $scope.getStDevices = function () {
-      $scope.importDevice=true;
+      $scope.importDevice = true;
       ManDev.importStDevice().then(function () {
         $state.go('construct');
-        $scope.importDevice=false;
+        $scope.importDevice = false;
         //$scope.$broadcast("import:completed");
       })
         .catch(function (err) {
-          if(err){
+          if (err) {
             err = err.data;
             console.log(err);
-          }else{
+          } else {
             notifications.showError("No internet connection");
           }
 
@@ -76,9 +75,9 @@ angular.module('dascentApp')
         });
     };
 
-    $scope.delete=function(device){
-      $http.delete('/api/devices/'+device._id);
-      angular.forEach($scope.devices, function(u, i) {
+    $scope.delete = function (device) {
+      $http.delete('/api/devices/' + device._id);
+      angular.forEach($scope.devices, function (u, i) {
         if (u === device) {
           $scope.devices.splice(i, 1);
         }
@@ -88,28 +87,28 @@ angular.module('dascentApp')
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('device');
     });
-})
-.directive('fileReader', function () {
-  return {
-    scope: {
-      fileReader: '='
-    },
-    link: function (scope, element) {
-      $(element).on('change', function (changeEvent) {
-        var files = changeEvent.target.files;
-        if (files.length) {
-          var r = new FileReader();
-          r.onload = function (e) {
-            var contents = e.target.result;
-            scope.$apply(function () {
-              scope.fileReader = contents;
-            });
-          };
-          r.readAsText(files[0]);
-        }
-      });
+  })
+  .directive('fileReader', function () {
+    return {
+      scope: {
+        fileReader: '='
+      },
+      link: function (scope, element) {
+        $(element).on('change', function (changeEvent) {
+          var files = changeEvent.target.files;
+          if (files.length) {
+            var r = new FileReader();
+            r.onload = function (e) {
+              var contents = e.target.result;
+              scope.$apply(function () {
+                scope.fileReader = contents;
+              });
+            };
+            r.readAsText(files[0]);
+          }
+        });
 
-    }
-  };
+      }
+    };
 
   });

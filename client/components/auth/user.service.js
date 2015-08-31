@@ -3,31 +3,31 @@
 angular.module('dascentApp')
   .factory('User', function ($resource) {
     return $resource('/api/users/:id/:controller', {
-      id: '@_id'
-    },
-    {
-      changePassword: {
-        method: 'PUT',
-        params: {
-          controller:'password'
-        }
+        id: '@_id'
       },
-      get: {
-        method: 'GET',
-        params: {
-          id:'me'
-        }
-      },
-      patch: {
-        method: 'PATCH'
-      },
-      getDevices:{
-        method: 'GET',
-        params: {
-          id: 'me',
-          controller:'devices'
+      {
+        changePassword: {
+          method: 'PUT',
+          params: {
+            controller: 'password'
+          }
         },
-        isArray: true
-      }
-	  });
+        get: {
+          method: 'GET',
+          params: {
+            id: 'me'
+          }
+        },
+        patch: {
+          method: 'PATCH'
+        },
+        getDevices: {
+          method: 'GET',
+          params: {
+            id: 'me',
+            controller: 'devices'
+          },
+          isArray: true
+        }
+      });
   });

@@ -14,9 +14,9 @@ process.env.CORDOVA_PLUGINS.split(',').forEach(function (plugin) {
     packageJSON.cordovaPlugins.splice(index, 1);
   } else {
     //If it didnt find a match, it may be listed as {id,locator}
-    for(var i = 0, j = packageJSON.cordovaPlugins.length; i < j; i++) {
+    for (var i = 0, j = packageJSON.cordovaPlugins.length; i < j; i++) {
       var packagePlugin = packageJSON.cordovaPlugins[i];
-      if(typeof packagePlugin == 'object' && packagePlugin.id == plugin) {
+      if (typeof packagePlugin == 'object' && packagePlugin.id == plugin) {
         packageJSON.cordovaPlugins.splice(index, 1);
         break;
       }

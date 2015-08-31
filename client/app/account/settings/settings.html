@@ -36,84 +36,94 @@
     </div>
     <br>
     <form name="form1" class="form">
-    <div class="row">
-      <div class="col-lg-3" ng-if="!isConstructor">
-        Firstname:
-      </div>
-      <div class="col-lg-3" ng-if="isConstructor">
-        Company name:
-      </div>
-      <div class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
+      <div class="row">
+        <div class="col-lg-3" ng-if="!isConstructor">
+          Firstname:
+        </div>
+        <div class="col-lg-3" ng-if="isConstructor">
+          Company name:
+        </div>
+        <div class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
                                             'has-error': form1.name.$invalid && submitted }">
-        <input name="name" type="text" class="form-control" ng-model="user.name" required>
-        <p class="help-block" ng-show="form1.name.$error.required">
-          A name is required
-        </p>
+          <input name="name" type="text" class="form-control" ng-model="user.name" required>
+
+          <p class="help-block" ng-show="form1.name.$error.required">
+            A name is required
+          </p>
+        </div>
       </div>
-    </div>
       <br>
-      <div class="row" ng-if="isConstructor">
-        <div class="col-lg-3" >
+
+      <div ng-if="isConstructor">
+      <div class="row" >
+        <div class="col-lg-3">
           ISS KEY:
         </div>
         <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
                                             'has-error': form1.name.$invalid && submitted }">
           <input name="isskey" type="text" class="form-control" ng-model="user.isskey" required>
+
           <p class="help-block" ng-show="form1.isskey.$error.required">
             A ISS is required
           </p>
         </div>
       </div>
+      </div>
       <br>
-      <div class="row">
-        <div class="col-lg-3" ng-if="isConstructor">
+
+      <div class="row" ng-if="isConstructor">
+        <div class="col-lg-3" ng-if="!isConstructor">
           Orange APIGEE KEY:
         </div>
         <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.name.$valid && submitted,
                                             'has-error': form1.name.$invalid && submitted }">
           <input name="apikey" type="text" class="form-control" ng-model="user.idclient" required>
+
           <p class="help-block" ng-show="form1.isskey.$error.required">
             A Orange APIGEE is required
           </p>
         </div>
       </div>
-    <br>
-    <div class="row">
-      <div class="col-lg-3" ng-if="!isConstructor">
-        Lastname:
-      </div>
-      <div class="col-lg-3" ng-if="isConstructor">
-        SIREN:
-      </div>
-      <div ng-if="!isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
+      <br>
+      <div class="row" ng-if="!isConstructor">
+        <div class="col-lg-3" ng-if="!isConstructor">
+          Lastname:
+        </div>
+        <div class="col-lg-3" ng-if="isConstructor">
+          SIREN:
+        </div>
+        <div ng-if="!isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
                                             'has-error': form1.lastname.$invalid && submitted }">
-        <input name="lastname" type="text" class="form-control" ng-model="user.lastname" required>
-        <p class="help-block" ng-if="form1.lastname.$error.required && !isConstructor">
-          A lastname is required
-        </p>
-        <p class="help-block" ng-if="form1.lastname.$error.required && isConstructor">
-          A SIREN is required
-        </p>
-      </div>
-      <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
-                                            'has-error': form1.lastname.$invalid && submitted }">
-        <input name="lastname" type="text" class="form-control" ng-model="user.lastname">
-      </div>
-    </div>
-    </br>
-    <div class="row">
-      <div class="col-lg-3">
-        Email:
-      </div>
-      <div class="col-lg-5" ng-class="{ 'has-success': form1.mail.$valid && submitted,
-                                            'has-error': form1.mail.$invalid && submitted }">
-        <input name="mail" type="email" class="form-control" ng-model="user.email" required>
-        <p class="help-block" ng-show="form1.mail.$error.required">
-          An email is required
-        </p>
-      </div>
+          <input name="lastname" type="text" class="form-control" ng-model="user.lastname" required>
 
-    </div>
+          <p class="help-block" ng-if="form1.lastname.$error.required && !isConstructor">
+            A lastname is required
+          </p>
+
+          <p class="help-block" ng-if="form1.lastname.$error.required && isConstructor">
+            A SIREN is required
+          </p>
+        </div>
+        <div ng-if="isConstructor" class="col-lg-5" ng-class="{ 'has-success': form1.lastname.$valid && submitted,
+                                            'has-error': form1.lastname.$invalid && submitted }">
+          <input name="lastname" type="text" class="form-control" ng-model="user.lastname">
+        </div>
+      </div>
+      </br>
+      <div class="row">
+        <div class="col-lg-3">
+          Email:
+        </div>
+        <div class="col-lg-5" ng-class="{ 'has-success': form1.mail.$valid && submitted,
+                                            'has-error': form1.mail.$invalid && submitted }">
+          <input name="mail" type="email" class="form-control" ng-model="user.email" required>
+
+          <p class="help-block" ng-show="form1.mail.$error.required">
+            An email is required
+          </p>
+        </div>
+
+      </div>
     </form>
     </br>
     <div class="row">
@@ -122,12 +132,14 @@
       </div>
       <div class="col-lg-5">
         <a ng-hide="pwd" role="button" ng-click="pwd=true" ng-init="pwd=false">change password</a>
+
         <div ng-show="pwd">
           <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
             <div class="form-group">
               <label>Current Password</label>
               <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
                      mongoose-error/>
+
               <p class="help-block" ng-show="form.password.$error.mongoose">
                 {{ errors.other }}
               </p>
@@ -137,6 +149,7 @@
               <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
                      ng-minlength="3"
                      required/>
+
               <p class="help-block"
                  ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
                 Password must be at least 3 characters.
@@ -153,6 +166,7 @@
       </div>
     </div>
     <br>
+
     <div class="row">
       <div class="col-lg-5 col-lg-offset-3">
         <button class="btn btn-success" type="button" ng-click="update(form1)">Save changes</button>

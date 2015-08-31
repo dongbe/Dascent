@@ -1,10 +1,11 @@
-.info{
+.info {
   border: dashed;
   margin-inside: auto;
 }
+
 .red {
-  display:block;
-  position:absolute;
+  display: block;
+  position: absolute;
   height: 20px;
   width: 20px;
   background-color: #ca0c18;
@@ -12,9 +13,10 @@
   -webkit-border-radius: 15px;
   border-radius: 15px;
 }
+
 .green {
-  display:block;
-  position:absolute;
+  display: block;
+  position: absolute;
   height: 20px;
   width: 20px;
   background-color: #09990d;
@@ -22,6 +24,7 @@
   -webkit-border-radius: 15px;
   border-radius: 15px;
 }
+
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }

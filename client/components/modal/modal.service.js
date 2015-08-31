@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('dascentApp')
-  .factory('Modal', function ($rootScope, $modal ) {
+  .factory('Modal', function ($rootScope, $modal) {
     /**
      * Opens a modal
      * @param  {Object} scope      - an object to be merged with modal's scope
@@ -33,7 +33,7 @@ angular.module('dascentApp')
          * @param  {Function} del - callback, ran when delete is confirmed
          * @return {Function}     - the function to open the modal (ex. myModalFn)
          */
-        delete: function(del) {
+        delete: function (del) {
           del = del || angular.noop;
 
           /**
@@ -41,45 +41,45 @@ angular.module('dascentApp')
            * @param  {String} name   - name or info to show on modal
            * @param  {All}           - any additional args are passed staight to del callback
            */
-          return function() {
+          return function () {
             var args = Array.prototype.slice.call(arguments),
-                name = args.shift(),
-                deleteModal;
+              name = args.shift(),
+              deleteModal;
 
             deleteModal = openModal({
               modal: {
                 dismissable: true,
                 title: 'Confirm Delete',
-                html: '<img ng-src="'+ name[0].path +'">' +
+                html: '<img ng-src="' + name[0].path + '">' +
                 '<p>Are you sure you want to delete <strong>' + name[0] + '</strong> ?</p>',
                 buttons: [{
                   classes: 'btn-danger',
                   text: 'Delete',
-                  click: function(e) {
+                  click: function (e) {
                     deleteModal.close(e);
                   }
                 }, {
                   classes: 'btn-default',
                   text: 'Cancel',
-                  click: function(e) {
+                  click: function (e) {
                     deleteModal.dismiss(e);
                   }
                 }]
               }
             }, 'modal-danger');
 
-            deleteModal.result.then(function(event) {
+            deleteModal.result.then(function (event) {
               del.apply(event, args);
             });
           };
         },
 
-        browse: function(del) {
+        browse: function (del) {
           del = del || angular.noop;
 
-          return function() {
+          return function () {
             var args = Array.prototype.slice.call(arguments),
-              //name = args.shift(),
+            //name = args.shift(),
               browseModal;
 
             browseModal = openModal({
@@ -90,57 +90,57 @@ angular.module('dascentApp')
                 buttons: [{
                   classes: 'btn-primary',
                   text: 'Create device',
-                  click: function(e) {
+                  click: function (e) {
                     browseModal.close(e);
                   }
                 }, {
                   classes: 'btn-default',
                   text: 'Cancel',
-                  click: function(e) {
+                  click: function (e) {
                     browseModal.dismiss(e);
                   }
                 }]
               }
             }, 'modal-primary');
 
-            browseModal.result.then(function(event) {
+            browseModal.result.then(function (event) {
               del.apply(event, args);
             });
           };
         },
-        upload: function(del) {
+        upload: function (del) {
           del = del || angular.noop;
 
-          return function() {
+          return function () {
             var args = Array.prototype.slice.call(arguments),
-                name = args.shift(),
+              name = args.shift(),
               uploadModal;
             uploadModal = openModal({
               modal: {
                 dismissable: true,
                 title: 'Confirm upload',
                 html: '<p>Are you sure you want to Upload the file?</p>  ' +
-                      '<form class="form" ng-submit="createDevice(fileContent)" novalidate>' +
-                      '<input type="file" file-reader="fileContent" accept=".csv" required>'+
-                      '<button class="btn btn-success" type="submit">Create devices</button>'+
-                      '</form>',
+                '<form class="form" ng-submit="createDevice(fileContent)" novalidate>' +
+                '<input type="file" file-reader="fileContent" accept=".csv" required>' +
+                '<button class="btn btn-success" type="submit">Create devices</button>' +
+                '</form>',
                 buttons: [{
                   classes: 'btn-primary',
                   text: 'Create device',
-                  click: function(e) {
+                  click: function (e) {
                     uploadModal.close(e);
                   }
                 }, {
                   classes: 'btn-default',
                   text: 'Cancel',
-                  click: function(e) {
+                  click: function (e) {
                     uploadModal.dismiss(e);
                   }
                 }]
               }
             }, 'modal-primary');
 
-            uploadModal.result.then(function(event) {
+            uploadModal.result.then(function (event) {
               del.apply(event, args);
             });
           };

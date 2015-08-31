@@ -1,37 +1,39 @@
 'use strict';
 
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+  Schema = mongoose.Schema;
 var User = require('../user/user.model');
 var _ = require('lodash');
 
 var DeviceSchema = new Schema({
   ds_id: String,
-  _constructor:{ type: Schema.Types.ObjectId, ref: 'User' },
-  link:String,
+  _constructor: {type: Schema.Types.ObjectId, ref: 'User'},
+  link: String,
   name: String,
   serial: String,
   description: String,
   apikeys: [String],
-  group:[String],
-  _owner: { type: Schema.Types.ObjectId, ref: 'User' },
-  location : String,
+  group: [String],
+  _owner: {type: Schema.Types.ObjectId, ref: 'User'},
+  location: String,
   streams: [
-    { id:String,
-    name:String,
-    lastValue: Object,
-      link:String,
-    location:{
-        longitude:Number,
+    {
+      id: String,
+      name: String,
+      lastValue: Object,
+      link: String,
+      location: {
+        longitude: Number,
         latitude: Number,
-        elevation:Number
+        elevation: Number
       },
-    values: [{
-      value:Object,
-      time:Date
+      values: [{
+        value: Object,
+        time: Date
+      }],
+      lastPost: {type: Date}
     }],
-    lastPost: { type: Date } }],
-  tracking:{
+  tracking: {
     type: Boolean,
     default: false
   },

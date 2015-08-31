@@ -6,7 +6,7 @@
 
 var Follower = require('./profile.model');
 
-exports.register = function(socket) {
+exports.register = function (socket) {
   Follower.schema.post('save', function (doc) {
     onSave(socket, doc);
   });
@@ -16,14 +16,14 @@ exports.register = function(socket) {
 }
 
 function onSave(socket, doc, cb) {
-  Follower.populate(doc,'waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting',function(err,foll){
+  Follower.populate(doc, 'waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting', function (err, foll) {
     socket.emit('profile:save', doc);
   });
 
 }
 
 function onRemove(socket, doc, cb) {
-  Follower.populate(doc,'waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting',function(err,foll){
+  Follower.populate(doc, 'waitlist.user waitlist.device accepted.user accepted.device watchs.device watchs.device.streams waiting', function (err, foll) {
     socket.emit('profile:remove', doc);
   });
 

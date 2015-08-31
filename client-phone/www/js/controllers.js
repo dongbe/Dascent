@@ -1,4 +1,4 @@
-var geolocalisation ={
+var geolocalisation = {
 
   /**
    * @property {google.maps.Map} map
@@ -28,11 +28,11 @@ var geolocalisation ={
   btnHome: undefined,
   btnReset: undefined,
 
-  initializeMap: function() {
+  initializeMap: function () {
 
     var localStorage = window.localStorage;
     var mapOptions = {
-      center: { lat: -34.397, lng: 150.644},
+      center: {lat: -34.397, lng: 150.644},
       zoom: 8,
       zoomControl: false
     };
@@ -47,30 +47,30 @@ var geolocalisation ={
     console.log(canvas[0]);
     geolocalisation.map = new google.maps.Map(canvas[0], mapOptions);
   },
-  initialize: function($cordovaDevice,$http) {
+  initialize: function ($cordovaDevice, $http) {
 
-   // if (window.plugins.backgroundGeoLocation) {
-      //geolocalisation.initializeMap;
-      geolocalisation.configureBackgroundGeoLocation($cordovaDevice,$http);
-      geolocalisation.watchPosition();
+    // if (window.plugins.backgroundGeoLocation) {
+    //geolocalisation.initializeMap;
+    geolocalisation.configureBackgroundGeoLocation($cordovaDevice, $http);
+    geolocalisation.watchPosition();
 
-  // }
+    // }
   },
-  configureBackgroundGeoLocation: function($cordovaDevice,$http) {
+  configureBackgroundGeoLocation: function ($cordovaDevice, $http) {
     var device = $cordovaDevice.getUUID();
     var phone = {};
-    var Location={};
+    var Location = {};
 
-    $http.get('http://dascent-dascent.rhcloud.com/api/devices/'+device)
+    $http.get('http://dascent-dascent.rhcloud.com/api/devices/' + device)
 
-      .success(function(data){
+      .success(function (data) {
         phone = data[0];
 
-        window.navigator.geolocation.getCurrentPosition(function(location) {
+        window.navigator.geolocation.getCurrentPosition(function (location) {
           //var map     = geolocalisation.map,
-           var coords  = location.coords;
-           //ll      = new google.maps.LatLng(coords.latitude, coords.longitude);
-           /*
+          var coords = location.coords;
+          //ll      = new google.maps.LatLng(coords.latitude, coords.longitude);
+          /*
            zoom    = map.getZoom();
 
            map.setCenter(ll);
@@ -86,27 +86,27 @@ var geolocalisation ={
         /**
          * This would be your own callback for Ajax-requests after POSTing background geolocation to your server.
          */
-        var yourAjaxCallback = function(response) {
+        var yourAjaxCallback = function (response) {
           bgGeo.finish();
         };
 
         /**
          * This callback will be executed every time a geolocation is recorded in the background.
          */
-        var callbackFn = function(location) {
+        var callbackFn = function (location) {
           console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
           yourAjaxCallback.call(this);
         };
 
-        var failureFn = function(error) {
+        var failureFn = function (error) {
           console.log('BackgroundGeoLocation error');
         };
 
         // BackgroundGeoLocation is highly configurable.
-        bgGeo.configure(callbackFn, failureFn,{
-          url:'http://dascent-dascent.rhcloud.com/api/notifications',
-          params:{
-            device:phone
+        bgGeo.configure(callbackFn, failureFn, {
+          url: 'http://dascent-dascent.rhcloud.com/api/notifications',
+          params: {
+            device: phone
           },
           desiredAccuracy: 10,
           stationaryRadius: 20,
@@ -121,35 +121,36 @@ var geolocalisation ={
         // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the geolocalisation.
         bgGeo.start();
 
-      }).error(function(error){
+      }).error(function (error) {
         console.log(error.message);
       });
 
 
   },
-  watchPosition: function() {
+  watchPosition: function () {
     var fgGeo = window.navigator.geolocation;
     if (geolocalisation.watchId) {
       geolocalisation.stopPositionWatch();
     }
     // Watch foreground location
-    geolocalisation.watchId = fgGeo.watchPosition(function(location) {
+    geolocalisation.watchId = fgGeo.watchPosition(function (location) {
       geolocalisation.setCurrentLocation(location.coords);
-    }, function() {}, {
+    }, function () {
+    }, {
       enableHighAccuracy: true,
       maximumAge: 5000,
       frequency: 10000,
       timeout: 10000
     });
   },
-  stopPositionWatch: function() {
+  stopPositionWatch: function () {
     var fgGeo = window.navigator.geolocation;
     if (geolocalisation.watchId) {
       fgGeo.clearWatch(geolocalisation.watchId);
       geolocalisation.watchId = undefined;
     }
   },
-  setCurrentLocation: function(location) {
+  setCurrentLocation: function (location) {
     if (!geolocalisation.location) {
       geolocalisation.location = new google.maps.Marker({
         map: geolocalisation.map,
@@ -202,16 +203,16 @@ var geolocalisation ={
     geolocalisation.path.getPath().push(latlng);
     geolocalisation.previousLocation = location;
   },
-  onClickHome: function() {
+  onClickHome: function () {
     var fgGeo = window.navigator.geolocation;
 
     // Your geolocalisation must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
     //  in order to prompt the user for Location permission.
-    fgGeo.getCurrentPosition(function(location) {
-      var map     = geolocalisation.map,
-        coords  = location.coords,
-        ll      = new google.maps.LatLng(coords.latitude, coords.longitude),
-        zoom    = map.getZoom();
+    fgGeo.getCurrentPosition(function (location) {
+      var map = geolocalisation.map,
+        coords = location.coords,
+        ll = new google.maps.LatLng(coords.latitude, coords.longitude),
+        zoom = map.getZoom();
 
       map.setCenter(ll);
       if (zoom < 15) {
@@ -221,7 +222,7 @@ var geolocalisation ={
     });
   },
 
-  close :function(){
+  close: function () {
     var bgGeo = window.plugins.backgroundGeoLocation;
     bgGeo.stop();
   }
