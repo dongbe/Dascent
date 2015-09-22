@@ -34,46 +34,29 @@ exports.index = function (req, res) {
  * Creates a new user
  */
 exports.create = function (req, res, next) {
-  https.get("https://www.google.com/recaptcha/api/siteverify?secret=6LfJBggTAAAAAL1BdFIvIb_EIPkeJLArFk8xaZ2A&response=" + req.body.key, function (rest) {
-    var data = "";
-    rest.on('data', function (chunk) {
-      data += chunk.toString();//response from google recaptcha
-    });
-    rest.on('end', function () {
-      try {
-        var parsedData = JSON.parse(data);
-        if (parsedData.success) {
-          var newUser = new User(req.body);
-          if (newUser.isskey !== undefined) {
-            newUser.role = 'constructor';
-          } else {
-            //create a profile for users if not device provider
-            Profile.create({
-              user: newUser._id,
-              accepted: [],
-              waitlist: [],
-              watchs: [],
-              waiting: []
-            }, function (err, profile) {
-              if (err) {
-                return next(err);
-              }
-              newUser._profile = profile._id;
-              newUser.avatar = '90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg';//default picture on account creation
-            });
-          }
-          newUser.save(function (err, user) {
-            if (err) return validationError(res, err);
-            var token = jwt.sign({_id: user._id}, config.secrets.session, {expiresInMinutes: 60 * 5});
-            res.json({token: token});
-          });
-        } else {
-          return res.json(422);
-        }
-      } catch (e) {
-        return res.json(422);
+  var newUser = new User(req.body);
+  if (newUser.isskey !== undefined) {
+    newUser.role = 'constructor';
+  } else {
+    //create a profile for users if not device provider
+    Profile.create({
+      user: newUser._id,
+      accepted: [],
+      waitlist: [],
+      watchs: [],
+      waiting: []
+    }, function (err, profile) {
+      if (err) {
+        return next(err);
       }
+      newUser._profile = profile._id;
+      newUser.avatar = '90a4c5ab-455f-44f2-a100-0af87bdb724b.jpg';//default picture on account creation
     });
+  }
+  newUser.save(function (err, user) {
+    if (err) return validationError(res, err);
+    var token = jwt.sign({_id: user._id}, config.secrets.session, {expiresInMinutes: 60 * 5});
+    res.json({token: token});
   });
 };
 
