@@ -1,14 +1,24 @@
-<div class="row" ng-controller="SignupCtrl">
+<div class="row" ng-controller="SignupCtrl" ng-init="init()">
 
   <div class="col-sm-12">
 
+    <form class="form" name="form2" ng-submit="test(form2)" novalidate>
+
+      <p id="demo"></p>
+      <textarea id="ex-text"></textarea>
+      {{mill.txt}}
+      <button class="btn btn-login btn-success btn-block" type="submit">
+        Sign up
+      </button>
+      </form>
     <form class="form" name="form" ng-submit="register(form)" novalidate>
+
       <div class="row">
         <div class="form-group col-md-3" ng-class="{ 'has-success': form.name.$valid && submitted,
                                             'has-error': form.name.$invalid && submitted }">
 
           <label>Firstname</label>
-          <input type="text" name="name" class="form-control" ng-model="user.name" placeholder="Name" required/>
+          <input id="ex-1" type="text" name="name" class="form-control" ng-model="user.name" placeholder="Name" required/>
 
           <p class="help-block" ng-show="form.name.$error.required && submitted">
             A name is required
@@ -17,7 +27,7 @@
         <div class="form-group col-md-3" ng-class="{ 'has-success': form.lastname.$valid && submitted,
                                             'has-error': form.lastname.$invalid && submitted }">
           <label>Lastname</label>
-          <input type="text" name="lastname" class="form-control" ng-model="user.lastname" placeholder="Lastname"
+          <input id="ln" type="text" name="lastname" class="form-control" ng-model="user.lastname" placeholder="Lastname"
                  required/>
 
           <p class="help-block" ng-show="form.lastname.$error.required && submitted">

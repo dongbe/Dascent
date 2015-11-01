@@ -6,6 +6,39 @@ angular.module('dascentApp')
     $scope.errors = {};
     $scope.key = '6LfJBggTAAAAAKTxuVMmz97y5k1bWyB5FFi5wgJy';//recaptha public key
     $scope.response = true;
+    $scope.mill={};
+
+    $scope.test = function(form){
+      var value = document.getElementById('ex-text').value;
+      console.log(value);
+    };
+    $scope.init = function () {
+     console.log("test");
+     var test='MSG NUM @\n@\n@\n@';
+     var lines;
+     lines = test.split('\n');
+     var format=lines[0]+'________\n';
+     for (var i = 1; i < lines.length; i++) {
+       format+=lines[i]+'________\n';
+     }
+
+     var mk = {
+       elm: document.getElementById('ex-text'),
+       format: format,
+       separator: '\n@ /'+test,
+       typeon: '_',
+       allowed: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ',
+       onbadkey: function(){
+         var origStyle = document.getElementById('ex-text').style['color'];
+         document.getElementById('ex-text').style['color'] = '#f00';
+         setTimeout(function(){ document.getElementById('ex-text').style['color']=origStyle; },120);
+       }
+     };
+      $scope.formatted = MaskedInput(mk);
+     document.addEventListener("load",$scope.formatted, false);
+     document.getElementById("demo").innerHTML = "Iframe is loaded.";
+      console.log($scope.formatted);
+    };
     $scope.setResponse = function (response) {
       $scope.response = true;
     };
